@@ -17,6 +17,6 @@ sectionLinks.forEach((link) => {
     sectionLinks.forEach((link) => link.classList.remove("active"));
     e.target.classList.add("active");
     const section = document.querySelector(e.target.hash);
-    section.scrollIntoView({ behavior: "smooth", block: "end" });
+    section.scrollIntoView({ behavior: "smooth", block: "start" });
   });
 });
