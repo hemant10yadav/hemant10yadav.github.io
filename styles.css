@@ -113,10 +113,6 @@ nav {
     }
   }
 
-  & .sub-heading {
-    width: 380px;
-  }
-
   & .greetings {
     position: relative;
     width: 100%;
