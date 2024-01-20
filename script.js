@@ -3,10 +3,10 @@ const scrollProgress = document.getElementById("scroll-progress");
 const height =
     document.documentElement.scrollHeight - document.documentElement.clientHeight;
 
-const apiUrl = 'https://api.jsonbin.io/v3/b/65aabceb266cfc3fde7c2fbc/';
+const apiUrl = 'https://api.jsonbin.io/v3/b/65ab53a5dc7465401896fab6/';
 const apiHeaders = {
     'Content-Type': 'application/json',
-    'X-Access-Key': '$2a$10$c/ExHNlDWJdBCh/qIWGOwuxLioErGf1mO0FPzkiBIT551ujo3J37y',
+    'X-Access-Key': '$2a$10$6o8EcMIJ1UKT3GRFU01Biu676n/fxU1/ddMOgVJCWFgXxeAsr8Z4W',
 }
 
 let status;
@@ -40,7 +40,7 @@ document.addEventListener('DOMContentLoaded', function () {
     // Add a click event handler to the element
     button.addEventListener('click', function () {
         if (status) {
-            status = {...status, resumeDownloaded: status.resumeDownloaded + 1, lastUpdatedOn: new Date()};
+            status = {...status, resumeDownloads: status.resumeDownloads + 1, lastUpdatedOn: new Date()};
         }
         saveData();
     });
@@ -77,9 +77,8 @@ document.addEventListener('DOMContentLoaded', function () {
                 return response.json();
             })
             .then(data => {
-                console.log(data)
                 if (data) {
-                    data = {...data, requests: data.requests + 1, lastUpdatedOn: new Date()}
+                    data = {...data, views: data.views + 1, lastUpdatedOn: new Date()}
                     status = data;
                     saveData();
                 }
@@ -92,7 +91,6 @@ document.addEventListener('DOMContentLoaded', function () {
 
 
 const saveData = () => {
-    console.log(status)
     if (status) {
         fetch(apiUrl, {
             method: 'PUT',
