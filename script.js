@@ -31,17 +31,18 @@ sectionLinks.forEach((link) => {
 
 // Highlight nav item
 
-document.addEventListener('DOMContentLoaded', function () {
+document.addEventListener('DOMContentLoaded', async function () {
     const navLinks = document.querySelectorAll('nav h4 a');
     const sections = document.querySelectorAll('section');
 
     const button = document.getElementById('resume');
 
     // Add a click event handler to the element
-    button.addEventListener('click', function () {
-        if (status) {
-            status = {...status, resumeDownloads: status.resumeDownloads + 1, lastUpdatedOn: new Date()};
+    button.addEventListener('click', async () => {
+        if (!status) {
+            await getData();
         }
+        status = {...status, resumeDownloads: status.resumeDownloads + 1, lastUpdatedOn: new Date()};
         saveData();
     });
 
@@ -65,34 +66,40 @@ document.addEventListener('DOMContentLoaded', function () {
     // Set active tab on page load
     setActiveTab();
 
-    (function readFile() {
-        fetch(apiUrl, {
-            method: 'GET',
-            headers: {
-                ...apiHeaders,
-                'X-Bin-Meta': false
-            },
-        })
-            .then(response => {
-                return response.json();
-            })
-            .then(data => {
-                if (data) {
-                    data = {...data, views: data.views + 1, lastUpdatedOn: new Date()}
-                    status = data;
-                    saveData();
-                }
-            }, () => {
-            })
-    })();
+    // Check if user has already viewed the page if yes then skip the view update.
+    if (!localStorage.getItem('viewed')) {
+        await getData();
+        status = {...status, views: status.views + 1, lastUpdatedOn: new Date()}
+        localStorage.setItem("viewed", true);
+        await saveData();
+    }
 
     window.addEventListener('scroll', setActiveTab);
 });
 
 
-const saveData = () => {
+const getData = async () => {
+    await fetch(apiUrl, {
+        method: 'GET',
+        headers: {
+            ...apiHeaders,
+            'X-Bin-Meta': false
+        },
+    })
+        .then(response => {
+            return response.json();
+        })
+        .then(data => {
+            if (data) {
+                status = data;
+            }
+        }, () => {
+        })
+}
+
+const saveData = async () => {
     if (status) {
-        fetch(apiUrl, {
+        await fetch(apiUrl, {
             method: 'PUT',
             headers: apiHeaders,
             body: JSON.stringify(status),
