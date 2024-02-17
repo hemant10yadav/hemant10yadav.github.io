@@ -117,23 +117,23 @@ nav {
     position: relative;
     width: 100%;
     & img {
-        position: absolute;
-        aspect-ratio: 1/1;
-        border-radius: 50%;
-        border: 4px solid white;
-        object-fit: scale-down;
-        right: 0;
-    @media screen and (min-width: 920px) {
-      display: none; /* Corrected typo from "dislay" to "display" */
-    }
-    @media screen and (min-width: 590px){
-      height: 180px;
-      top: 0px;
-    }
-    @media screen and (max-width: 590px){
-      top: -64px;
-      height: 135px;
-    }
+      position: absolute;
+      aspect-ratio: 1/1;
+      border-radius: 50%;
+      border: 4px solid white;
+      object-fit: scale-down;
+      right: 0;
+      @media screen and (min-width: 920px) {
+        display: none; /* Corrected typo from "dislay" to "display" */
+      }
+      @media screen and (min-width: 590px) {
+        height: 180px;
+        top: 0px;
+      }
+      @media screen and (max-width: 590px) {
+        top: -64px;
+        height: 135px;
+      }
     }
   }
 
@@ -147,20 +147,20 @@ nav {
     display: flex;
     gap: 0.5rem;
     text-align: center;
-     h5 {
-       font-size: 20px;
-     }
-     img {
-       height: 3rem;
-       aspect-ratio: 1 / 1;
-      }
-    @media screen and (min-width: 400px){
-        gap: 2rem;
-      }
+    h5 {
+      font-size: 20px;
     }
-    a {
-      text-decoration: none;
+    img {
+      height: 3rem;
+      aspect-ratio: 1 / 1;
     }
+    @media screen and (min-width: 400px) {
+      gap: 2rem;
+    }
+  }
+  a {
+    text-decoration: none;
+  }
 }
 
 .picture-container {
@@ -168,7 +168,6 @@ nav {
     width: 30vw;
     border-radius: 50%;
     filter: drop-shadow(0 0 20px whitesmoke);
-
   }
   @media screen and (max-width: 920px) {
     display: none; /* Corrected typo from "dislay" to "display" */
@@ -281,10 +280,9 @@ nav {
         height: 6rem;
       }
     }
-    h5{
+    h5 {
       font-size: 20px;
     }
-
   }
 }
 
@@ -413,11 +411,46 @@ nav {
 }
 
 .download-links {
- position: fixed;
+  position: fixed;
   bottom: 0;
   right: 0;
   z-index: 1000000;
   & img {
-      height: 5rem;
+    height: 5rem;
+  }
+}
+
+.face.face2 {
+  height: 0; /* Set initial height to 0 */
+  overflow: hidden;
+  transition: height 0.5s ease-in-out; /* Add a smooth transition effect */
+}
+
+.card.in-view .face.face2 {
+  height: 60px;
+}
+
+.work {
+  margin-top: 5rem;
+  text-align: center;
+
+  .body {
+    margin-top: 3rem;
+    video {
+      width: 100%;
+
+      @media (max-width: 767px) {
+        width: 100%;
+      }
+      @media (min-width: 768px) and (max-width: 991px) {
+        width: 80%;
+      }
+      @media (min-width: 992px) and (max-width: 1199px) {
+        width: 70%;
+      }
+      @media (min-width: 1200px) {
+        width: 60%;
+      }
     }
+  }
 }
