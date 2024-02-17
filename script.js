@@ -75,6 +75,22 @@ document.addEventListener('DOMContentLoaded', async function () {
     }
 
     window.addEventListener('scroll', setActiveTab);
+
+
+    const videoElements = document.querySelectorAll('video');
+
+    videoElements.forEach(videoElement => {
+        videoElement.addEventListener('play', async () => {
+            const videoId = videoElement.id; // Get the id of the video element
+            if (!localStorage.getItem(videoId)) {
+                if (!status) await getData();
+                const key = `${videoId}Views`
+                status = {...status, [key]: (status[key] ? status[key] + 1 : 1), lastUpdatedOn: new Date()}
+                await saveData();
+                localStorage.setItem(videoId, true);
+            }
+        });
+    });
 });
 
 
@@ -140,17 +156,3 @@ allCards.forEach(card => {
 });
 
 
-document.addEventListener('DOMContentLoaded', function () {
-    const videoElement = document.getElementById('myVideo');
-
-    videoElement.addEventListener('play', async () => {
-
-        if (!localStorage.getItem('videoViewed')) {
-            if (!status) await getData();
-            status = {...status, videoViews: (status.videoViews ? status.videoViews + 1 : 1), lastUpdatedOn: new Date()}
-            await saveData();
-            localStorage.setItem("videoViewed", true);
-        }
-
-    });
-});
