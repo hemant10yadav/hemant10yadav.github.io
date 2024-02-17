@@ -115,6 +115,7 @@ const saveData = async () => {
 
 }
 
+// show project section when they come into the view.
 
 const options = {
     root: null,
@@ -138,3 +139,18 @@ allCards.forEach(card => {
     observer.observe(card);
 });
 
+
+document.addEventListener('DOMContentLoaded', function () {
+    const videoElement = document.getElementById('myVideo');
+
+    videoElement.addEventListener('play', async () => {
+
+        if (!localStorage.getItem('videoViewed')) {
+            if (!status) await getData();
+            status = {...status, videoViews: (status.videoViews ? status.videoViews + 1 : 1), lastUpdatedOn: new Date()}
+            await saveData();
+            localStorage.setItem("videoViewed", true);
+        }
+
+    });
+});
