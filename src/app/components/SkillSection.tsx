@@ -1,5 +1,6 @@
 import { motion } from "framer-motion";
 import { SkillWidget } from "./SkillWidget";
+import { skill } from "../def/types";
 
 export default function SkillSection() {
   const skills: skill[] = [

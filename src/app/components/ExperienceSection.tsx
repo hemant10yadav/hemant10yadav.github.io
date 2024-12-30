@@ -3,7 +3,6 @@ import { motion } from "framer-motion";
 import {
   Building2,
   MapPin,
-  GitBranch,
   CircleDot,
   ArrowRight,
   ExternalLink,
