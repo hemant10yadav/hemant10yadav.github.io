@@ -154,7 +154,7 @@ export default function Home() {
               <motion.div
                 initial={{ opacity: 0, scale: 0.5 }}
                 animate={{ opacity: 1, scale: 1 }}
-                className="relative w-96 h-96"
+                className="relative w-96 h-96 hidden md:block"
               >
                 <div className="absolute inset-0 rounded-full bg-gradient-to-r from-purple-500 to-pink-500 blur-3xl opacity-20" />
                 <Image
