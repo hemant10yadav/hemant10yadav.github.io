@@ -6,6 +6,7 @@ import Image from "next/image";
 import { useState } from "react";
 import SkillSection from "./components/SkillSection";
 import { ProjectSection } from "./components/ProjectSection";
+import ExperienceSection from "./components/ExperienceSection";
 
 export default function Home() {
   const [activeSection, setActiveSection] = useState('about');
@@ -150,6 +151,10 @@ export default function Home() {
         <section id="projects" className="py-32">
           <ProjectSection/>
         </section>
+        <section className="py-32">
+          <ExperienceSection/>
+        </section>
+      
       </main>
     </div>
   );
