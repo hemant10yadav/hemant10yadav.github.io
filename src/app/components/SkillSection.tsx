@@ -25,12 +25,12 @@ export default function SkillSection() {
   ];
 
   return (
-    <section className="py-32 bg-black/50">
+    <section className="py-32">
       <div className="container mx-auto px-6">
         <motion.h2
           initial={{ opacity: 0 }}
           whileInView={{ opacity: 1 }}
-          className="text-4xl font-bold text-center mb-16"
+          className="text-4xl font-bold bg-gradient-to-r from-purple-400 via-pink-400 to-purple-400 bg-clip-text text-transparent text-center mb-16"
         >
           Tech Stack
         </motion.h2>

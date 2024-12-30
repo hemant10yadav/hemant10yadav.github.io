@@ -1,147 +1,184 @@
-import React from 'react';
+import React from "react";
 import { motion } from "framer-motion";
-import { Building2, Calendar, MapPin, Circle } from "lucide-react";
+import {
+  Building2,
+  MapPin,
+  GitBranch,
+  CircleDot,
+  ArrowRight,
+  ExternalLink,
+} from "lucide-react";
 
 const ExperienceSection = () => {
   const experiences = [
     {
       role: "Software Engineer",
-      company: "Dimagi",
-      period: "Jun 2024 - Present",
-      location: "Delhi, India · Remote",
-      description: "Digital Solutions for Frontline Work",
+      company: "Dimagi Inc.",
+      url: "https://dimagi.com/",
+      location: "Delhi, India",
       type: "Full-time",
-      current: true
+      skills: ["Python", "Django", "Docker", "AWS", "PostgreSQL"],
+      current: true,
     },
     {
       role: "Software Engineer",
-      company: "Xcaliber Infotech",
-      period: "Sep 2022 - May 2024",
-      location: "Pune, Maharashtra, India",
-      description: "Led migration to Spring Boot 3.2.5, developed RESTful APIs, and implemented automated systems using CRON jobs",
+      company: "Xcaliber Infotech Pvt. Ltd.",
+      url: "https://xcaliberinfotech.com/",
+      location: "Pune, India",
       skills: ["Spring Boot", "Angular", "Hibernate", "REST APIs", "Amazon S3"],
-      type: "Full-time"
+      type: "Full-time",
     },
     {
       role: "Software Engineer",
       company: "Saral Technologies",
-      period: "Dec 2021 - Aug 2022",
-      location: "Pune, Maharashtra, India",
-      description: "Upgraded platform UI, created reusable Angular components, and improved application performance",
-      skills: ["Angular", "Bootstrap 5", "HTML5", "API Integration", "Unit Testing"],
-      type: "Full-time"
-    }
+      location: "Pune, India",
+      url: "https://saral.io/",
+      skills: [
+        "Angular",
+        "Bootstrap 5",
+        "HTML5",
+        "API Integration",
+        "Unit Testing",
+      ],
+      type: "Full-time",
+    },
   ];
 
   return (
-    <div className="container mx-auto px-6 py-16">
-      <motion.h2
-        initial={{ opacity: 0 }}
-        whileInView={{ opacity: 1 }}
-        className="text-4xl font-bold text-center mb-16"
-      >
-        Professional Journey
-      </motion.h2>
+    <section className="py-16 relative overflow-hidden">
+      {/* Decorative background elements */}
+      <div className="absolute inset-0 bg-gradient-to-b from-gray-900 to-gray-950">
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-purple-900/20 via-transparent to-transparent" />
+      </div>
+      <div className="container mx-auto px-4 max-w-6xl relative">
+        <motion.div
+          initial={{ opacity: 0, y: -20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6 }}
+          className="text-center mb-20"
+        >
+          <div className="inline-flex items-center justify-center p-1 rounded-full bg-purple-500/10 mb-6">
+            <span className="px-4 py-1 text-sm font-medium text-purple-400 rounded-full">
+              Career Journey
+            </span>
+          </div>
+          <h2 className="text-4xl font-bold bg-gradient-to-r from-purple-400 via-pink-400 to-purple-400 bg-clip-text text-transparent">
+            Professional Timeline
+          </h2>
+        </motion.div>
 
-      <div className="relative">
-        {/* Timeline line */}
-        <div className="absolute left-0 md:left-1/2 h-full w-px bg-purple-500/20 transform -translate-x-1/2" />
+        <div className="relative">
+          {/* Main timeline connector */}
+          <div className="absolute left-[28px] md:left-[50%] top-0 h-full w-px bg-gradient-to-b from-purple-500/50 via-purple-400/30 to-transparent" />
 
-        <div className="space-y-12">
           {experiences.map((exp, index) => (
             <motion.div
               key={index}
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              transition={{ delay: index * 0.2 }}
-              className="relative grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-12"
+              initial={{ opacity: 0, x: index % 2 === 0 ? -50 : 50, y: 50 }}
+              whileInView={{ opacity: 1, x: 0, y: 0 }}
+              transition={{ duration: 0.5, delay: index * 0.2 }}
+              className="relative mb-20 last:mb-0"
             >
               {/* Timeline node */}
-              <div className="absolute left-0 md:left-1/2 w-6 h-6 transform -translate-x-1/2 -translate-y-1">
-                {exp.current ? (
-                  <div className="w-6 h-6 bg-purple-500 rounded-full animate-pulse" />
-                ) : (
-                  <div className="w-4 h-4 mt-1 ml-1 bg-white/10 rounded-full" />
-                )}
-              </div>
-
-              {/* Content layout changes based on even/odd */}
-              <div className={`md:text-right ${index % 2 === 0 ? 'md:block' : 'md:hidden'}`}>
-                <div className="space-y-2">
-                  <div className="flex items-center gap-2 md:justify-end text-purple-400">
-                    <Building2 size={16} />
-                    <span className="font-semibold">{exp.company}</span>
-                  </div>
-                  <div className="flex items-center gap-2 text-sm text-gray-400 md:justify-end">
-                    <Calendar size={14} />
-                    <span>{exp.period}</span>
-                  </div>
-                  <div className="flex items-center gap-2 text-sm text-gray-400 md:justify-end">
-                    <MapPin size={14} />
-                    <span>{exp.location}</span>
-                  </div>
+              <div className="absolute left-[20px] md:left-1/2 -translate-x-1/2">
+                <div
+                  className={`w-16 h-16 rounded-2xl rotate-45 flex items-center justify-center
+                  ${
+                    exp.current
+                      ? "bg-purple-500/20 ring-2 ring-purple-500"
+                      : "bg-gray-800 ring-2 ring-gray-700"
+                  }`}
+                >
+                  <CircleDot
+                    size={20}
+                    className={`-rotate-45 ${
+                      exp.current ? "text-purple-400" : "text-gray-400"
+                    }`}
+                  />
                 </div>
               </div>
 
-              <div className={index % 2 === 0 ? 'md:hidden' : 'md:block'}>
-                <div className="bg-white/5 rounded-xl p-6 hover:bg-white/10 transition-all duration-300">
-                  <h3 className="text-xl font-bold text-white mb-2">{exp.role}</h3>
-                  <p className="text-gray-300 mb-4">{exp.description}</p>
-                  {exp.skills && (
+              {/* Content card */}
+              <div
+                className={`ml-24 md:ml-0 md:w-[calc(50%-60px)] 
+                ${index % 2 === 0 ? "md:mr-auto" : "md:ml-auto"}`}
+              >
+                <div className="relative group">
+                  {/* Connecting line */}
+                  <div
+                    className="hidden md:block absolute top-8 w-8 h-px bg-gradient-to-r from-purple-500/50 to-transparent
+                    ${index % 2 === 0 ? '-right-8' : '-left-8'}"
+                  />
+
+                  <div
+                    className="backdrop-blur-sm rounded-2xl p-8 bg-white/[0.02] border border-white/5
+                    hover:bg-white/[0.05] transition-all duration-500 group-hover:shadow-xl
+                    group-hover:shadow-purple-500/10"
+                  >
+                    {exp.current && (
+                      <div className="flex items-center gap-2 mb-4">
+                        <div className="w-2 h-2 rounded-full bg-purple-500 animate-pulse" />
+                        <span className="text-sm text-purple-400 font-medium">
+                          Present
+                        </span>
+                      </div>
+                    )}
+
+                    <div className="flex items-start gap-4 mb-6">
+                      <div className="flex-1">
+                        <h3 className="text-2xl font-bold text-white mb-2 group-hover:text-purple-400 transition-colors duration-300">
+                          <a
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="flex gap-2 items-center"
+                            href={exp.url}
+                          >
+                            {exp.company} <ExternalLink size={16} />{" "}
+                          </a>
+                        </h3>
+                        <div className="flex flex-wrap gap-4 text-gray-400">
+                          <div className="flex items-center gap-2">
+                            <Building2 size={16} className="text-purple-400" />
+                            <span>{exp.role}</span>
+                          </div>
+                          <div className="flex items-center gap-2">
+                            <MapPin size={16} className="text-purple-400" />
+                            <span>{exp.location}</span>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+
                     <div className="flex flex-wrap gap-2">
                       {exp.skills.map((skill, i) => (
                         <span
                           key={i}
-                          className="px-3 py-1 text-xs bg-purple-500/20 text-purple-300 rounded-full"
+                          className="px-4 py-1.5 text-sm font-medium rounded-lg
+                            bg-purple-500/10 text-purple-300 border border-purple-500/20
+                            hover:bg-purple-500/20 transition-all duration-300"
                         >
                           {skill}
                         </span>
                       ))}
                     </div>
-                  )}
-                </div>
-              </div>
+                  </div>
 
-              <div className={index % 2 === 0 ? 'md:block' : 'md:hidden'}>
-                <div className="bg-white/5 rounded-xl p-6 hover:bg-white/10 transition-all duration-300">
-                  <h3 className="text-xl font-bold text-white mb-2">{exp.role}</h3>
-                  <p className="text-gray-300 mb-4">{exp.description}</p>
-                  {exp.skills && (
-                    <div className="flex flex-wrap gap-2">
-                      {exp.skills.map((skill, i) => (
-                        <span
-                          key={i}
-                          className="px-3 py-1 text-xs bg-purple-500/20 text-purple-300 rounded-full"
-                        >
-                          {skill}
-                        </span>
-                      ))}
+                  {/* Connection arrow for non-last items */}
+                  {index < experiences.length - 1 && (
+                    <div className="hidden md:block absolute -bottom-14 left-1/2 transform -translate-x-1/2">
+                      <ArrowRight
+                        size={20}
+                        className="text-purple-500/30 rotate-90"
+                      />
                     </div>
                   )}
-                </div>
-              </div>
-
-              <div className={`md:text-left ${index % 2 === 0 ? 'md:hidden' : 'md:block'}`}>
-                <div className="space-y-2">
-                  <div className="flex items-center gap-2 text-purple-400">
-                    <Building2 size={16} />
-                    <span className="font-semibold">{exp.company}</span>
-                  </div>
-                  <div className="flex items-center gap-2 text-sm text-gray-400">
-                    <Calendar size={14} />
-                    <span>{exp.period}</span>
-                  </div>
-                  <div className="flex items-center gap-2 text-sm text-gray-400">
-                    <MapPin size={14} />
-                    <span>{exp.location}</span>
-                  </div>
                 </div>
               </div>
             </motion.div>
           ))}
         </div>
       </div>
-    </div>
+    </section>
   );
 };
 
