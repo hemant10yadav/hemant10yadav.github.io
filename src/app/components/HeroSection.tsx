@@ -7,11 +7,16 @@ import {
   Instagram,
   Mail,
   LucideProps,
+  Layers,
 } from "lucide-react";
+
+
+
 
 export type SocialLink = {
   icon: React.ElementType<LucideProps>;
   link: string;
+  title: string
 };
 
 export const HeroSection = () => {
@@ -19,18 +24,22 @@ export const HeroSection = () => {
     {
       icon: Github,
       link: "https://github.com/hemant10yadav",
+      title: "GitHub"
     },
     {
       icon: Linkedin,
       link: "https://www.linkedin.com/in/hemantyad",
+      title: "Linkedin"
     },
     {
       icon: Mail,
       link: "mailto:hemant.10.yadav@gmail.com",
+      title: "Mail"
     },
     {
-      icon: Instagram,
-      link: "https://www.instagram.com/h.e.m.a.n.t.10",
+      icon: Layers,
+      link: "https://stackoverflow.com/users/20470646/hemant-singh-yadav",
+      title: "Stackoverflow"
     },
   ];
 
@@ -117,6 +126,7 @@ export const HeroSection = () => {
                       rel="noopener noreferrer"
                       className="p-3 rounded-full bg-white/5 hover:bg-white/10 transition-all hover:scale-110"
                       whileHover={{ y: -2 }}
+                      title={social.title}
                     >
                       <IconComponent size={24} />
                     </motion.a>

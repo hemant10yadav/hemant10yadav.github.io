@@ -30,6 +30,16 @@ export const ProjectSection = () => {
         "mongo.png",
       ],
     },
+    {
+      title: "Book store",
+     description: "A web application for browsing and searching books using the Google Books API. The application allows users to search for books by title, author, or keywords and provides details such as descriptions, authors, and publication information. Built with a responsive design using Bootstrap, Angular, and TypeScript.",
+      link: "https://github.com/hemant10yadav/book-store",
+      tech: [
+        "bootstrap.png",
+        "angular.png",
+        "typescript.png",
+      ],
+    },
   ];
 
   return (
