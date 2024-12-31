@@ -75,9 +75,8 @@ export const HeroSection = () => {
                   animate={{ opacity: 1 }}
                   className="text-xl text-gray-400 leading-relaxed"
                 >
-                  Software Engineer with 3 years of experience in crafting
-                  robust and scalable software systems. Bridging the gap between
-                  front-end aesthetics and back-end functionality is my forte.
+                  Software Engineer with 3 years of experience building scalable, high-performance systems. 
+                  Passionate about blending intuitive front-end design with robust back-end functionality.
                 </motion.p>
               </div>
 
