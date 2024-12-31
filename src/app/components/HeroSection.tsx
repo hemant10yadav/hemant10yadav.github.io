@@ -10,9 +10,9 @@ import {
 } from "lucide-react";
 
 export type SocialLink = {
-    icon: React.ElementType<LucideProps>;
-    link: string;
-  }
+  icon: React.ElementType<LucideProps>;
+  link: string;
+};
 
 export const HeroSection = () => {
   const socialLinks: SocialLink[] = [
@@ -33,6 +33,12 @@ export const HeroSection = () => {
       link: "https://www.instagram.com/h.e.m.a.n.t.10",
     },
   ];
+
+  const domain =
+    "https://raw.githubusercontent.com/hemant10yadav/Resources/main/";
+
+  const profilePicUrl = `${domain}hy-min.png`;
+  const resumeUrl = `${domain}/Hemant-Software-Developer-Resume.pdf`;
 
   return (
     <div>
@@ -75,8 +81,9 @@ export const HeroSection = () => {
                   animate={{ opacity: 1 }}
                   className="text-xl text-gray-400 leading-relaxed"
                 >
-                  Software Engineer with 3 years of experience building scalable, high-performance systems. 
-                  Passionate about blending intuitive front-end design with robust back-end functionality.
+                  Software Engineer with 3 years of experience building
+                  scalable, high-performance systems. Passionate about blending
+                  intuitive front-end design with robust back-end functionality.
                 </motion.p>
               </div>
 
@@ -86,7 +93,7 @@ export const HeroSection = () => {
                 className="flex gap-6"
               >
                 <a
-                  href="https://raw.githubusercontent.com/hemant10yadav/Resources/main/Hemant-Software-Developer-Resume.pdf"
+                  href={resumeUrl}
                   download
                   className="flex items-center gap-2 px-6 py-3 bg-purple-500 rounded-lg hover:bg-purple-600 transition-colors"
                 >
@@ -125,7 +132,7 @@ export const HeroSection = () => {
             >
               <div className="absolute inset-0 rounded-full bg-gradient-to-r from-purple-500 to-pink-500 blur-3xl opacity-20" />
               <Image
-                src="https://raw.githubusercontent.com/hemant10yadav/Resources/main/hemant-dp.gif"
+                src={profilePicUrl}
                 alt="Profile"
                 fill
                 className="rounded-full object-cover border-4 border-purple-500/20"
