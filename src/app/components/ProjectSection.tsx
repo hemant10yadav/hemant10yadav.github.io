@@ -57,7 +57,9 @@ export const ProjectSection = () => {
           Projects
         </motion.h2>
 
-        <div className="grid md:grid-cols-2 gap-8">
+        <div className="grid md:grid-cols-2 gap-8" style={{
+    gridTemplateColumns: "repeat(auto-fit, minmax(300px, 1fr))",
+  }}>
           {projects.map((project, index) => (
             <motion.div
               key={project.title}
