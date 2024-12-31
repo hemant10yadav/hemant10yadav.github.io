@@ -6,7 +6,6 @@ import {
   Linkedin,
   Instagram,
   Mail,
-  icons,
   LucideProps,
 } from "lucide-react";
 
