@@ -5,6 +5,7 @@ import { ProjectSection } from "./components/ProjectSection";
 import ExperienceSection from "./components/ExperienceSection";
 import { NavBar } from "./components/Navbar";
 import { HeroSection } from "./components/HeroSection";
+import Showcase from "./components/Showcase";
 
 export default function Home() {
 
@@ -18,8 +19,11 @@ export default function Home() {
           <section id="skills">
             <SkillSection />
           </section>
-          <section id="projects" className="pb-40">
+          <section id="projects">
             <ProjectSection />
+          </section>
+          <section className="mt-8">
+             <Showcase/>
           </section>
         </main>
       </div>
