@@ -4,7 +4,6 @@ import {
   FileDown,
   Github,
   Linkedin,
-  Instagram,
   Mail,
   LucideProps,
   Layers,
