@@ -1,36 +1,142 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Hemant Singh Yadav - Portfolio 🚀
 
-## Getting Started
+Welcome to my portfolio project! This website is built using [Next.js](https://nextjs.org), and showcases my skills, projects, and professional background. It reflects my passion for crafting robust and scalable software systems that bridge the gap between front-end aesthetics and back-end functionality.
 
-First, run the development server:
+## 🌟 Live Demo
+Check out the live version here: [Hemant's Portfolio](https://hemant-portfolio.vercel.app)
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+---
+
+## 🎯 Key Features
+- **Interactive Design**: Seamless animations and transitions powered by [Framer Motion](https://www.framer.com/motion/).
+- **Modern Tech Stack**: Built with Next.js, Tailwind CSS, and other cutting-edge tools.
+- **Showcase Projects**: Highlighting real-world applications I've built, complete with technologies used and live links.
+- **Downloadable Resume**: Quick access to my professional resume.
+- **Social Links**: Connect with me via GitHub, LinkedIn, and more.
+
+---
+
+## 🚀 Getting Started
+
+To run this project locally:
+
+1. **Clone the Repository**:
+   ```bash
+   git clone https://github.com/hemant10yadav/portfolio.git
+   cd portfolio
+   ```
+
+2. **Install Dependencies**:
+   ```bash
+   npm install
+   # or
+   yarn install
+   ```
+
+3. **Run the Development Server**:
+   ```bash
+   npm run dev
+   # or
+   yarn dev
+   ```
+
+4. **Open in Browser**:
+   Navigate to [http://localhost:3000](http://localhost:3000) to view the application.
+
+---
+
+## 📂 Project Structure
+
+```plaintext
+📦 portfolio
+├── 📁 app
+│   ├── 📄 page.tsx       # Main entry point for the application
+├── 📁 components
+│   ├── 📄 HeroSection.tsx # Hero section with intro and social links
+│   ├── 📄 ProjectSection.tsx # Showcasing projects
+│   ├── 📄 SkillSection.tsx   # Displaying tech stack
+├── 📁 public
+│   ├── 📁 assets          # Static assets (logos, images)
+├── 📄 README.md          # Documentation
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+---
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## 💻 Tech Stack
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+### Frontend:
+- **Next.js**
+- **React.js**
+- **Tailwind CSS**
+- **Framer Motion**
 
-## Learn More
+### Backend:
+- **Node.js**
+- **Express.js**
 
-To learn more about Next.js, take a look at the following resources:
+### Database:
+- **PostgreSQL**
+- **MongoDB**
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+### Other Tools:
+- **AWS**
+- **Git**
+- **Jira**
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+---
 
-## Deploy on Vercel
+## 🛠️ Skills
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+Here’s a quick overview of my technical expertise:
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+![JavaScript](public/assets/javascript.png) ![Java](public/assets/java.png) ![Python](public/assets/python.png) ![TypeScript](public/assets/typescript.png)  
+![React](public/assets/react.png) ![Angular](public/assets/angular.png) ![Node.js](public/assets/node.png) ![Spring Boot](public/assets/spring.png)  
+![PostgreSQL](public/assets/postgres.png) ![MongoDB](public/assets/mongo.png) ![AWS](public/assets/aws.png) ![Tailwind CSS](public/assets/Tailwind.png)
+
+---
+
+## 📂 Featured Projects
+
+### [E-commerce](https://github.com/hemant10yadav/E-Commerce-website)
+A highly scalable platform enabling users to browse and purchase products online.
+
+- **Technologies**: Java, Spring Boot, Angular, TypeScript, PostgreSQL
+- **Highlights**:
+  - Enterprise-level performance and scalability
+  - Secure and robust architecture
+
+### [E-store](https://github.com/hemant10yadav/Sell2U-Node)
+A modern store application with an interactive front-end and secure back-end.
+
+- **Technologies**: React.js, Node.js, Express.js, MongoDB
+- **Highlights**:
+  - Reactive and intuitive user interface
+  - Built with scalability and performance in mind
+
+---
+
+## 📄 Resume
+
+Download my latest resume here:  
+[Hemant's Resume](https://raw.githubusercontent.com/hemant10yadav/Resources/main/Hemant-Software-Developer-Resume.pdf)
+
+---
+
+## 🤝 Connect with Me
+
+- **GitHub**: [@hemant10yadav](https://github.com/hemant10yadav)
+- **LinkedIn**: [Hemant Yadav](https://www.linkedin.com/in/hemantyad)
+- **Email**: [hemant.10.yadav@gmail.com](mailto:hemant.10.yadav@gmail.com)
+- **Instagram**: [@h.e.m.a.n.t.10](https://www.instagram.com/h.e.m.a.n.t.10)
+
+---
+
+## 📦 Deploy on Vercel
+
+The easiest way to deploy your Next.js app is to use [Vercel](https://vercel.com).
+
+```bash
+npx vercel
+```
+
+For more details, refer to the [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying).
