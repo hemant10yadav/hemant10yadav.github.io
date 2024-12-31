@@ -35,14 +35,11 @@ export const ProjectSection = () => {
     },
     {
       title: "Book store",
-      description: "A web application for browsing and searching books using the Google Books API. The application allows users to search for books by title, author, or keywords and provides details such as descriptions, authors, and publication information.",
+      description:
+        "A web application for browsing and searching books using the Google Books API. The application allows users to search for books by title, author, or keywords and provides details such as descriptions, authors, and publication information.",
       githubLink: "https://github.com/hemant10yadav/book-store",
       demoUrl: "https://hemant10yadav.github.io/book-store/",
-      tech: [
-        "bootstrap.png",
-        "angular.png",
-        "typescript.png",
-      ],
+      tech: ["bootstrap.png", "angular.png", "typescript.png"],
     },
   ];
 
@@ -57,9 +54,12 @@ export const ProjectSection = () => {
           Projects
         </motion.h2>
 
-        <div className="grid md:grid-cols-2 gap-8" style={{
-    gridTemplateColumns: "repeat(auto-fit, minmax(300px, 1fr))",
-  }}>
+        <div
+          className="grid md:grid-cols-2 gap-8"
+          style={{
+            gridTemplateColumns: "repeat(auto-fit, minmax(300px, 1fr))",
+          }}
+        >
           {projects.map((project, index) => (
             <motion.div
               key={project.title}
@@ -97,11 +97,20 @@ export const ProjectSection = () => {
                   </motion.a>
                   {project.demoUrl && (
                     <motion.button
-                      onClick={() => setActiveDemoUrl(activeDemoUrl === project.demoUrl ? null : project.demoUrl)}
+                      onClick={() =>
+                        setActiveDemoUrl(
+                          activeDemoUrl === project.demoUrl
+                            ? null
+                            : project.demoUrl
+                        )
+                      }
                       className="inline-flex items-center gap-2 text-green-400 hover:text-green-300"
                       whileHover={{ x: 5 }}
                     >
-                      {activeDemoUrl === project.demoUrl ? "Hide Demo" : "Live Demo"} <Play size={16} />
+                      {activeDemoUrl === project.demoUrl
+                        ? "Hide Demo"
+                        : "Live Demo"}{" "}
+                      <Play size={16} />
                     </motion.button>
                   )}
                 </div>
@@ -119,7 +128,6 @@ export const ProjectSection = () => {
               <iframe
                 src={activeDemoUrl}
                 className="w-full h-full border-0"
-                
                 allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                 allowFullScreen
               />
