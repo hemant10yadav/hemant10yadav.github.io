@@ -32,7 +32,7 @@ export const ProjectSection = () => {
     },
     {
       title: "Book store",
-     description: "A web application for browsing and searching books using the Google Books API. The application allows users to search for books by title, author, or keywords and provides details such as descriptions, authors, and publication information. Built with a responsive design using Bootstrap, Angular, and TypeScript.",
+     description: "A web application for browsing and searching books using the Google Books API. The application allows users to search for books by title, author, or keywords and provides details such as descriptions, authors, and publication information.",
       link: "https://github.com/hemant10yadav/book-store",
       tech: [
         "bootstrap.png",
