@@ -1,6 +1,8 @@
 import { ImageResponse } from 'next/og'
 import SocialImageContent from './components/SocialImageContent';
 
+export const dynamic = "force-static";
+
 export const runtime = 'edge';
 export const alt = 'Hemant Singh Yadav - Software Engineer';
 export const size = {
