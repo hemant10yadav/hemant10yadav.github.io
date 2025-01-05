@@ -31,7 +31,7 @@ export const metadata: Metadata = {
     follow: true,
   },
   alternates: {
-    canonical: 'https://hemantsinghyadav.github.io'
+    canonical: 'https://hemant10yadav.github.io/'
   }
 }
 
