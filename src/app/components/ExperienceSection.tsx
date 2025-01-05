@@ -8,6 +8,7 @@ import {
   ExternalLink,
 } from "lucide-react";
 import { event } from "nextjs-google-analytics";
+import LinkPreview from "./LinkPreview";
 
 const ExperienceSection = () => {
   const experiences = [
@@ -123,18 +124,15 @@ const ExperienceSection = () => {
                     )}
 
                     <div className="flex items-start gap-4 mb-6">
-                      <div className="flex-1">
-                        <h3 className="text-xl md:text-2xl font-bold text-white mb-2 group-hover:text-purple-400 transition-colors duration-300">
-                          <a
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="flex gap-2 items-center"
-                            href={exp.url}
-                            onClick={()=>handelExternalLink(exp.company)}
-                          >
+                      <div>
+                        <LinkPreview
+                          onClick={() => handelExternalLink(exp.company)}
+                          url={exp.url}
+                        >
+                          <h3 className="text-xl md:text-2xl font-bold text-white mb-2 group-hover:text-purple-400 transition-colors duration-300 flex gap-1 items-center">
                             {exp.company} <ExternalLink size={16} />
-                          </a>
-                        </h3>
+                          </h3>
+                        </LinkPreview>
                         <div className="flex flex-wrap gap-3 md:gap-4 text-sm md:text-base text-gray-400">
                           <div className="flex items-center gap-2">
                             <Building2 size={16} className="text-purple-400" />
