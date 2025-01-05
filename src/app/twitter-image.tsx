@@ -10,7 +10,6 @@ export const size = {
 export const contentType = 'image/png';
 
 export default async function Image() {
-  // Using the same implementation as opengraph-image.tsx
   return new ImageResponse(
     (
       <div

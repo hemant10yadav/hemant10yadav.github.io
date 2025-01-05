@@ -16,6 +16,7 @@ export const metadata: Metadata = {
   title: 'Hemant Singh Yadav - Software Engineer',
   description: 'Software Engineer with 3 years of experience specializing in Python, Java, and full-stack development. View my projects and experience in scalable system architecture.',
   keywords: ['Software Engineer', 'Full Stack Developer', 'Python', 'Java', 'JavaScript', 'React', 'Node.js', 'AWS', 'Angular'],
+  metadataBase: new URL('https://hemant10yadav.github.io'),
   openGraph: {
     title: 'Hemant Singh Yadav - Software Engineer',
     description: 'Software Engineer with 3 years of experience building scalable systems.',
@@ -24,7 +25,7 @@ export const metadata: Metadata = {
     siteName: 'Hemant Singh Yadav - Software Engineer',
     images: [
       {
-        url: 'https://hemant10yadav.github.io/opengraph-image',
+        url: '/opengraph-image.png',
         width: 1200,
         height: 630,
       },
@@ -34,7 +35,7 @@ export const metadata: Metadata = {
     card: 'summary_large_image',
     title: 'Hemant Singh Yadav - Software Engineer',
     description: 'Software Engineer with 3 years of experience specializing in Python, Java, and full-stack development. View my projects and experience in scalable system architecture.',
-    images: ['https://hemant10yadav.github.io/twitter-image'],
+    images: ['/twitter-image.png'],
   },
   verification: {
     google: '2NWImAWGUUGBF1n43abjdyS6cskF6yjKXIBjYnkU17k', 
