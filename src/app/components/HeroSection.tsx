@@ -8,6 +8,7 @@ import {
   LucideProps,
   Layers,
 } from "lucide-react";
+import { event } from 'nextjs-google-analytics';
 
 
 
@@ -47,6 +48,23 @@ export const HeroSection = () => {
 
   const profilePicUrl = `${domain}hy-min.png`;
   const resumeUrl = `${domain}/Hemant-Software-Developer-Resume.pdf`;
+
+  const handleResumeDownload = () => {
+    event('resume_download', {
+      category: 'Portfolio',
+      label: 'Resume Downloads',
+      value: 1,
+    });
+  };
+
+  const handelExternalLink = (linkClicked: string) => {
+     const key =`${linkClicked} visits`;
+    event("external_links", {
+      category: 'Portfolio',
+      label: key,
+      value: 1,
+    });
+  }
 
   return (
     <div>
@@ -102,6 +120,7 @@ export const HeroSection = () => {
               >
                 <a
                   href={resumeUrl}
+                  onClick={handleResumeDownload}
                   download
                   className="flex items-center gap-2 px-6 py-3 bg-purple-500 rounded-lg hover:bg-purple-600 transition-colors"
                 >
@@ -119,6 +138,7 @@ export const HeroSection = () => {
                   const IconComponent = social.icon; // Dynamically get the icon component
                   return (
                     <motion.a
+                      onClick={() => handelExternalLink(social.title)}
                       key={index}
                       href={social.link}
                       target="_blank"

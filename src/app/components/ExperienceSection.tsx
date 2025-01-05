@@ -7,6 +7,7 @@ import {
   ArrowRight,
   ExternalLink,
 } from "lucide-react";
+import { event } from "nextjs-google-analytics";
 
 const ExperienceSection = () => {
   const experiences = [
@@ -42,6 +43,15 @@ const ExperienceSection = () => {
       type: "Full-time",
     },
   ];
+
+  const handelExternalLink = (linkClicked: string) => {
+    const key = `${linkClicked} visits`;
+    event("external_links", {
+      category: "Portfolio",
+      label: key,
+      value: 1,
+    });
+  };
 
   return (
     <section className="py-8 md:py-16 relative overflow-hidden">
@@ -79,16 +89,26 @@ const ExperienceSection = () => {
               <div className="hidden md:block absolute left-4 md:left-1/2 -translate-x-1/2">
                 <div
                   className={`w-12 md:w-16 h-12 md:h-16 rounded-xl md:rounded-2xl rotate-45 flex items-center justify-center
-                  ${exp.current ? "bg-purple-500/20 ring-2 ring-purple-500" : "bg-gray-800 ring-2 ring-gray-700"}`}
+                  ${
+                    exp.current
+                      ? "bg-purple-500/20 ring-2 ring-purple-500"
+                      : "bg-gray-800 ring-2 ring-gray-700"
+                  }`}
                 >
                   <CircleDot
                     size={16}
-                    className={`-rotate-45 ${exp.current ? "text-purple-400" : "text-gray-400"}`}
+                    className={`-rotate-45 ${
+                      exp.current ? "text-purple-400" : "text-gray-400"
+                    }`}
                   />
                 </div>
               </div>
 
-              <div className={`ml-20 md:ml-0 md:w-[calc(50%-60px)] ${index % 2 === 0 ? "md:mr-auto" : "md:ml-auto"}`}>
+              <div
+                className={`ml-20 md:ml-0 md:w-[calc(50%-60px)] ${
+                  index % 2 === 0 ? "md:mr-auto" : "md:ml-auto"
+                }`}
+              >
                 <div className="relative group">
                   <div className="hidden md:block absolute top-8 w-8 h-px bg-gradient-to-r from-purple-500/50 to-transparent" />
 
@@ -110,6 +130,7 @@ const ExperienceSection = () => {
                             rel="noopener noreferrer"
                             className="flex gap-2 items-center"
                             href={exp.url}
+                            onClick={()=>handelExternalLink(exp.company)}
                           >
                             {exp.company} <ExternalLink size={16} />
                           </a>
@@ -141,7 +162,10 @@ const ExperienceSection = () => {
 
                   {index < experiences.length - 1 && (
                     <div className="hidden md:block absolute -bottom-14 left-1/2 transform -translate-x-1/2">
-                      <ArrowRight size={20} className="text-purple-500/30 rotate-90" />
+                      <ArrowRight
+                        size={20}
+                        className="text-purple-500/30 rotate-90"
+                      />
                     </div>
                   )}
                 </div>

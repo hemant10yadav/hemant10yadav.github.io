@@ -2,6 +2,7 @@ import { motion } from "framer-motion";
 import { ExternalLink, Play } from "lucide-react";
 import Image from "next/image";
 import { useState } from "react";
+import { event } from "nextjs-google-analytics";
 
 export const ProjectSection = () => {
   const [activeDemoUrl, setActiveDemoUrl] = useState<null | string>(null);
@@ -42,6 +43,31 @@ export const ProjectSection = () => {
       tech: ["bootstrap.png", "angular.png", "typescript.png"],
     },
   ];
+
+  const handelExternalLink = (projectName: string) => {
+    event("Code views", {
+      category: "Portfolio",
+      label: projectName,
+      value: 1,
+    });
+  };
+
+  const handleViewVideo = (videoName: string) => {
+    event("Video views", {
+      category: "Portfolio",
+      label: videoName,
+      value: 1,
+    });
+  };
+
+  const handleViewDemoClick = (projectUrl: string, videoTitle: string) => {
+    if (activeDemoUrl === projectUrl) {
+      setActiveDemoUrl(null);
+      return;
+    }
+    handleViewVideo(videoTitle);
+    setActiveDemoUrl(projectUrl);
+  };
 
   return (
     <>
@@ -92,18 +118,13 @@ export const ProjectSection = () => {
                     rel="noopener noreferrer"
                     className="inline-flex items-center gap-2 text-purple-400 hover:text-purple-300"
                     whileHover={{ x: 5 }}
+                    onClick={() => handelExternalLink(project.title)}
                   >
                     View Code <ExternalLink size={16} />
                   </motion.a>
                   {project.demoUrl && (
                     <motion.button
-                      onClick={() =>
-                        setActiveDemoUrl(
-                          activeDemoUrl === project.demoUrl
-                            ? null
-                            : project.demoUrl
-                        )
-                      }
+                      onClick={() =>handleViewDemoClick(project.demoUrl, project.title)}
                       className="inline-flex items-center gap-2 text-green-400 hover:text-green-300"
                       whileHover={{ x: 5 }}
                     >
