@@ -25,7 +25,7 @@ export const metadata: Metadata = {
     siteName: 'Hemant Singh Yadav - Software Engineer',
     images: [
       {
-        url: '/opengraph-image.png',
+        url: '/opengraph-image',
         width: 1200,
         height: 630,
       },
@@ -35,7 +35,7 @@ export const metadata: Metadata = {
     card: 'summary_large_image',
     title: 'Hemant Singh Yadav - Software Engineer',
     description: 'Software Engineer with 3 years of experience specializing in Python, Java, and full-stack development. View my projects and experience in scalable system architecture.',
-    images: ['/twitter-image.png'],
+    images: ['/twitter-image'],
   },
   verification: {
     google: '2NWImAWGUUGBF1n43abjdyS6cskF6yjKXIBjYnkU17k', 
