@@ -24,7 +24,7 @@ export const metadata: Metadata = {
     siteName: 'Hemant Singh Yadav',
   },
   verification: {
-    google: '8vq8glKpddiTZooSfmfXXQL5jEqiVFbBe0yDB7zj6NA', 
+    google: '2NWImAWGUUGBF1n43abjdyS6cskF6yjKXIBjYnkU17k', 
   },
   robots: {
     index: true,
