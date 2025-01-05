@@ -13,9 +13,27 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Hemant",
-  description: "",
-};
+  title: 'HemantSingh Yadav - Software Engineer',
+  description: 'Software Engineer with 3 years of experience specializing in Python, Java, and full-stack development. View my projects and experience in scalable system architecture.',
+  keywords: ['Software Engineer', 'Full Stack Developer', 'Python', 'Java', 'JavaScript', 'React', 'Node.js', 'AWS', 'Angular'],
+  openGraph: {
+    title: 'HemantSingh Yadav - Software Engineer',
+    description: 'Software Engineer with 3 years of experience building scalable systems.',
+    type: 'website',
+    locale: 'en_US',
+    siteName: 'Hemant Singh Yadav',
+  },
+  verification: {
+    google: '8vq8glKpddiTZooSfmfXXQL5jEqiVFbBe0yDB7zj6NA', 
+  },
+  robots: {
+    index: true,
+    follow: true,
+  },
+  alternates: {
+    canonical: 'https://hemantsinghyadav.github.io'
+  }
+}
 
 export default function RootLayout({
   children,

@@ -1,0 +1,3 @@
+CopyUser-agent: *
+Allow: /
+Sitemap: https://hemantsinghyadav.github.io/sitemap.xml
