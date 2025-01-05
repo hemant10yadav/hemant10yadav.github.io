@@ -108,6 +108,7 @@ export const ProjectSection = () => {
                       height={32}
                       className="object-contain"
                       loading="lazy"
+                      draggable="false"
                     />
                   ))}
                 </div>

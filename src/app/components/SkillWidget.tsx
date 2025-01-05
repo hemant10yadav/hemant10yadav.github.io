@@ -26,6 +26,7 @@ export const SkillWidget: FunctionComponent<Props> = ({ skill, index }) => {
           height={48}
           className="object-contain"
           loading="lazy"
+          draggable="false"
         />
         <span className="text-sm text-gray-400">{skill.name}</span>
       </motion.div>

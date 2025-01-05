@@ -166,6 +166,7 @@ export const HeroSection = () => {
                 fill
                 className="rounded-full object-cover border-4 border-purple-500/20"
                 priority
+                draggable="false"
               />
             </motion.div>
           </div>

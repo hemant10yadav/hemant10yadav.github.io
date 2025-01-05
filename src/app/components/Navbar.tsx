@@ -16,7 +16,7 @@ export const NavBar = () => {
               animate={{ opacity: 1 }}
               className="text-xl font-bold bg-gradient-to-r from-purple-400 to-pink-500 bg-clip-text text-transparent cursor-pointer"
             >
-              <Image alt="logo" src="/assets/hsy.png" width={80} height={160} />
+              <Image alt="logo" src="/assets/hsy.png" width={80} height={160} draggable="false"/>
             </motion.div>
           </Link>
           <div className="flex gap-8 text-lg">
