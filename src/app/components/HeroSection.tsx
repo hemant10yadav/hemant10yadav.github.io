@@ -8,15 +8,12 @@ import {
   LucideProps,
   Layers,
 } from "lucide-react";
-import { event } from 'nextjs-google-analytics';
-
-
-
+import { event } from "nextjs-google-analytics";
 
 export type SocialLink = {
   icon: React.ElementType<LucideProps>;
   link: string;
-  title: string
+  title: string;
 };
 
 export const HeroSection = () => {
@@ -24,22 +21,22 @@ export const HeroSection = () => {
     {
       icon: Github,
       link: "https://github.com/hemant10yadav",
-      title: "GitHub"
+      title: "GitHub",
     },
     {
       icon: Linkedin,
       link: "https://www.linkedin.com/in/hemantyad",
-      title: "Linkedin"
+      title: "Linkedin",
     },
     {
       icon: Mail,
       link: "mailto:hemant.10.yadav@gmail.com",
-      title: "Mail"
+      title: "Mail",
     },
     {
       icon: Layers,
       link: "https://stackoverflow.com/users/20470646/hemant-singh-yadav",
-      title: "Stackoverflow"
+      title: "Stackoverflow",
     },
   ];
 
@@ -50,21 +47,39 @@ export const HeroSection = () => {
   const resumeUrl = `${domain}/Hemant-Software-Developer-Resume.pdf`;
 
   const handleResumeDownload = () => {
-    event('resume_download', {
-      category: 'Portfolio',
-      label: 'Resume Downloads',
+    event("resume_download", {
+      category: "Portfolio",
+      label: "Resume Downloads",
       value: 1,
     });
   };
 
   const handelExternalLink = (linkClicked: string) => {
-     const key =`${linkClicked} visits`;
+    const key = `${linkClicked} visits`;
     event("external_links", {
-      category: 'Portfolio',
+      category: "Portfolio",
       label: key,
       value: 1,
     });
-  }
+  };
+
+  const getRoundedExperience = (): string => {
+    const start = new Date("2021-12-01");
+    const now = new Date();
+
+    let years = now.getFullYear() - start.getFullYear();
+    let months = now.getMonth() - start.getMonth();
+
+    if (months < 0) {
+      years--;
+      months += 12;
+    }
+
+    const rounded = months >= 6 ? `${years}.5` : `${years}`;
+    return `${rounded} years`;
+  };
+
+  const experience = getRoundedExperience();
 
   return (
     <div>
@@ -107,7 +122,7 @@ export const HeroSection = () => {
                   animate={{ opacity: 1 }}
                   className="text-xl text-gray-400 leading-relaxed"
                 >
-                  Software Engineer with 3 years of experience building
+                  Software Engineer with {experience} of experience building
                   scalable, high-performance systems. Passionate about blending
                   intuitive front-end design with robust back-end functionality.
                 </motion.p>
