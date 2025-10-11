@@ -1,6 +1,6 @@
 "use client";
 
-import { motion } from "framer-motion";
+import { motion, useAnimation } from "framer-motion";
 import Image from "next/image";
 import {
   FileDown,
@@ -12,8 +12,7 @@ import {
 } from "lucide-react";
 import { event } from "nextjs-google-analytics";
 import { TypeAnimation } from "react-type-animation";
-import { useState, useEffect } from "react";
-
+import { useState, useEffect, useRef } from "react";
 
 export type SocialLink = {
   icon: React.ElementType<LucideProps>;
@@ -49,6 +48,8 @@ export const HeroSection = () => {
       value: 1,
     });
   };
+  const profileControls = useAnimation();
+  const profileRef = useRef<HTMLDivElement>(null);
 
   const handelExternalLink = (linkClicked: string) => {
     const key = `${linkClicked} visits`;
@@ -200,32 +201,40 @@ export const HeroSection = () => {
 
             {/* Profile Image Section */}
             <motion.div
-              className="relative w-96 h-96 hidden md:block cursor-grab"
+              ref={profileRef}
+              className="relative w-96 h-96 cursor-grab md:block flex-shrink-0"
               drag
-              dragElastic={0.2} // adds springy feel
-              dragConstraints={{ top: 0, bottom: 0, left: 0, right: 0 }} // free drag within container
+              dragElastic={0.3}
+              dragMomentum={false}
               whileTap={{ cursor: "grabbing" }}
-              animate={{ x: 0, y: 0 }} // snaps back to center
-              transition={{ type: "spring", stiffness: 200, damping: 20 }}
+              onDragEnd={() => {
+                profileControls.start({
+                  x: 0,
+                  y: 0,
+                  transition: { type: "spring", stiffness: 300, damping: 25 },
+                });
+              }}
+              animate={profileControls}
             >
-              {/* Halo Glow */}
-              <motion.div
-                initial={{ opacity: 0, scale: 0.8 }}
-                animate={{ opacity: 1, scale: [0.95, 1.05, 0.95] }}
-                transition={{
-                  duration: 4,
-                  repeat: Infinity,
-                  ease: "easeInOut",
-                }}
-                className="absolute inset-0 rounded-full bg-gradient-to-r from-purple-500 via-pink-500 to-red-500 blur-3xl opacity-20"
-              />
+              {/* Container for Halo + Image */}
+              <div className="relative w-full h-full rounded-full">
+                {/* Halo - independent animation */}
+                <motion.div
+                  initial={{ opacity: 0, scale: 0.8 }}
+                  animate={{ opacity: 1, scale: [0.95, 1.05, 0.95] }}
+                  transition={{
+                    duration: 4,
+                    repeat: Infinity,
+                    ease: "easeInOut",
+                  }}
+                  className="absolute inset-0 rounded-full bg-gradient-to-r from-purple-500 via-pink-500 to-red-500 blur-3xl opacity-20 pointer-events-none z-0"
+                />
 
-              {/* Floating Particles */}
-              {particles.length > 0 &&
-                particles.map((p, i) => (
+                {/* Floating Particles */}
+                {particles.map((p, i) => (
                   <motion.div
                     key={i}
-                    className="absolute w-2 h-2 rounded-full bg-white/30"
+                    className="absolute w-2 h-2 rounded-full bg-white/30 z-10"
                     style={{ top: `${p.y}%`, left: `${p.x}%` }}
                     animate={{ y: [0, -8, 0], x: [0, 5, 0] }}
                     transition={{
@@ -236,15 +245,18 @@ export const HeroSection = () => {
                   />
                 ))}
 
-              {/* Profile Image */}
-              <Image
-                src={profilePicUrl}
-                alt="Profile"
-                fill
-                className="rounded-full object-cover border-4 border-purple-500/20"
-                priority
-                draggable="false"
-              />
+                {/* Profile Image */}
+                <div className="absolute inset-0 rounded-full overflow-hidden border-4 border-purple-500/20 z-20">
+                  <Image
+                    src={profilePicUrl}
+                    alt="Profile"
+                    fill
+                    className="object-cover"
+                    priority
+                    draggable="false"
+                  />
+                </div>
+              </div>
             </motion.div>
           </div>
 
