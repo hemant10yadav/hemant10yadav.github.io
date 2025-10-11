@@ -228,6 +228,35 @@ export const HeroSection = () => {
               className="relative w-96 h-96 hidden md:block"
             >
               <div className="absolute inset-0 rounded-full bg-gradient-to-r from-purple-500 to-pink-500 blur-3xl opacity-20" />
+              <motion.div
+                initial={{ opacity: 0, scale: 0.8 }}
+                animate={{ opacity: 1, scale: [0.95, 1.05, 0.95] }}
+                transition={{
+                  duration: 4,
+                  repeat: Infinity,
+                  ease: "easeInOut",
+                }}
+                className="absolute inset-0 rounded-full bg-gradient-to-r from-purple-500 via-pink-500 to-red-500 blur-3xl opacity-20"
+              />
+
+              {/* Floating particles */}
+              {Array.from({ length: 6 }).map((_, i) => (
+                <motion.div
+                  key={i}
+                  className="absolute w-2 h-2 rounded-full bg-white/30"
+                  style={{
+                    top: `${Math.random() * 80 + 10}%`,
+                    left: `${Math.random() * 80 + 10}%`,
+                  }}
+                  animate={{ y: [0, -8, 0], x: [0, 5, 0] }}
+                  transition={{
+                    duration: 3 + Math.random() * 2,
+                    repeat: Infinity,
+                    ease: "easeInOut",
+                  }}
+                />
+              ))}
+
               <Image
                 src={profilePicUrl}
                 alt="Profile"
