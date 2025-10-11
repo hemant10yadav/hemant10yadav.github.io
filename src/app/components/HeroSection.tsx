@@ -1,3 +1,4 @@
+"use client";
 import { motion } from "framer-motion";
 import Image from "next/image";
 import {
@@ -9,6 +10,9 @@ import {
   Layers,
 } from "lucide-react";
 import { event } from "nextjs-google-analytics";
+import { TypeAnimation } from "react-type-animation";
+import { useMousePosition } from "../hooks/useMousePosition";
+import { useState, useEffect } from "react";
 
 export type SocialLink = {
   icon: React.ElementType<LucideProps>;
@@ -62,7 +66,14 @@ export const HeroSection = () => {
       value: 1,
     });
   };
+  const mouse = useMousePosition();
 
+  const [positions, setPositions] = useState(
+    Array.from({ length: 3 }, () => ({
+      x: Math.random() * window.innerWidth - 200, // random X
+      y: Math.random() * window.innerHeight - 200, // random Y
+    }))
+  );
   const getRoundedExperience = (): string => {
     const start = new Date("2021-12-01");
     const now = new Date();
@@ -90,7 +101,33 @@ export const HeroSection = () => {
         id="about"
         className="min-h-screen flex items-center relative overflow-hidden"
       >
-        <div className="container mx-auto px-6 py-16">
+        <div className="absolute inset-0 -z-0 pointer-events-none">
+          <motion.div
+            className="absolute w-96 h-96 rounded-full bg-purple-500 blur-3xl opacity-15"
+            style={{
+              transform: `translate3d(${positions[0].x + mouse.x / 30}px, ${
+                positions[0].y + mouse.y / 30
+              }px, 0)`,
+            }}
+          />
+          <motion.div
+            className="absolute w-72 h-72 rounded-full bg-pink-500 blur-3xl opacity-15"
+            style={{
+              transform: `translate3d(${positions[1].x + mouse.x / 25}px, ${
+                positions[1].y + mouse.y / 25
+              }px, 0)`,
+            }}
+          />
+          <motion.div
+            className="absolute w-80 h-80 rounded-full bg-blue-400 blur-3xl opacity-15"
+            style={{
+              transform: `translate3d(${positions[2].x + mouse.x / 20}px, ${
+                positions[2].y + mouse.y / 20
+              }px, 0)`,
+            }}
+          />
+        </div>
+        <div className="container mx-auto px-6 py-16 relative">
           <div className="flex flex-col md:flex-row items-center gap-16">
             <motion.div
               initial={{ opacity: 0, x: -50 }}
@@ -116,6 +153,22 @@ export const HeroSection = () => {
                     Singh Yadav
                   </span>
                 </motion.h1>
+                <TypeAnimation
+                  sequence={[
+                    "Software Engineer",
+                    2000,
+                    "Python & Java Developer",
+                    2000,
+                    "Automation Enthusiast",
+                    2000,
+                    "AI Curious Mind",
+                    2000,
+                  ]}
+                  wrapper="span"
+                  speed={50}
+                  repeat={Infinity}
+                  className="block text-2xl text-purple-400 font-medium mt-2"
+                />
 
                 <motion.p
                   initial={{ opacity: 0 }}
@@ -137,7 +190,7 @@ export const HeroSection = () => {
                   href={resumeUrl}
                   onClick={handleResumeDownload}
                   download
-                  className="flex items-center gap-2 px-6 py-3 bg-purple-500 rounded-lg hover:bg-purple-600 transition-colors"
+                  className="flex items-center gap-2 px-6 py-3 bg-purple-500 rounded-lg transition-all hover:bg-purple-600 hover:shadow-lg hover:shadow-purple-400/50"
                 >
                   <FileDown size={20} />
                   Resume
@@ -185,6 +238,14 @@ export const HeroSection = () => {
               />
             </motion.div>
           </div>
+          <motion.div
+            initial={{ opacity: 0, y: 8 }}
+            animate={{ opacity: [0.3, 1, 0.3, 1], y: [8, -4, 8] }}
+            transition={{ repeat: Infinity, duration: 2.2, ease: "easeInOut" }}
+            className="absolute bottom-10 left-1/2 -translate-x-1/2 text-purple-400/80"
+          >
+            ↓ Scroll
+          </motion.div>
         </div>
       </section>
     </div>
