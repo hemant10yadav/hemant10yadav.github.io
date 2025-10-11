@@ -1,4 +1,5 @@
 "use client";
+
 import { motion } from "framer-motion";
 import Image from "next/image";
 import {
@@ -11,7 +12,6 @@ import {
 } from "lucide-react";
 import { event } from "nextjs-google-analytics";
 import { TypeAnimation } from "react-type-animation";
-import { useMousePosition } from "../hooks/useMousePosition";
 import { useState, useEffect } from "react";
 
 export type SocialLink = {
@@ -22,21 +22,13 @@ export type SocialLink = {
 
 export const HeroSection = () => {
   const socialLinks: SocialLink[] = [
-    {
-      icon: Github,
-      link: "https://github.com/hemant10yadav",
-      title: "GitHub",
-    },
+    { icon: Github, link: "https://github.com/hemant10yadav", title: "GitHub" },
     {
       icon: Linkedin,
       link: "https://www.linkedin.com/in/hemantyad",
       title: "Linkedin",
     },
-    {
-      icon: Mail,
-      link: "mailto:hemant.10.yadav@gmail.com",
-      title: "Mail",
-    },
+    { icon: Mail, link: "mailto:hemant.10.yadav@gmail.com", title: "Mail" },
     {
       icon: Layers,
       link: "https://stackoverflow.com/users/20470646/hemant-singh-yadav",
@@ -46,7 +38,6 @@ export const HeroSection = () => {
 
   const domain =
     "https://raw.githubusercontent.com/hemant10yadav/Resources/main/";
-
   const profilePicUrl = `${domain}hy-min.png`;
   const resumeUrl = `${domain}/Hemant-Software-Developer-Resume.pdf`;
 
@@ -60,75 +51,56 @@ export const HeroSection = () => {
 
   const handelExternalLink = (linkClicked: string) => {
     const key = `${linkClicked} visits`;
-    event("external_links", {
-      category: "Portfolio",
-      label: key,
-      value: 1,
-    });
+    event("external_links", { category: "Portfolio", label: key, value: 1 });
   };
-  const mouse = useMousePosition();
 
-  const [positions, setPositions] = useState(
-    Array.from({ length: 3 }, () => ({
-      x: Math.random() * window.innerWidth - 200, // random X
-      y: Math.random() * window.innerHeight - 200, // random Y
-    }))
-  );
+  // --------------------------
+  // Client-only dynamic positions
+  // --------------------------
+  const [particles, setParticles] = useState<{ x: number; y: number }[]>([]);
+
+  useEffect(() => {
+    // Small particles around profile
+    setParticles(
+      Array.from({ length: 6 }, () => ({
+        x: Math.random() * 80 + 10,
+        y: Math.random() * 80 + 10,
+      }))
+    );
+  }, []);
+
+  // --------------------------
+  // Experience calculation
+  // --------------------------
   const getRoundedExperience = (): string => {
     const start = new Date("2021-12-01");
     const now = new Date();
 
     let years = now.getFullYear() - start.getFullYear();
     let months = now.getMonth() - start.getMonth();
-
     if (months < 0) {
       years--;
       months += 12;
     }
 
-    const rounded = months >= 6 ? `${years}.5` : `${years}`;
-    return `${rounded} years`;
+    return months >= 6 ? `${years}.5 years` : `${years} years`;
   };
-
   const experience = getRoundedExperience();
 
   return (
     <div>
+      {/* Background */}
       <div className="absolute inset-0 bg-gradient-to-b from-gray-900 to-gray-950">
         <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-purple-900/20 via-transparent to-transparent" />
       </div>
+
       <section
         id="about"
         className="min-h-screen flex items-center relative overflow-hidden"
       >
-        <div className="absolute inset-0 -z-0 pointer-events-none">
-          <motion.div
-            className="absolute w-96 h-96 rounded-full bg-purple-500 blur-3xl opacity-15"
-            style={{
-              transform: `translate3d(${positions[0].x + mouse.x / 30}px, ${
-                positions[0].y + mouse.y / 30
-              }px, 0)`,
-            }}
-          />
-          <motion.div
-            className="absolute w-72 h-72 rounded-full bg-pink-500 blur-3xl opacity-15"
-            style={{
-              transform: `translate3d(${positions[1].x + mouse.x / 25}px, ${
-                positions[1].y + mouse.y / 25
-              }px, 0)`,
-            }}
-          />
-          <motion.div
-            className="absolute w-80 h-80 rounded-full bg-blue-400 blur-3xl opacity-15"
-            style={{
-              transform: `translate3d(${positions[2].x + mouse.x / 20}px, ${
-                positions[2].y + mouse.y / 20
-              }px, 0)`,
-            }}
-          />
-        </div>
         <div className="container mx-auto px-6 py-16 relative">
           <div className="flex flex-col md:flex-row items-center gap-16">
+            {/* Text Section */}
             <motion.div
               initial={{ opacity: 0, x: -50 }}
               animate={{ opacity: 1, x: 0 }}
@@ -153,6 +125,7 @@ export const HeroSection = () => {
                     Singh Yadav
                   </span>
                 </motion.h1>
+
                 <TypeAnimation
                   sequence={[
                     "Software Engineer",
@@ -181,6 +154,7 @@ export const HeroSection = () => {
                 </motion.p>
               </div>
 
+              {/* Resume Button */}
               <motion.div
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
@@ -197,13 +171,14 @@ export const HeroSection = () => {
                 </a>
               </motion.div>
 
+              {/* Social Icons */}
               <motion.div
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 className="flex gap-6"
               >
                 {socialLinks.map((social, index) => {
-                  const IconComponent = social.icon; // Dynamically get the icon component
+                  const IconComponent = social.icon;
                   return (
                     <motion.a
                       onClick={() => handelExternalLink(social.title)}
@@ -222,12 +197,13 @@ export const HeroSection = () => {
               </motion.div>
             </motion.div>
 
+            {/* Profile Image Section */}
             <motion.div
               initial={{ opacity: 0, scale: 0.5 }}
               animate={{ opacity: 1, scale: 1 }}
               className="relative w-96 h-96 hidden md:block"
             >
-              <div className="absolute inset-0 rounded-full bg-gradient-to-r from-purple-500 to-pink-500 blur-3xl opacity-20" />
+              {/* Halo Glow */}
               <motion.div
                 initial={{ opacity: 0, scale: 0.8 }}
                 animate={{ opacity: 1, scale: [0.95, 1.05, 0.95] }}
@@ -239,24 +215,23 @@ export const HeroSection = () => {
                 className="absolute inset-0 rounded-full bg-gradient-to-r from-purple-500 via-pink-500 to-red-500 blur-3xl opacity-20"
               />
 
-              {/* Floating particles */}
-              {Array.from({ length: 6 }).map((_, i) => (
-                <motion.div
-                  key={i}
-                  className="absolute w-2 h-2 rounded-full bg-white/30"
-                  style={{
-                    top: `${Math.random() * 80 + 10}%`,
-                    left: `${Math.random() * 80 + 10}%`,
-                  }}
-                  animate={{ y: [0, -8, 0], x: [0, 5, 0] }}
-                  transition={{
-                    duration: 3 + Math.random() * 2,
-                    repeat: Infinity,
-                    ease: "easeInOut",
-                  }}
-                />
-              ))}
+              {/* Floating Particles */}
+              {particles.length > 0 &&
+                particles.map((p, i) => (
+                  <motion.div
+                    key={i}
+                    className="absolute w-2 h-2 rounded-full bg-white/30"
+                    style={{ top: `${p.y}%`, left: `${p.x}%` }}
+                    animate={{ y: [0, -8, 0], x: [0, 5, 0] }}
+                    transition={{
+                      duration: 3 + Math.random() * 2,
+                      repeat: Infinity,
+                      ease: "easeInOut",
+                    }}
+                  />
+                ))}
 
+              {/* Profile Image */}
               <Image
                 src={profilePicUrl}
                 alt="Profile"
@@ -267,6 +242,8 @@ export const HeroSection = () => {
               />
             </motion.div>
           </div>
+
+          {/* Scroll hint */}
           <motion.div
             initial={{ opacity: 0, y: 8 }}
             animate={{ opacity: [0.3, 1, 0.3, 1], y: [8, -4, 8] }}
