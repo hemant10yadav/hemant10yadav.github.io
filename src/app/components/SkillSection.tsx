@@ -2,7 +2,6 @@
 
 import { motion } from "framer-motion";
 import Image from "next/image";
-import { SkillWidget } from "./SkillWidget";
 import { skill } from "../def/types";
 
 export default function SkillSection() {
