@@ -1,7 +1,6 @@
 "use client";
 
-import { motion, useAnimation } from "framer-motion";
-import Image from "next/image";
+import { motion } from "framer-motion";
 import {
   FileDown,
   Github,
@@ -12,7 +11,7 @@ import {
 } from "lucide-react";
 import { event } from "nextjs-google-analytics";
 import { TypeAnimation } from "react-type-animation";
-import { useState, useEffect, useRef } from "react";
+import { ProfileImage } from "./ProfileImage";
 
 export type SocialLink = {
   icon: React.ElementType<LucideProps>;
@@ -48,28 +47,11 @@ export const HeroSection = () => {
       value: 1,
     });
   };
-  const profileControls = useAnimation();
-  const profileRef = useRef<HTMLDivElement>(null);
 
   const handelExternalLink = (linkClicked: string) => {
     const key = `${linkClicked} visits`;
     event("external_links", { category: "Portfolio", label: key, value: 1 });
   };
-
-  // --------------------------
-  // Client-only dynamic positions
-  // --------------------------
-  const [particles, setParticles] = useState<{ x: number; y: number }[]>([]);
-
-  useEffect(() => {
-    // Small particles around profile
-    setParticles(
-      Array.from({ length: 6 }, () => ({
-        x: Math.random() * 80 + 10,
-        y: Math.random() * 80 + 10,
-      }))
-    );
-  }, []);
 
   // --------------------------
   // Experience calculation
@@ -200,64 +182,9 @@ export const HeroSection = () => {
             </motion.div>
 
             {/* Profile Image Section */}
-            <motion.div
-              ref={profileRef}
-              className="relative w-96 h-96 cursor-grab md:block flex-shrink-0"
-              drag
-              dragElastic={0.3}
-              dragMomentum={false}
-              whileTap={{ cursor: "grabbing" }}
-              onDragEnd={() => {
-                profileControls.start({
-                  x: 0,
-                  y: 0,
-                  transition: { type: "spring", stiffness: 300, damping: 25 },
-                });
-              }}
-              animate={profileControls}
-            >
-              {/* Container for Halo + Image */}
-              <div className="relative w-full h-full rounded-full">
-                {/* Halo - independent animation */}
-                <motion.div
-                  initial={{ opacity: 0, scale: 0.8 }}
-                  animate={{ opacity: 1, scale: [0.95, 1.05, 0.95] }}
-                  transition={{
-                    duration: 4,
-                    repeat: Infinity,
-                    ease: "easeInOut",
-                  }}
-                  className="absolute inset-0 rounded-full bg-gradient-to-r from-purple-500 via-pink-500 to-red-500 blur-3xl opacity-20 pointer-events-none z-0"
-                />
-
-                {/* Floating Particles */}
-                {particles.map((p, i) => (
-                  <motion.div
-                    key={i}
-                    className="absolute w-2 h-2 rounded-full bg-white/30 z-10"
-                    style={{ top: `${p.y}%`, left: `${p.x}%` }}
-                    animate={{ y: [0, -8, 0], x: [0, 5, 0] }}
-                    transition={{
-                      duration: 3 + Math.random() * 2,
-                      repeat: Infinity,
-                      ease: "easeInOut",
-                    }}
-                  />
-                ))}
-
-                {/* Profile Image */}
-                <div className="absolute inset-0 rounded-full overflow-hidden border-4 border-purple-500/20 z-20">
-                  <Image
-                    src={profilePicUrl}
-                    alt="Profile"
-                    fill
-                    className="object-cover"
-                    priority
-                    draggable="false"
-                  />
-                </div>
-              </div>
-            </motion.div>
+            <div className="relative w-96 h-96 cursor-grab hidden md:block">
+              <ProfileImage profilePicUrl={profilePicUrl} />
+            </div>
           </div>
 
           {/* Scroll hint */}
