@@ -112,13 +112,13 @@ export const HeroSection = () => {
 
                 <TypeAnimation
                   sequence={[
-                    "Software Engineer",
+                    "Software Engineer 💻",
                     2000,
-                    "Python & Java Developer",
+                    "Python & Java Developer </>",
                     2000,
-                    "Automation Enthusiast",
+                    "Automation Enthusiast 🤖",
                     2000,
-                    "AI Curious Mind",
+                    "AI Explorer 🚀",
                     2000,
                   ]}
                   wrapper="span"
