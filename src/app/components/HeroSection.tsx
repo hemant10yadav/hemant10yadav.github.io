@@ -14,6 +14,7 @@ import { event } from "nextjs-google-analytics";
 import { TypeAnimation } from "react-type-animation";
 import { useState, useEffect } from "react";
 
+
 export type SocialLink = {
   icon: React.ElementType<LucideProps>;
   link: string;
@@ -199,9 +200,13 @@ export const HeroSection = () => {
 
             {/* Profile Image Section */}
             <motion.div
-              initial={{ opacity: 0, scale: 0.5 }}
-              animate={{ opacity: 1, scale: 1 }}
-              className="relative w-96 h-96 hidden md:block"
+              className="relative w-96 h-96 hidden md:block cursor-grab"
+              drag
+              dragElastic={0.2} // adds springy feel
+              dragConstraints={{ top: 0, bottom: 0, left: 0, right: 0 }} // free drag within container
+              whileTap={{ cursor: "grabbing" }}
+              animate={{ x: 0, y: 0 }} // snaps back to center
+              transition={{ type: "spring", stiffness: 200, damping: 20 }}
             >
               {/* Halo Glow */}
               <motion.div
