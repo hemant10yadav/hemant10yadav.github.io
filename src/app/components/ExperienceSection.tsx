@@ -28,20 +28,6 @@ const ExperienceSection = () => {
       skills: ["Spring Boot", "Angular", "Hibernate", "REST APIs", "Amazon S3"],
       type: "Full-time",
     },
-    {
-      role: "Software Engineer",
-      company: "Saral Technologies",
-      location: "Pune, India",
-      url: "https://saral.io/",
-      skills: [
-        "Angular",
-        "Bootstrap 5",
-        "HTML5",
-        "API Integration",
-        "Unit Testing",
-      ],
-      type: "Full-time",
-    },
   ];
 
   const handelExternalLink = (linkClicked: string) => {
