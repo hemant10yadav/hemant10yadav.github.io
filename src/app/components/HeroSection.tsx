@@ -6,12 +6,13 @@ import {
   Github,
   Linkedin,
   Mail,
-  LucideProps,
   Layers,
+  LucideProps,
 } from "lucide-react";
 import { event } from "nextjs-google-analytics";
 import { TypeAnimation } from "react-type-animation";
 import { ProfileImage } from "./ProfileImage";
+import { useEffect, useState } from "react";
 
 export type SocialLink = {
   icon: React.ElementType<LucideProps>;
@@ -20,6 +21,29 @@ export type SocialLink = {
 };
 
 export const HeroSection = () => {
+  const [openIframe, setOpenIframe] = useState(false);
+  useEffect(() => {
+    if (openIframe) {
+      // Disable background scroll
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "auto";
+    }
+
+    const handleEsc = (e: KeyboardEvent) => {
+      if (e.key === "Escape") {
+        setOpenIframe(false);
+      }
+    };
+
+    window.addEventListener("keydown", handleEsc);
+
+    return () => {
+      document.body.style.overflow = "auto";
+      window.removeEventListener("keydown", handleEsc);
+    };
+  }, [openIframe]);
+
   const socialLinks: SocialLink[] = [
     { icon: Github, link: "https://github.com/hemant10yadav", title: "GitHub" },
     {
@@ -38,9 +62,9 @@ export const HeroSection = () => {
   const domain =
     "https://raw.githubusercontent.com/hemant10yadav/Resources/main/";
   const profilePicUrl = `${domain}hy-min.png`;
-  const resumeUrl = `${domain}/Hemant-Software-Developer-Resume.pdf`;
 
   const handleResumeDownload = () => {
+    setOpenIframe(true);
     event("resume_download", {
       category: "Portfolio",
       label: "Resume Downloads",
@@ -144,15 +168,13 @@ export const HeroSection = () => {
                 animate={{ opacity: 1, y: 0 }}
                 className="flex gap-6"
               >
-                <a
-                  href={resumeUrl}
+                <button
                   onClick={handleResumeDownload}
-                  download
                   className="flex items-center gap-2 px-6 py-3 bg-purple-500 rounded-lg transition-all hover:bg-purple-600 hover:shadow-lg hover:shadow-purple-400/50"
                 >
                   <FileDown size={20} />
                   Resume
-                </a>
+                </button>
               </motion.div>
 
               {/* Social Icons */}
@@ -186,18 +208,96 @@ export const HeroSection = () => {
               <ProfileImage profilePicUrl={profilePicUrl} />
             </div>
           </div>
-
-          {/* Scroll hint */}
-          <motion.div
-            initial={{ opacity: 0, y: 8 }}
-            animate={{ opacity: [0.3, 1, 0.3, 1], y: [8, -4, 8] }}
-            transition={{ repeat: Infinity, duration: 2.2, ease: "easeInOut" }}
-            className="absolute bottom-10 left-1/2 -translate-x-1/2 text-purple-400/80"
-          >
-            ↓ Scroll
-          </motion.div>
         </div>
       </section>
+
+      {/* ========= IFRAME OVERLAY ========= */}
+      {openIframe && (
+        <div className="fixed inset-0 z-50 bg-black/70 flex items-center justify-center">
+          {/* overlay */}
+          <div
+            className="absolute inset-0"
+            onClick={() => setOpenIframe(false)}
+          />
+
+          {/* modal */}
+          <div className="relative z-10 max-h-[95vh] w-full flex justify-center overflow-auto">
+            <div className="relative bg-white rounded-lg shadow-xl w-[820px] max-w-[95vw] h-[95vh]">
+              {/* close */}
+              <div className="absolute top-3 right-3 z-20 flex gap-2">
+                {/* Download button */}
+                <a
+                  href="https://docs.google.com/document/d/1slEvO5HrIn7_M5ehOEjefiW7ND6MDfgW0UtzZCKT0Qo/export?format=pdf"
+                  rel="noopener noreferrer"
+                  className="bg-black/70 text-white px-3 py-1 rounded hover:bg-black/80"
+                  title="Download PDF"
+                >
+                  ⬇
+                </a>
+
+                {/* Close button */}
+                <button
+                  onClick={() => setOpenIframe(false)}
+                  className="bg-black/70 text-white px-3 py-1 rounded hover:bg-black/80"
+                  title="Close"
+                >
+                  ✕
+                </button>
+              </div>
+              {/* iframe */}
+              <IframeWithLoader
+                src="https://docs.google.com/document/d/e/2PACX-1vRy5MkRddjiK9wAMN2uIEqFV7t58Ywa8XVK_gNIqpz-7YajDTfmhdqdYjMe2mG5ZHkPVQg1WzK2DbDq/pub?embedded=true"
+                title="Resume"
+              />
+            </div>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+};
+
+
+const phrases = [
+  "Summoning PDF powers… 💫",
+  "Almost there… ✨",
+  "Fetching the magic… 🪄",
+];
+
+const IframeWithLoader = ({ src, title }: { src: string; title: string }) => {
+  const [loading, setLoading] = useState(true);
+  const [currentPhrase, setCurrentPhrase] = useState(0);
+
+  // Cycle phrases every 1.5s
+  useEffect(() => {
+    if (!loading) return;
+    const interval = setInterval(() => {
+      setCurrentPhrase((prev) => (prev + 1) % phrases.length);
+    }, 1500);
+    return () => clearInterval(interval);
+  }, [loading]);
+
+  return (
+    <div className="w-full h-full relative">
+      {/* Loading overlay */}
+      {loading && (
+        <div className="absolute inset-0 flex flex-col items-center justify-center bg-white/70 z-10">
+          {/* Spinner */}
+          <div className="w-16 h-16 border-4 border-t-purple-500 border-b-pink-500 border-l-transparent border-r-transparent rounded-full animate-spin" />
+          {/* Fun text */}
+          <span className="mt-4 text-purple-600 text-lg font-semibold text-center">
+            {phrases[currentPhrase]}
+          </span>
+        </div>
+      )}
+
+      {/* Iframe */}
+      <iframe
+        src={src}
+        title={title}
+        className="w-full h-full"
+        onLoad={() => setLoading(false)}
+      />
     </div>
   );
 };
