@@ -36,13 +36,20 @@ export const HeroSection = () => {
       }
     };
 
-    window.addEventListener("keydown", handleEsc);
-
     return () => {
       document.body.style.overflow = "auto";
       window.removeEventListener("keydown", handleEsc);
     };
   }, [openIframe]);
+
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    const check = () => setIsMobile(window.innerWidth < 768);
+    check();
+    window.addEventListener("resize", check);
+    return () => window.removeEventListener("resize", check);
+  }, []);
 
   const socialLinks: SocialLink[] = [
     { icon: Github, link: "https://github.com/hemant10yadav", title: "GitHub" },
@@ -64,12 +71,19 @@ export const HeroSection = () => {
   const profilePicUrl = `${domain}hy-min.png`;
 
   const handleResumeDownload = () => {
-    setOpenIframe(true);
     event("resume_download", {
       category: "Portfolio",
       label: "Resume Downloads",
       value: 1,
     });
+    if (isMobile) {
+      window.open(
+        "https://docs.google.com/document/d/1slEvO5HrIn7_M5ehOEjefiW7ND6MDfgW0UtzZCKT0Qo/export?format=pdf",
+        "_blank",
+      );
+    } else {
+      setOpenIframe(true);
+    }
   };
 
   const handelExternalLink = (linkClicked: string) => {
@@ -256,7 +270,6 @@ export const HeroSection = () => {
     </div>
   );
 };
-
 
 const phrases = [
   "Summoning PDF powers… 💫",
