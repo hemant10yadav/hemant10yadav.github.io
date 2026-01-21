@@ -13,6 +13,7 @@ import { event } from "nextjs-google-analytics";
 import { TypeAnimation } from "react-type-animation";
 import { ProfileImage } from "./ProfileImage";
 import { useEffect, useState } from "react";
+import { MessageModal } from "./MessageModal";
 
 export type SocialLink = {
   icon: React.ElementType<LucideProps>;
@@ -22,6 +23,8 @@ export type SocialLink = {
 
 export const HeroSection = () => {
   const [openIframe, setOpenIframe] = useState(false);
+  const [openMessage, setOpenMessage] = useState(false);
+
   useEffect(() => {
     if (openIframe) {
       // Disable background scroll
@@ -189,6 +192,13 @@ export const HeroSection = () => {
                   <FileDown size={20} />
                   Resume
                 </button>
+                <button
+                  onClick={() => setOpenMessage(true)}
+                  className="flex items-center gap-2 px-6 py-3 bg-purple-500 rounded-lg transition-all hover:bg-purple-600 hover:shadow-lg hover:shadow-purple-400/50"
+                >
+                  <Mail size={20} />
+                  Message Me
+                </button>
               </motion.div>
 
               {/* Social Icons */}
@@ -267,6 +277,7 @@ export const HeroSection = () => {
           </div>
         </div>
       )}
+      {openMessage && <MessageModal onClose={() => setOpenMessage(false)} />}
     </div>
   );
 };
