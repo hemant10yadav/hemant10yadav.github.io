@@ -16,25 +16,25 @@ interface ProjectSectionProps {
 const RECRUITER_PROJECTS = [
   {
     title: 'E-Commerce Platform',
-    problem: 'Needed a platform that could handle enterprise-level catalogue and checkout traffic securely.',
-    solution: 'Built end-to-end with Java + Spring Boot backend and Angular frontend, PostgreSQL for transactional data, JWT auth.',
-    impact: 'Scalable architecture with optimised DB queries, secure auth flow, and separation of concerns across bounded contexts.',
+    problem: 'Personal project to explore full-stack architecture — from auth to checkout — using a Java + Angular stack.',
+    solution: 'Spring Boot REST API, Angular SPA, PostgreSQL with clean schema design, JWT auth with layered service/repository separation.',
+    impact: 'Demonstrates system design thinking: bounded contexts, DTO patterns, and an architecture structured to scale.',
     githubLink: 'https://github.com/hemant10yadav/E-Commerce-website',
     tech: ['java.png', 'spring.png', 'angular.png', 'typescript.png', 'postgres.png'],
   },
   {
     title: 'E-Store',
-    problem: 'Build a full reactive shopping experience with a resilient backend API.',
-    solution: 'React frontend with Node/Express REST APIs and MongoDB for flexible product data modelling.',
-    impact: 'Clean separation between data layer and presentation, secure endpoints, ready to scale horizontally.',
+    problem: 'Side project to learn the MERN stack end-to-end — from React component design to MongoDB document modelling.',
+    solution: 'React frontend, Node/Express REST APIs, MongoDB with Mongoose, auth and session handling.',
+    impact: 'Shows ability to pick up a new stack independently and deliver a complete, working full-stack application.',
     githubLink: 'https://github.com/hemant10yadav/Sell2U-Node',
     tech: ['typescript.png', 'react.png', 'node.png', 'express.png', 'mongo.png'],
   },
   {
     title: 'Book Store',
-    problem: 'Users needed a fast, searchable interface over the Google Books API without a backend.',
-    solution: 'Angular SPA with efficient API integration, search-by-title/author/keyword, rich detail views.',
-    impact: 'Zero-backend deployment on GitHub Pages; live demo serving real users with < 200ms search feedback.',
+    problem: 'Side project to practice Angular\'s component model and API integration — no backend required.',
+    solution: 'Angular SPA consuming the Google Books API, search by title/author/keyword, rich detail views, deployed on GitHub Pages.',
+    impact: 'Live demo available. Shows frontend-first thinking: fast load, responsive UI, zero infrastructure overhead.',
     githubLink: 'https://github.com/hemant10yadav/book-store',
     demoUrl: 'https://hemant10yadav.github.io/book-store/',
     tech: ['bootstrap.png', 'angular.png', 'typescript.png'],
@@ -105,13 +105,13 @@ export const ProjectSection = ({ viewerType }: ProjectSectionProps) => {
               color: accent,
             }}
           >
-            {isRecruiter ? 'Things I shipped' : 'What actually happened'}
+            {isRecruiter ? 'Things I built' : 'What actually happened'}
           </h2>
-          {!isRecruiter && (
-            <p style={{ color: '#475569', marginTop: '0.5rem', fontSize: '0.875rem' }}>
-              the unedited version
-            </p>
-          )}
+          <p style={{ color: '#475569', marginTop: '0.5rem', fontSize: '0.875rem' }}>
+            {isRecruiter
+              ? 'personal projects · real decisions · code on GitHub'
+              : 'the unedited version'}
+          </p>
         </motion.div>
 
         <div

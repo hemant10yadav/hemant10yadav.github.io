@@ -22,7 +22,7 @@ const EXPERIENCES = [
     skills: ['Python', 'Django', 'Docker', 'AWS', 'PostgreSQL'],
     // recruiter view
     impact: [
-      'Maintained systems serving NGOs across 60+ countries',
+      'Maintained systems serving NGOs across 130+ countries',
       'Containerised Django workloads with Docker, deployed on AWS',
       'Shipped production features across a decade-old Python codebase',
       'Zero high-severity incidents across tenure',
@@ -31,7 +31,7 @@ const EXPERIENCES = [
     commitMsg: 'feat: joined Dimagi Inc.',
     logLines: [
       '// first real encounter with CommCare — a codebase that',
-      '//   spans a decade and runs in 60+ countries.',
+      '//   spans a decade and runs in 130+ countries.',
       '//   humbling to read before you write.',
       '',
       '// docker in prod for the first time.',

@@ -381,7 +381,7 @@ export const HeroSection = ({ viewerType }: HeroSectionProps) => {
         </div>
       )}
 
-      {openMessage && <MessageModal onClose={() => setOpenMessage(false)} />}
+      {openMessage && <MessageModal onClose={() => setOpenMessage(false)} viewerType={viewerType} />}
     </div>
   );
 };

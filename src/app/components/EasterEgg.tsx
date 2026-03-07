@@ -9,7 +9,7 @@ const RECRUITER_SNIPPET = {
   headline: 'I ship things that scale.',
   sub: '4 years · 2 companies · 0 production fires I didn\'t put out.',
   points: [
-    'Python, Django — systems serving NGOs across 60+ countries',
+    'Python, Django — systems serving NGOs across 130+ countries',
     'Spring Boot APIs handling enterprise-level traffic',
     'AWS, Docker, PostgreSQL — infrastructure that holds',
   ],
