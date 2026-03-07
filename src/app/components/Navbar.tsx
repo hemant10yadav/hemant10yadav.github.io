@@ -91,7 +91,6 @@ export const NavBar = () => {
               whileHover={{ scale: 1.04 }}
               style={{ cursor: 'pointer', display: 'flex', alignItems: 'center' }}
             >
-              {/* <Image alt="logo" src="/assets/hsy.png" width={72} height={48} draggable={false} /> */}
             </motion.div>
           </Link>
 
