@@ -1,41 +1,174 @@
-import { motion } from "framer-motion";
-import { useState } from "react";
-import Image from "next/image";
-import Link from "next/link";
+'use client';
+
+import { motion } from 'framer-motion';
+import { useState, useEffect } from 'react';
+import Image from 'next/image';
+import Link from 'next/link';
+import { useViewer } from '../context/ViewerContext';
 
 export const NavBar = () => {
-  const [activeSection, setActiveSection] = useState("about");
+  const { viewerType } = useViewer();
+  const [activeSection, setActiveSection] = useState('about');
+  const [scrolled, setScrolled] = useState(false);
+
+  const isRecruiter = viewerType === 'recruiter';
+  const accent = isRecruiter ? '#f59e0b' : '#22d3ee';
+
+  // Track scroll for background opacity
+  useEffect(() => {
+    const onScroll = () => setScrolled(window.scrollY > 20);
+    window.addEventListener('scroll', onScroll, { passive: true });
+    return () => window.removeEventListener('scroll', onScroll);
+  }, []);
+
+  // Auto-highlight active section via IntersectionObserver
+  useEffect(() => {
+    const sections = ['about', 'skills', 'projects'];
+    const observers: IntersectionObserver[] = [];
+
+    sections.forEach((id) => {
+      const el = document.getElementById(id);
+      if (!el) return;
+      const obs = new IntersectionObserver(
+        ([entry]) => { if (entry.isIntersecting) setActiveSection(id); },
+        { rootMargin: '-40% 0px -55% 0px' },
+      );
+      obs.observe(el);
+      observers.push(obs);
+    });
+
+    return () => observers.forEach((o) => o.disconnect());
+  }, []);
+
+  const navLinks = [
+    { id: 'about', label: 'About' },
+    { id: 'skills', label: 'Skills' },
+    { id: 'projects', label: 'Projects' },
+  ];
 
   return (
-    <nav className="fixed top-0 w-full bg-black/50 backdrop-blur-lg z-50">
-      <div className="mx-2 px-2 sm:px-16 py-4">
-        <div className="flex justify-between items-center">
+    <motion.nav
+      initial={{ opacity: 0, y: -12 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.4 }}
+      style={{
+        position: 'fixed',
+        top: 0,
+        width: '100%',
+        zIndex: 50,
+        background: scrolled ? 'rgba(8,12,20,0.92)' : 'rgba(8,12,20,0.6)',
+        backdropFilter: 'blur(14px)',
+        borderBottom: `1px solid ${scrolled ? `${accent}25` : 'rgba(255,255,255,0.04)'}`,
+        transition: 'background 0.3s, border-color 0.3s',
+      }}
+    >
+      {/* Thin accent line at the very top */}
+      <motion.div
+        layoutId="nav-accent-line"
+        style={{
+          position: 'absolute',
+          top: 0,
+          left: 0,
+          right: 0,
+          height: '2px',
+          background: `linear-gradient(90deg, transparent 0%, ${accent} 30%, ${accent} 70%, transparent 100%)`,
+          opacity: 0.6,
+        }}
+      />
+
+      <div style={{ maxWidth: '72rem', margin: '0 auto', padding: '0 1.5rem' }}>
+        <div
+          style={{
+            display: 'flex',
+            justifyContent: 'space-between',
+            alignItems: 'center',
+            height: '4rem',
+          }}
+        >
+          {/* Logo */}
           <Link href="/" passHref>
             <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              className="text-xl font-bold bg-gradient-to-r from-purple-400 to-pink-500 bg-clip-text text-transparent cursor-pointer"
+              whileHover={{ scale: 1.04 }}
+              style={{ cursor: 'pointer', display: 'flex', alignItems: 'center' }}
             >
-              <Image alt="logo" src="/assets/hsy.png" width={80} height={160} draggable="false"/>
+              <Image alt="logo" src="/assets/hsy.png" width={72} height={48} draggable={false} />
             </motion.div>
           </Link>
-          <div className="flex gap-8 text-lg">
-            {["about", "skills", "projects"].map((item) => (
-              <motion.a
-                key={item}
-                href={`#${item}`}
-                className={`capitalize ${
-                  activeSection === item ? "text-purple-400" : "text-gray-400"
-                } hover:text-purple-400 transition-colors`}
-                onClick={() => setActiveSection(item)}
-                whileHover={{ scale: 1.05 }}
-              >
-                {item}
-              </motion.a>
-            ))}
+
+          {/* Nav links */}
+          <div style={{ display: 'flex', gap: '0.25rem', alignItems: 'center' }}>
+            {navLinks.map((link) => {
+              const isActive = activeSection === link.id;
+              return (
+                <motion.a
+                  key={link.id}
+                  href={`#${link.id}`}
+                  onClick={() => setActiveSection(link.id)}
+                  whileHover={{ scale: 1.04 }}
+                  style={{
+                    position: 'relative',
+                    padding: '0.4rem 0.9rem',
+                    borderRadius: '6px',
+                    fontSize: '0.85rem',
+                    fontFamily: 'var(--font-jetbrains-mono), monospace',
+                    letterSpacing: '0.04em',
+                    color: isActive ? accent : '#64748b',
+                    textDecoration: 'none',
+                    transition: 'color 0.2s',
+                    background: isActive ? `${accent}0f` : 'transparent',
+                  }}
+                  onMouseEnter={(e) => {
+                    if (!isActive)
+                      (e.currentTarget as HTMLAnchorElement).style.color = '#94a3b8';
+                  }}
+                  onMouseLeave={(e) => {
+                    if (!isActive)
+                      (e.currentTarget as HTMLAnchorElement).style.color = '#64748b';
+                  }}
+                >
+                  {isActive && (
+                    <motion.span
+                      layoutId="nav-indicator"
+                      style={{
+                        position: 'absolute',
+                        bottom: '2px',
+                        left: '50%',
+                        transform: 'translateX(-50%)',
+                        width: '4px',
+                        height: '4px',
+                        borderRadius: '50%',
+                        background: accent,
+                        display: 'block',
+                        boxShadow: `0 0 6px ${accent}`,
+                      }}
+                    />
+                  )}
+                  {link.label}
+                </motion.a>
+              );
+            })}
+
+            {/* Viewer type pill */}
+            <div
+              style={{
+                marginLeft: '0.75rem',
+                padding: '0.2rem 0.65rem',
+                borderRadius: '999px',
+                background: `${accent}14`,
+                border: `1px solid ${accent}30`,
+                color: accent,
+                fontSize: '0.65rem',
+                fontFamily: 'var(--font-jetbrains-mono), monospace',
+                letterSpacing: '0.08em',
+                textTransform: 'uppercase',
+                whiteSpace: 'nowrap',
+              }}
+            >
+              {isRecruiter ? 'Recruiter View' : 'Dev View'}
+            </div>
           </div>
         </div>
       </div>
-    </nav>
+    </motion.nav>
   );
 };
