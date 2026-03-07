@@ -81,7 +81,7 @@ function PortfolioApp() {
           <NavBar />
           <main className="pt-20">
             <HeroSection viewerType={chosenType} />
-            <ExperienceSection />
+            <ExperienceSection viewerType={chosenType} />
             <section id="skills">
               <SkillSection viewerType={chosenType} />
             </section>

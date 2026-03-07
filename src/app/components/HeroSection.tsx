@@ -342,8 +342,8 @@ export const HeroSection = ({ viewerType }: HeroSectionProps) => {
             </motion.div>
 
             {/* ── Profile image ────────────────────────────────────────────────── */}
-            <div className="relative w-80 h-80 cursor-grab hidden md:block">
-              <ProfileImage profilePicUrl={profilePicUrl} />
+            <div className="relative hidden md:block" style={{ flexShrink: 0 }}>
+              <ProfileImage profilePicUrl={profilePicUrl} viewerType={viewerType} />
             </div>
           </div>
         </div>
