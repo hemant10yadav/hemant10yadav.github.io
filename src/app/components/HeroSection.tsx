@@ -96,27 +96,27 @@ export const HeroSection = ({ viewerType }: HeroSectionProps) => {
 
   const content = isRecruiter
     ? {
-        headline: 'I ship things that scale.',
-        headlineSub: 'Here\'s proof.',
-        subline: `${experience} · 2 companies · 0 production fires I didn't put out.`,
+        headline: "I ship things that scale.",
+        headlineSub: "Here's proof.",
+        subline: `${experience} · 2 companies · I've seen what breaks at scale. I build around it.`,
         about:
-          `At Dimagi, I maintained systems serving NGOs across 60+ countries. At Xcaliber, ` +
-          `I delivered Spring Boot APIs handling enterprise-level traffic. I build for scale, ` +
-          `correctness, and the person on-call at 3am.`,
+          `At Dimagi, I maintain systems used by frontline health workers across 130 countries. At Xcaliber, ` +
+          `I built one Spring Boot backend that powered web, Android, and iOS simultaneously. ` +
+          `I build for scale, correctness, and the person on-call at 3am.`,
         ctaLabel: "Let's talk about what I can build for your team →",
-        ctaHref: 'mailto:hemant.10.yadav@gmail.com',
+        ctaHref: "mailto:hemant.10.yadav@gmail.com",
       }
     : {
-        headline: 'Here\'s what actually happened.',
-        headlineSub: '',
+        headline: "Here's what actually happened.",
+        headlineSub: "",
         subline:
-          'The decisions, the tradeoffs, the 2am bugs. The real version.',
+          "The decisions, the tradeoffs, the 2am bugs. The real version.",
         about:
           `I've spent ${experience} navigating the gap between "it works on my machine" and ` +
           `"it works for 10,000 users." I've over-engineered things, simplified them, shipped ` +
           `them, and learned why boring code is often the best code.`,
         ctaLabel: "Let's build something weird together →",
-        ctaHref: 'https://github.com/hemant10yadav',
+        ctaHref: "https://github.com/hemant10yadav",
       };
 
   return (

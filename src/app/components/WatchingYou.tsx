@@ -4,7 +4,19 @@ import { useEffect, useRef, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useViewer } from '../context/ViewerContext';
 
-// ── helpers ──────────────────────────────────────────────────────────────────
+// ── localStorage helpers (safe for private browsing) ─────────────────────────
+
+const LS_TYPE_KEY = 'hy_viewer_type';
+const LS_VISITS_KEY = 'hy_visit_count';
+
+const lsGet = (key: string): string | null => {
+  try { return localStorage.getItem(key); } catch { return null; }
+};
+const lsSet = (key: string, val: string) => {
+  try { localStorage.setItem(key, val); } catch { /* ignore */ }
+};
+
+// ── visitor data helpers ──────────────────────────────────────────────────────
 
 function parseReferrer(ref: string): string {
   if (!ref) return 'somewhere secret';
@@ -17,151 +29,155 @@ function parseReferrer(ref: string): string {
 function parseBrowserAndOS(ua: string): { browser: string; os: string } {
   let browser = 'your browser';
   let os = 'your OS';
-
   if (ua.includes('Edg/')) browser = 'Edge';
   else if (ua.includes('Chrome/')) browser = 'Chrome';
   else if (ua.includes('Firefox/')) browser = 'Firefox';
   else if (ua.includes('Safari/') && !ua.includes('Chrome')) browser = 'Safari';
-
   if (ua.includes('Mac OS X')) os = 'Mac';
   else if (ua.includes('Windows')) os = 'Windows';
   else if (ua.includes('Linux')) os = 'Linux';
   else if (ua.includes('Android')) os = 'Android';
   else if (ua.includes('iPhone') || ua.includes('iPad')) os = 'iOS';
-
   return { browser, os };
 }
 
-// ── line reveal schedule (cumulative ms from mount) ──────────────────────────
-//
-// Line 1  – 0.8 s
-// Line 2  – 0.8 + 1.2 = 2.0 s
-// Line 3  – 2.0 + 1.0 = 3.0 s
-// Line 4  – 3.0 + 1.2 = 4.2 s
-// Line 5  – 4.2 + 0.8 = 5.0 s
-// [pause 1.5 s → 6.5 s]
-// Line 6  – 6.5 + 1.0 = 7.5 s
-// Line 7  – 7.5 + 0.6 = 8.1 s
-// [pause 2.0 s → 10.1 s]
-// Line 8  – 10.1 + 0.8 = 10.9 s
-// [pause 2.5 s → 13.4 s]
-// Line 9  – 13.4 + 1.0 = 14.4 s
-// Line 10 – 14.4 + 1.2 = 15.6 s
-// Buttons – 15.6 + 0.8 = 16.4 s
+// ── timing schedule for new visitors (cumulative ms) ─────────────────────────
 
 const SCHEDULE: Array<[number, number | 'buttons']> = [
-  [800, 1],
-  [2000, 2],
-  [3000, 3],
-  [4200, 4],
-  [5000, 5],
-  [7500, 6],
-  [8100, 7],
-  [10900, 8],
-  [14400, 9],
-  [15600, 10],
+  [800, 1], [2000, 2], [3000, 3], [4200, 4], [5000, 5],
+  [7500, 6], [8100, 7], [10900, 8], [14400, 9], [15600, 10],
   [16400, 'buttons'],
 ];
 
-const TOTAL_LINES = 10;
+// returning visitor lines animate fast
+const RETURNING_SCHEDULE: Array<[number, number | 'buttons']> = [
+  [400, 1], [1100, 2], [1700, 3], [2400, 'buttons'],
+];
+
+type Mode = null | 'returning' | 'new-mobile' | 'new-desktop';
+
+const lineVariants = {
+  hidden: { opacity: 0, y: 10 },
+  visible: { opacity: 1, y: 0, transition: { duration: 0.35, ease: 'easeOut' } },
+};
+
+const btnVariants = {
+  hidden: { opacity: 0, y: 12 },
+  visible: (i: number) => ({
+    opacity: 1, y: 0,
+    transition: { duration: 0.45, delay: i * 0.12, ease: 'easeOut' },
+  }),
+};
 
 // ── component ─────────────────────────────────────────────────────────────────
 
 export default function WatchingYou() {
   const { setViewerType } = useViewer();
 
-  // isMobile: null = not yet determined (avoids SSR mismatch)
-  const [isMobile, setIsMobile] = useState<boolean | null>(null);
+  const [mode, setMode] = useState<Mode>(null);
+  const [previousChoice, setPreviousChoice] = useState<'recruiter' | 'developer' | null>(null);
+  const [visitCount, setVisitCount] = useState(0);
 
+  // new-desktop state
   const [counter, setCounter] = useState(0);
   const [revealedCount, setRevealedCount] = useState(0);
   const [showButtons, setShowButtons] = useState(false);
   const [showSkip, setShowSkip] = useState(false);
-
   const timeoutsRef = useRef<ReturnType<typeof setTimeout>[]>([]);
 
   const [visitorData, setVisitorData] = useState({
-    referrer: 'somewhere secret',
-    time: '',
-    browser: 'your browser',
-    os: 'your OS',
-    screenWidth: 0,
+    referrer: 'somewhere secret', time: '',
+    browser: 'your browser', os: 'your OS', screenWidth: 0,
   });
 
-  // ── initialise on client ────────────────────────────────────────────────────
+  // ── initialise on client ──────────────────────────────────────────────────
   useEffect(() => {
-    const mobile = window.innerWidth < 768;
-    setIsMobile(mobile);
+    const stored = lsGet(LS_TYPE_KEY) as 'recruiter' | 'developer' | null;
+    const visits = parseInt(lsGet(LS_VISITS_KEY) || '0', 10);
 
-    if (!mobile) {
-      const { browser, os } = parseBrowserAndOS(navigator.userAgent);
-      setVisitorData({
-        referrer: parseReferrer(document.referrer),
-        time: new Date().toLocaleTimeString(),
-        browser,
-        os,
-        screenWidth: window.screen.width,
-      });
+    if (stored) {
+      setPreviousChoice(stored);
+      setVisitCount(visits);
+      setMode('returning');
+      return;
     }
+
+    const mobile = window.innerWidth < 768;
+    if (mobile) {
+      setMode('new-mobile');
+      return;
+    }
+
+    const { browser, os } = parseBrowserAndOS(navigator.userAgent);
+    setVisitorData({
+      referrer: parseReferrer(document.referrer),
+      time: new Date().toLocaleTimeString(),
+      browser, os,
+      screenWidth: window.screen.width,
+    });
+    setMode('new-desktop');
   }, []);
 
-  // ── counter ─────────────────────────────────────────────────────────────────
+  // ── counter for new-desktop ───────────────────────────────────────────────
   useEffect(() => {
-    if (isMobile) return;
+    if (mode !== 'new-desktop') return;
     const id = setInterval(() => setCounter((c) => c + 1), 1000);
     return () => clearInterval(id);
-  }, [isMobile]);
+  }, [mode]);
 
-  // ── line reveal schedule ────────────────────────────────────────────────────
+  // ── line reveal schedule ─────────────────────────────────────────────────
   useEffect(() => {
-    if (isMobile === null || isMobile) return;
+    if (mode !== 'new-desktop' && mode !== 'returning') return;
 
-    for (const [delay, action] of SCHEDULE) {
+    const schedule = mode === 'returning' ? RETURNING_SCHEDULE : SCHEDULE;
+
+    for (const [delay, action] of schedule) {
       const t = setTimeout(() => {
-        if (action === 'buttons') {
-          setShowButtons(true);
-        } else {
-          setRevealedCount(action as number);
-        }
+        if (action === 'buttons') setShowButtons(true);
+        else setRevealedCount(action as number);
       }, delay);
       timeoutsRef.current.push(t);
     }
 
-    const skipTimer = setTimeout(() => setShowSkip(true), 3000);
-    timeoutsRef.current.push(skipTimer);
+    if (mode === 'new-desktop') {
+      const skipTimer = setTimeout(() => setShowSkip(true), 3000);
+      timeoutsRef.current.push(skipTimer);
+    }
 
     return () => {
       timeoutsRef.current.forEach(clearTimeout);
       timeoutsRef.current = [];
     };
-  }, [isMobile]);
+  }, [mode]);
 
-  // ── mobile: go straight to buttons ─────────────────────────────────────────
+  // ── mobile new visitor: buttons immediately ───────────────────────────────
   useEffect(() => {
-    if (isMobile === true) {
-      setRevealedCount(TOTAL_LINES);
+    if (mode === 'new-mobile') {
+      setRevealedCount(10);
       setShowButtons(true);
     }
-  }, [isMobile]);
+  }, [mode]);
 
-  // ── skip intro ──────────────────────────────────────────────────────────────
   const handleSkip = () => {
     timeoutsRef.current.forEach(clearTimeout);
     timeoutsRef.current = [];
-    setRevealedCount(TOTAL_LINES);
+    setRevealedCount(10);
     setShowButtons(true);
     setShowSkip(false);
   };
 
-  // Avoid SSR flash — nothing is rendered until client knows screen size
-  if (isMobile === null) return null;
+  const handleChoice = (type: 'recruiter' | 'developer') => {
+    const visits = parseInt(lsGet(LS_VISITS_KEY) || '0', 10);
+    lsSet(LS_TYPE_KEY, type);
+    lsSet(LS_VISITS_KEY, String(visits + 1));
+    setViewerType(type);
+  };
 
-  // ── line definitions ────────────────────────────────────────────────────────
-  const lines: Array<{ text: string; color: 'normal' | 'meta' | 'blue' }> = [
-    {
-      text: `You've been on this page for ${counter} ${counter === 1 ? 'second' : 'seconds'}.`,
-      color: 'normal',
-    },
+  if (mode === null) return null;
+
+  // ── line definitions for new-desktop ─────────────────────────────────────
+  const newVisitorLines: Array<{ text: string; color: 'normal' | 'meta' | 'blue' }> = [
+    { text: `You've been on this page for ${counter} ${counter === 1 ? 'second' : 'seconds'}.`, color: 'normal' },
     { text: `You came from ${visitorData.referrer}.`, color: 'meta' },
     { text: `It's ${visitorData.time} where you are.`, color: 'meta' },
     { text: `You're on ${visitorData.browser} · ${visitorData.os}.`, color: 'meta' },
@@ -173,25 +189,83 @@ export default function WatchingYou() {
     { text: 'who are you?', color: 'normal' },
   ];
 
-  const colorMap = {
-    normal: '#e2e8f0',
-    meta: '#64748b',
-    blue: '#38bdf8',
-  };
+  // ── line definitions for returning visitor ────────────────────────────────
+  const otherChoice = previousChoice === 'recruiter' ? 'developer' : 'recruiter';
+  const returningLines: Array<{ text: string; color: 'normal' | 'meta' | 'blue' }> = [
+    { text: "You're back.", color: 'normal' },
+    {
+      text: `Last time you were here as a ${previousChoice}${visitCount > 1 ? ` (visit #${visitCount})` : ''}.`,
+      color: 'blue',
+    },
+    { text: 'Changed your mind?', color: 'normal' },
+  ];
 
-  const lineVariants = {
-    hidden: { opacity: 0, y: 10 },
-    visible: { opacity: 1, y: 0, transition: { duration: 0.4, ease: 'easeOut' } },
-  };
+  const colorMap = { normal: '#e2e8f0', meta: '#64748b', blue: '#38bdf8' };
 
-  const buttonVariants = {
-    hidden: { opacity: 0, y: 12 },
-    visible: (i: number) => ({
-      opacity: 1,
-      y: 0,
-      transition: { duration: 0.5, delay: i * 0.15, ease: 'easeOut' },
-    }),
-  };
+  const activeLinesForMode =
+    mode === 'returning' ? returningLines : newVisitorLines;
+
+  const IdentityButtons = () => (
+    <AnimatePresence>
+      {showButtons && (
+        <div
+          style={{
+            display: 'flex',
+            flexDirection: mode === 'new-mobile' ? 'column' : 'row',
+            gap: '1rem',
+            marginTop: mode === 'returning' ? '2rem' : '2.5rem',
+            flexWrap: 'wrap',
+          }}
+        >
+          {mode === 'returning' ? (
+            // Returning visitor — personalised buttons
+            <>
+              <motion.button
+                custom={0} variants={btnVariants} initial="hidden" animate="visible"
+                onClick={() => handleChoice(previousChoice!)}
+                style={btnStyle(true)}
+                onMouseEnter={(e) => applyHoverIn(e.currentTarget as HTMLButtonElement)}
+                onMouseLeave={(e) => applyHoverOut(e.currentTarget as HTMLButtonElement)}
+              >
+                [ Nope, still a {previousChoice} ]
+              </motion.button>
+              <motion.button
+                custom={1} variants={btnVariants} initial="hidden" animate="visible"
+                onClick={() => handleChoice(otherChoice)}
+                style={btnStyle(false)}
+                onMouseEnter={(e) => applyHoverIn(e.currentTarget as HTMLButtonElement)}
+                onMouseLeave={(e) => applyHoverOut(e.currentTarget as HTMLButtonElement)}
+              >
+                [ Actually, I&apos;m a {otherChoice} ]
+              </motion.button>
+            </>
+          ) : (
+            // New visitor — identity choice
+            <>
+              {[
+                { label: "I'm here to hire", type: 'recruiter' as const },
+                { label: "I'm a fellow developer", type: 'developer' as const },
+              ].map((btn, i) => (
+                <motion.button
+                  key={btn.type}
+                  custom={i} variants={btnVariants} initial="hidden" animate="visible"
+                  onClick={() => handleChoice(btn.type)}
+                  style={{
+                    ...btnStyle(false),
+                    width: mode === 'new-mobile' ? '100%' : 'auto',
+                  }}
+                  onMouseEnter={(e) => applyHoverIn(e.currentTarget as HTMLButtonElement)}
+                  onMouseLeave={(e) => applyHoverOut(e.currentTarget as HTMLButtonElement)}
+                >
+                  [ {btn.label} ]
+                </motion.button>
+              ))}
+            </>
+          )}
+        </div>
+      )}
+    </AnimatePresence>
+  );
 
   return (
     <div
@@ -199,9 +273,9 @@ export default function WatchingYou() {
       style={{ background: '#000', padding: '0 clamp(1.5rem, 8vw, 6rem)' }}
     >
       {/* Lines */}
-      {!isMobile && (
+      {mode !== 'new-mobile' && (
         <div className="space-y-4 w-full max-w-2xl">
-          {lines.map((line, i) => (
+          {activeLinesForMode.map((line, i) => (
             <AnimatePresence key={i}>
               {revealedCount > i && (
                 <motion.p
@@ -212,7 +286,7 @@ export default function WatchingYou() {
                     color: colorMap[line.color],
                     fontFamily: 'var(--font-jetbrains-mono), monospace',
                     fontSize: 'clamp(0.9rem, 1.8vw, 1.125rem)',
-                    lineHeight: 1.6,
+                    lineHeight: 1.65,
                   }}
                 >
                   {line.text}
@@ -220,85 +294,56 @@ export default function WatchingYou() {
               )}
             </AnimatePresence>
           ))}
+          <IdentityButtons />
         </div>
       )}
 
-      {/* Buttons */}
-      <AnimatePresence>
-        {showButtons && (
-          <div
-            className={`flex ${isMobile ? 'flex-col w-full max-w-xs mx-auto items-center justify-center h-full' : 'flex-col sm:flex-row gap-4 mt-10 max-w-2xl'}`}
-            style={isMobile ? { gap: '1rem' } : {}}
+      {/* Mobile: full-screen centred buttons */}
+      {mode === 'new-mobile' && (
+        <div
+          style={{
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center',
+            justifyContent: 'center',
+            height: '100%',
+            width: '100%',
+            gap: '1rem',
+            maxWidth: '20rem',
+            margin: '0 auto',
+          }}
+        >
+          <p
+            style={{
+              fontFamily: 'var(--font-jetbrains-mono), monospace',
+              color: '#64748b',
+              fontSize: '0.85rem',
+              marginBottom: '1rem',
+              textAlign: 'center',
+            }}
           >
-            {[
-              { label: "I'm here to hire", type: 'recruiter' as const },
-              { label: "I'm a fellow developer", type: 'developer' as const },
-            ].map((btn, i) => (
-              <motion.button
-                key={btn.type}
-                custom={i}
-                variants={buttonVariants}
-                initial="hidden"
-                animate="visible"
-                onClick={() => setViewerType(btn.type)}
-                style={{
-                  fontFamily: 'var(--font-jetbrains-mono), monospace',
-                  border: '1px solid rgba(226,232,240,0.3)',
-                  color: '#e2e8f0',
-                  background: 'transparent',
-                  padding: '0.75rem 1.75rem',
-                  cursor: 'pointer',
-                  fontSize: '1rem',
-                  letterSpacing: '0.02em',
-                  transition: 'all 0.25s ease',
-                  width: isMobile ? '100%' : 'auto',
-                  whiteSpace: 'nowrap',
-                }}
-                onMouseEnter={(e) => {
-                  (e.currentTarget as HTMLButtonElement).style.boxShadow =
-                    '0 0 20px rgba(226,232,240,0.25), inset 0 0 20px rgba(226,232,240,0.05)';
-                  (e.currentTarget as HTMLButtonElement).style.borderColor = 'rgba(226,232,240,0.7)';
-                }}
-                onMouseLeave={(e) => {
-                  (e.currentTarget as HTMLButtonElement).style.boxShadow = 'none';
-                  (e.currentTarget as HTMLButtonElement).style.borderColor =
-                    'rgba(226,232,240,0.3)';
-                }}
-              >
-                [ {btn.label} ]
-              </motion.button>
-            ))}
-          </div>
-        )}
-      </AnimatePresence>
+            who are you?
+          </p>
+          <IdentityButtons />
+        </div>
+      )}
 
       {/* Skip intro */}
       <AnimatePresence>
         {showSkip && !showButtons && (
           <motion.button
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
+            initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
             onClick={handleSkip}
             style={{
-              position: 'fixed',
-              bottom: '1.5rem',
-              right: '1.5rem',
-              background: 'none',
-              border: 'none',
-              color: '#475569',
+              position: 'fixed', bottom: '1.5rem', right: '1.5rem',
+              background: 'none', border: 'none', color: '#475569',
               cursor: 'pointer',
               fontFamily: 'var(--font-jetbrains-mono), monospace',
-              fontSize: '0.8rem',
-              letterSpacing: '0.05em',
+              fontSize: '0.8rem', letterSpacing: '0.05em',
               transition: 'color 0.2s',
             }}
-            onMouseEnter={(e) =>
-              ((e.currentTarget as HTMLButtonElement).style.color = '#94a3b8')
-            }
-            onMouseLeave={(e) =>
-              ((e.currentTarget as HTMLButtonElement).style.color = '#475569')
-            }
+            onMouseEnter={(e) => ((e.currentTarget as HTMLButtonElement).style.color = '#94a3b8')}
+            onMouseLeave={(e) => ((e.currentTarget as HTMLButtonElement).style.color = '#475569')}
           >
             skip intro →
           </motion.button>
@@ -307,3 +352,27 @@ export default function WatchingYou() {
     </div>
   );
 }
+
+// ── style helpers ─────────────────────────────────────────────────────────────
+
+const btnStyle = (primary: boolean): React.CSSProperties => ({
+  fontFamily: 'var(--font-jetbrains-mono), monospace',
+  border: '1px solid rgba(226,232,240,0.25)',
+  color: '#e2e8f0',
+  background: primary ? 'rgba(226,232,240,0.04)' : 'transparent',
+  padding: '0.75rem 1.75rem',
+  cursor: 'pointer',
+  fontSize: '1rem',
+  letterSpacing: '0.02em',
+  transition: 'all 0.2s ease',
+  whiteSpace: 'nowrap' as const,
+});
+
+const applyHoverIn = (el: HTMLButtonElement) => {
+  el.style.boxShadow = '0 0 20px rgba(226,232,240,0.2), inset 0 0 20px rgba(226,232,240,0.04)';
+  el.style.borderColor = 'rgba(226,232,240,0.6)';
+};
+const applyHoverOut = (el: HTMLButtonElement) => {
+  el.style.boxShadow = 'none';
+  el.style.borderColor = 'rgba(226,232,240,0.25)';
+};

@@ -12,6 +12,8 @@ import { ProjectSection } from './components/ProjectSection';
 import ExperienceSection from './components/ExperienceSection';
 import { NavBar } from './components/Navbar';
 import EasterEgg from './components/EasterEgg';
+import GitHubActivity from './components/GitHubActivity';
+import FailuresLog from './components/FailuresLog';
 
 // ── inner app — has access to ViewerContext ────────────────────────────────────
 
@@ -88,8 +90,10 @@ function PortfolioApp() {
             <section id="projects" className="pb-24">
               <ProjectSection viewerType={chosenType} />
             </section>
+            {chosenType === 'developer' && <FailuresLog />}
           </main>
           <EasterEgg />
+          <GitHubActivity />
         </motion.div>
       )}
     </>

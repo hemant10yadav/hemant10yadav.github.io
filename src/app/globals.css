@@ -24,6 +24,10 @@ body {
   font-family: var(--font-jetbrains-mono), monospace;
 }
 
+@keyframes ping {
+  75%, 100% { transform: scale(2); opacity: 0; }
+}
+
 @keyframes blink {
   0%, 100% { opacity: 0.7; }
   50% { opacity: 0; }
