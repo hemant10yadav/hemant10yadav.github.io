@@ -13,6 +13,7 @@ import EasterEgg from './components/EasterEgg';
 import GitHubActivity from './components/GitHubActivity';
 import FailuresLog from './components/FailuresLog';
 import Pulse from './components/Pulse';
+import CLITerminal from './components/CLITerminal';
 
 // ── inner app — has access to ViewerContext ────────────────────────────────────
 
@@ -47,6 +48,7 @@ function PortfolioApp() {
           </section>
           {viewerType === 'developer' && <FailuresLog />}
           <Pulse />
+          <CLITerminal />
         </main>
         <EasterEgg />
         <GitHubActivity />

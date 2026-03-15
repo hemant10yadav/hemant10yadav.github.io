@@ -22,7 +22,7 @@ export const NavBar = () => {
 
   // Auto-highlight active section via IntersectionObserver
   useEffect(() => {
-    const sections = ['about', 'skills', 'projects', 'pulse'];
+    const sections = ['about', 'skills', 'projects', 'pulse', 'terminal'];
     const observers: IntersectionObserver[] = [];
 
     sections.forEach((id) => {
@@ -44,6 +44,7 @@ export const NavBar = () => {
     { id: 'skills', label: 'Skills' },
     { id: 'projects', label: 'Projects' },
     { id: 'pulse', label: 'Pulse' },
+    { id: 'terminal', label: 'Terminal' },
   ];
 
   return (
