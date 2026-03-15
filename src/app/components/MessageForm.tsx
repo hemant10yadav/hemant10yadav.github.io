@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import { event } from 'nextjs-google-analytics';
 import { ViewerType } from '../context/ViewerContext';
 import { CONTACT_SCRIPT_URL } from '../constants';
 
@@ -77,6 +78,7 @@ export const MessageForm = ({ viewerType, accent }: Props) => {
         setSubmitted(true);
         setFormData({ name: '', email: '', message: '' });
         setErrors({ name: '', email: '', message: '' });
+        event('contact_form_submitted', { category: 'Contact', label: viewerType, value: 1 });
       } else {
         alert('Failed to send. Please try again.');
       }

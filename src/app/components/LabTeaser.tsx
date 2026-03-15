@@ -2,6 +2,7 @@
 
 import { motion } from 'framer-motion';
 import Link from 'next/link';
+import { event } from 'nextjs-google-analytics';
 import { useViewer } from '../context/ViewerContext';
 
 const CARDS = [
@@ -137,6 +138,7 @@ export default function LabTeaser() {
         >
           <Link href="/lab" passHref>
             <motion.span
+              onClick={() => event('lab_cta_clicked', { category: 'Navigation', label: 'LabTeaser', value: 1 })}
               whileHover={{ x: 4 }}
               style={{
                 display: 'inline-flex',

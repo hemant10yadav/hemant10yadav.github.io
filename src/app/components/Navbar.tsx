@@ -5,6 +5,7 @@ import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { Moon, Sun } from 'lucide-react';
+import { event } from 'nextjs-google-analytics';
 import { useViewer } from '../context/ViewerContext';
 
 export const NavBar = () => {
@@ -136,7 +137,10 @@ export const NavBar = () => {
 
             {/* Dark / light toggle */}
             <motion.button
-              onClick={toggleColorMode}
+              onClick={() => {
+                event('color_mode_toggled', { category: 'UI', label: isDark ? 'light' : 'dark', value: 1 });
+                toggleColorMode();
+              }}
               whileHover={{ scale: 1.1 }}
               whileTap={{ scale: 0.9 }}
               title={isDark ? 'Switch to light mode' : 'Switch to dark mode'}
@@ -169,7 +173,10 @@ export const NavBar = () => {
 
             {/* Viewer toggle */}
             <motion.button
-              onClick={toggleViewerType}
+              onClick={() => {
+                event('viewer_type_toggled', { category: 'UI', label: isRecruiter ? 'developer' : 'recruiter', value: 1 });
+                toggleViewerType();
+              }}
               whileHover={{ scale: 1.06 }}
               whileTap={{ scale: 0.95 }}
               style={{

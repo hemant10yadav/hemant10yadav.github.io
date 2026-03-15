@@ -78,7 +78,7 @@ export const ProjectSection = ({ viewerType }: ProjectSectionProps) => {
   };
 
   const handleDemoClick = (url: string, title: string) => {
-    event('Video views', { category: 'Portfolio', label: title, value: 1 });
+    event('demo_viewed', { category: 'Portfolio', label: title, value: 1 });
     window.open(url, '_blank', 'noopener,noreferrer');
   };
 

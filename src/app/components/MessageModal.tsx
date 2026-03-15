@@ -1,6 +1,8 @@
 'use client';
 
 import { motion } from 'framer-motion';
+import { useEffect } from 'react';
+import { event } from 'nextjs-google-analytics';
 import { MessageForm } from './MessageForm';
 import { ViewerType, useViewer, RECRUITER_ACCENT, DEVELOPER_ACCENT } from '../context/ViewerContext';
 
@@ -25,6 +27,10 @@ const CONTENT = {
 export const MessageModal = ({ onClose, viewerType }: Props) => {
   const { accent } = useViewer();
   const { title, sub } = CONTENT[viewerType];
+
+  useEffect(() => {
+    event('contact_form_opened', { category: 'Contact', label: viewerType, value: 1 });
+  }, [viewerType]);
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center" style={{ background: 'rgba(0,0,0,0.75)', backdropFilter: 'blur(4px)' }}>
