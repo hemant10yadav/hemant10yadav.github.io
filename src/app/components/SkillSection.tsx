@@ -136,7 +136,7 @@ export default function SkillSection({ viewerType }: SkillSectionProps) {
   return (
     <section
       className="relative py-32 overflow-hidden"
-      style={{ background: '#080c14' }}
+      style={{ background: 'var(--bg)' }}
     >
       <canvas ref={canvasRef} className="absolute inset-0 w-full h-full pointer-events-none" />
 
@@ -160,7 +160,7 @@ export default function SkillSection({ viewerType }: SkillSectionProps) {
             {isRecruiter ? 'What I bring to your team' : 'What I actually know'}
           </h2>
           {!isRecruiter && (
-            <p style={{ color: '#475569', marginTop: '0.5rem', fontSize: '0.875rem' }}>
+            <p style={{ color: 'var(--fg-4)', marginTop: '0.5rem', fontSize: '0.875rem' }}>
               with honest annotations
             </p>
           )}
@@ -214,7 +214,7 @@ export default function SkillSection({ viewerType }: SkillSectionProps) {
                       </div>
                       <span
                         style={{
-                          color: '#94a3b8',
+                          color: 'var(--fg-2)',
                           fontSize: '0.8rem',
                         }}
                       >
@@ -237,7 +237,7 @@ export default function SkillSection({ viewerType }: SkillSectionProps) {
                 transition={{ duration: 0.4, delay: i * 0.05 }}
                 whileHover={{ scale: 1.02 }}
                 style={{
-                  background: 'rgba(255,255,255,0.03)',
+                  background: 'var(--bg-card)',
                   border: '1px solid rgba(34,211,238,0.1)',
                   borderRadius: '10px',
                   padding: '1rem 1.25rem',
@@ -265,7 +265,7 @@ export default function SkillSection({ viewerType }: SkillSectionProps) {
                 <div>
                   <p
                     style={{
-                      color: '#e2e8f0',
+                      color: 'var(--fg)',
                       fontWeight: 600,
                       fontSize: '0.95rem',
                       marginBottom: '0.25rem',
@@ -275,7 +275,7 @@ export default function SkillSection({ viewerType }: SkillSectionProps) {
                   </p>
                   <p
                     style={{
-                      color: '#475569',
+                      color: 'var(--fg-4)',
                       fontSize: '0.8rem',
                       fontFamily: 'var(--font-jetbrains-mono), monospace',
                       lineHeight: 1.5,

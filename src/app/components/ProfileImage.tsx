@@ -57,7 +57,7 @@ export const ProfileImage: React.FC<ProfileImageProps> = ({
           position: 'absolute',
           inset: '0px',
           borderRadius: '50%',
-          background: '#080c14',
+          background: 'var(--bg)',
           pointerEvents: 'none',
         }}
       />
@@ -70,7 +70,7 @@ export const ProfileImage: React.FC<ProfileImageProps> = ({
           height: '100%',
           borderRadius: '50%',
           overflow: 'hidden',
-          border: '2px solid rgba(255,255,255,0.06)',
+          border: '2px solid var(--border-2)',
         }}
       >
         <Image

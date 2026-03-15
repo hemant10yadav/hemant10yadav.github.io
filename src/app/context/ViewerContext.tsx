@@ -2,10 +2,11 @@
 
 import { createContext, useContext, useState, useEffect, useCallback } from 'react';
 
-export type ViewerType = 'recruiter' | 'developer';
+export type ViewerType  = 'recruiter' | 'developer';
+export type ColorMode   = 'dark' | 'light';
 
 // ── theme colours — change here and it propagates everywhere ──────────────────
-export const RECRUITER_ACCENT = "#f2c078";
+export const RECRUITER_ACCENT = '#f2c078';
 export const DEVELOPER_ACCENT = '#22d3ee';
 
 export const getAccent = (type: ViewerType) =>
@@ -16,17 +17,21 @@ export const getAccent = (type: ViewerType) =>
 interface ViewerContextValue {
   viewerType: ViewerType;
   accent: string;
+  colorMode: ColorMode;
   ready: boolean;
   setViewerType: (type: ViewerType) => void;
   toggleViewerType: () => void;
+  toggleColorMode: () => void;
 }
 
 const ViewerContext = createContext<ViewerContextValue>({
   viewerType: 'recruiter',
   accent: RECRUITER_ACCENT,
+  colorMode: 'dark',
   ready: false,
   setViewerType: () => {},
   toggleViewerType: () => {},
+  toggleColorMode: () => {},
 });
 
 function syncURL(type: ViewerType) {
@@ -35,16 +40,34 @@ function syncURL(type: ViewerType) {
   window.history.replaceState({}, '', url.toString());
 }
 
+function applyColorMode(mode: ColorMode) {
+  document.documentElement.setAttribute('data-theme', mode);
+  try { localStorage.setItem('hy_color_mode', mode); } catch { /* ignore */ }
+}
+
 export const ViewerProvider = ({ children }: { children: React.ReactNode }) => {
   const [viewerType, setViewerTypeState] = useState<ViewerType>('recruiter');
-  const [ready, setReady] = useState(false);
+  const [colorMode, setColorModeState]   = useState<ColorMode>('dark');
+  const [ready, setReady]                = useState(false);
 
+  // Read persisted state from URL + localStorage on mount
   useEffect(() => {
+    // Viewer mode from URL
     const params = new URLSearchParams(window.location.search);
     const mode = params.get('mode');
     if (mode === 'developer' || mode === 'recruiter') {
       setViewerTypeState(mode);
     }
+
+    // Color mode from localStorage
+    try {
+      const saved = localStorage.getItem('hy_color_mode') as ColorMode | null;
+      if (saved === 'light' || saved === 'dark') {
+        setColorModeState(saved);
+        document.documentElement.setAttribute('data-theme', saved);
+      }
+    } catch { /* ignore */ }
+
     setReady(true);
   }, []);
 
@@ -61,10 +84,21 @@ export const ViewerProvider = ({ children }: { children: React.ReactNode }) => {
     });
   }, []);
 
+  const toggleColorMode = useCallback(() => {
+    setColorModeState((prev) => {
+      const next = prev === 'dark' ? 'light' : 'dark';
+      applyColorMode(next);
+      return next;
+    });
+  }, []);
+
   const accent = getAccent(viewerType);
 
   return (
-    <ViewerContext.Provider value={{ viewerType, accent, ready, setViewerType, toggleViewerType }}>
+    <ViewerContext.Provider value={{
+      viewerType, accent, colorMode, ready,
+      setViewerType, toggleViewerType, toggleColorMode,
+    }}>
       {children}
     </ViewerContext.Provider>
   );

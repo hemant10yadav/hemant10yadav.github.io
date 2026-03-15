@@ -58,7 +58,11 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
+    <html lang="en" suppressHydrationWarning>
+      <head>
+        {/* Prevent flash of wrong theme — runs before React hydrates */}
+        <script dangerouslySetInnerHTML={{ __html: `(function(){try{var m=localStorage.getItem('hy_color_mode')||'dark';document.documentElement.setAttribute('data-theme',m);}catch(e){}})();` }} />
+      </head>
       <body className={`${inter.variable} ${jetbrainsMono.variable} antialiased`}>
         <ViewerProvider>
           <NavBar />

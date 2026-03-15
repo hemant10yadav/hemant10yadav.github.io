@@ -955,14 +955,14 @@ export default function CLITerminal() {
             <span style={{ position: 'absolute', width: '0.55rem', height: '0.55rem', borderRadius: '50%', background: accent, opacity: 0.35, animation: 'ping 2s cubic-bezier(0,0,0.2,1) infinite' }} />
             <span style={{ width: '0.5rem', height: '0.5rem', borderRadius: '50%', background: accent, display: 'block', position: 'relative' }} />
           </span>
-          <h2 style={{ fontFamily: 'var(--font-jetbrains-mono), monospace', fontSize: '1.6rem', fontWeight: 700, color: '#e2e8f0', margin: 0 }}>Terminal</h2>
-          <span style={{ fontSize: '0.6rem', fontFamily: 'var(--font-jetbrains-mono), monospace', color: '#475569', letterSpacing: '0.08em', textTransform: 'uppercase', padding: '0.15rem 0.5rem', borderRadius: '999px', border: `1px solid ${accent}25`, background: `${accent}08` }}>
+          <h2 style={{ fontFamily: 'var(--font-jetbrains-mono), monospace', fontSize: '1.6rem', fontWeight: 700, color: 'var(--fg)', margin: 0 }}>Terminal</h2>
+          <span style={{ fontSize: '0.6rem', fontFamily: 'var(--font-jetbrains-mono), monospace', color: 'var(--fg-4)', letterSpacing: '0.08em', textTransform: 'uppercase', padding: '0.15rem 0.5rem', borderRadius: '999px', border: `1px solid ${accent}25`, background: `${accent}08` }}>
             interactive
           </span>
         </div>
         <div style={{ display: 'flex', gap: '1rem', flexWrap: 'wrap' }}>
           {[['`', 'focus'], ['Ctrl+R', 'search'], ['Ctrl+L', 'clear'], ['Tab', 'complete']].map(([k, d]) => (
-            <span key={k} style={{ fontFamily: 'var(--font-jetbrains-mono), monospace', fontSize: '0.6rem', color: '#2d3f55' }}>
+            <span key={k} style={{ fontFamily: 'var(--font-jetbrains-mono), monospace', fontSize: '0.6rem', color: 'var(--fg-6)' }}>
               <span style={{ color: `${accent}90` }}>{k}</span> {d}
             </span>
           ))}

@@ -116,7 +116,7 @@ export default function GitHubActivity() {
             padding: '0.4rem 0.75rem',
             borderRadius: '999px',
             maxWidth: 'calc(100vw - 2rem)',
-            background: 'rgba(8,12,20,0.85)',
+            background: 'var(--bg-overlay)',
             border: `1px solid ${accent}30`,
             backdropFilter: 'blur(10px)',
             textDecoration: 'none',
@@ -159,7 +159,7 @@ export default function GitHubActivity() {
             style={{
               fontFamily: 'var(--font-jetbrains-mono), monospace',
               fontSize: '0.7rem',
-              color: '#94a3b8',
+              color: 'var(--fg-2)',
               whiteSpace: 'nowrap',
               overflow: 'hidden',
               textOverflow: 'ellipsis',

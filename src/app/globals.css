@@ -2,31 +2,84 @@
 @tailwind components;
 @tailwind utilities;
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
+/* ── color tokens ────────────────────────────────────────────────────────────
+   Change --bg / --fg / etc. once here — every component inherits them.
+   Switching themes: set data-theme="light" on <html>.
+───────────────────────────────────────────────────────────────────────────── */
+
+:root,
+[data-theme="dark"] {
+  /* backgrounds */
+  --bg:              #080c14;
+  --bg-surface:      #0b1120;
+  --bg-chrome:       #141c2e;
+  --bg-card:         rgba(255, 255, 255, 0.025);
+  --bg-input:        rgba(255, 255, 255, 0.04);
+  --bg-navbar:       rgba(8, 12, 20, 0.6);
+  --bg-navbar-solid: rgba(8, 12, 20, 0.92);
+  --bg-overlay:      rgba(8, 12, 20, 0.85);
+
+  /* text */
+  --fg:   #e2e8f0;
+  --fg-2: #94a3b8;
+  --fg-3: #64748b;
+  --fg-4: #475569;
+  --fg-5: #334155;
+  --fg-6: #2d3f55;
+  --fg-7: #1e293b;
+
+  /* borders */
+  --border:   rgba(255, 255, 255, 0.12);
+  --border-2: rgba(255, 255, 255, 0.06);
+  --border-3: rgba(255, 255, 255, 0.03);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+[data-theme="light"] {
+  /* backgrounds */
+  --bg:              #f0f4f8;
+  --bg-surface:      #ffffff;
+  --bg-chrome:       #e8edf4;
+  --bg-card:         rgba(0, 0, 0, 0.025);
+  --bg-input:        rgba(0, 0, 0, 0.04);
+  --bg-navbar:       rgba(240, 244, 248, 0.6);
+  --bg-navbar-solid: rgba(240, 244, 248, 0.95);
+  --bg-overlay:      rgba(240, 244, 248, 0.85);
+
+  /* text */
+  --fg:   #0f172a;
+  --fg-2: #334155;
+  --fg-3: #475569;
+  --fg-4: #64748b;
+  --fg-5: #94a3b8;
+  --fg-6: #cbd5e1;
+  --fg-7: #e2e8f0;
+
+  /* borders */
+  --border:   rgba(0, 0, 0, 0.12);
+  --border-2: rgba(0, 0, 0, 0.07);
+  --border-3: rgba(0, 0, 0, 0.03);
 }
+
+/* ── base ──────────────────────────────────────────────────────────────────── */
 
 html, body {
   overflow-x: hidden;
 }
 
 body {
-  color: var(--foreground);
-  background: #000;
+  color: var(--fg);
+  background: var(--bg);
   font-family: var(--font-inter), Arial, Helvetica, sans-serif;
+  transition: background 0.3s ease, color 0.3s ease;
 }
+
+/* ── utilities ──────────────────────────────────────────────────────────────── */
 
 .font-mono-display {
   font-family: var(--font-jetbrains-mono), monospace;
 }
+
+/* ── animations ─────────────────────────────────────────────────────────────── */
 
 @keyframes spin {
   to { transform: rotate(360deg); }

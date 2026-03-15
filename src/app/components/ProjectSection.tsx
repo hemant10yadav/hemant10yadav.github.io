@@ -108,7 +108,7 @@ export const ProjectSection = ({ viewerType }: ProjectSectionProps) => {
           >
             {isRecruiter ? 'Things I built' : 'What actually happened'}
           </h2>
-          <p style={{ color: '#475569', marginTop: '0.5rem', fontSize: '0.875rem' }}>
+          <p style={{ color: 'var(--fg-4)', marginTop: '0.5rem', fontSize: '0.875rem' }}>
             {isRecruiter
               ? 'personal projects · real decisions · code on GitHub'
               : 'the unedited version'}
@@ -213,7 +213,7 @@ function RecruiterCard({
       whileInView={{ opacity: 1, y: 0 }}
       transition={{ delay: index * 0.1, duration: 0.4 }}
       style={{
-        background: 'rgba(255,255,255,0.03)',
+        background: 'var(--bg-card)',
         border: '1px solid rgba(110,231,183,0.12)',
         borderRadius: '12px',
         padding: 'clamp(1.25rem, 4vw, 1.75rem)',
@@ -222,7 +222,7 @@ function RecruiterCard({
       <h3
         style={{
           fontFamily: 'var(--font-jetbrains-mono), monospace',
-          color: '#e2e8f0',
+          color: 'var(--fg)',
           fontSize: '1.1rem',
           fontWeight: 700,
           marginBottom: '1.25rem',
@@ -250,7 +250,7 @@ function RecruiterCard({
           >
             {label}
           </span>
-          <p style={{ color: '#94a3b8', fontSize: '0.875rem', lineHeight: 1.65 }}>{text}</p>
+          <p style={{ color: 'var(--fg-2)', fontSize: '0.875rem', lineHeight: 1.65 }}>{text}</p>
         </div>
       ))}
 
@@ -288,7 +288,7 @@ function DeveloperCard({
       whileInView={{ opacity: 1, y: 0 }}
       transition={{ delay: index * 0.1, duration: 0.4 }}
       style={{
-        background: 'rgba(255,255,255,0.03)',
+        background: 'var(--bg-card)',
         border: '1px solid rgba(34,211,238,0.12)',
         borderRadius: '12px',
         padding: 'clamp(1.25rem, 4vw, 1.75rem)',
@@ -297,7 +297,7 @@ function DeveloperCard({
       <h3
         style={{
           fontFamily: 'var(--font-jetbrains-mono), monospace',
-          color: '#e2e8f0',
+          color: 'var(--fg)',
           fontSize: '1.1rem',
           fontWeight: 700,
           marginBottom: '1.25rem',
@@ -325,7 +325,7 @@ function DeveloperCard({
           >
             {label}
           </span>
-          <p style={{ color: '#94a3b8', fontSize: '0.875rem', lineHeight: 1.65 }}>{text}</p>
+          <p style={{ color: 'var(--fg-2)', fontSize: '0.875rem', lineHeight: 1.65 }}>{text}</p>
         </div>
       ))}
 
@@ -396,12 +396,12 @@ function ProjectLinks({
           style={{
             background: 'none',
             border: 'none',
-            color: '#64748b',
+            color: 'var(--fg-3)',
             fontSize: '0.875rem',
             cursor: 'pointer',
             padding: 0,
           }}
-          whileHover={{ x: 4, color: '#94a3b8' }}
+          whileHover={{ x: 4, color: 'var(--fg-2)' }}
         >
           {activeDemoUrl === demoUrl ? 'Hide Demo' : 'Live Demo'}
         </motion.button>

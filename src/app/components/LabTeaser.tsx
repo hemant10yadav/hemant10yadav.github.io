@@ -56,7 +56,7 @@ export default function LabTeaser() {
           style={{
             fontFamily: 'var(--font-jetbrains-mono), monospace',
             fontSize: '0.75rem',
-            color: '#334155',
+            color: 'var(--fg-5)',
             display: 'flex',
             alignItems: 'center',
             gap: '0.5rem',
@@ -96,8 +96,8 @@ export default function LabTeaser() {
               transition={{ duration: 0.4, delay: i * 0.1 }}
               whileHover={{ borderColor: `${accent}35`, y: -2 }}
               style={{
-                background: 'rgba(255,255,255,0.02)',
-                border: '1px solid rgba(255,255,255,0.06)',
+                background: 'var(--bg-card)',
+                border: '1px solid var(--border-2)',
                 borderRadius: '10px',
                 padding: '1.25rem',
                 transition: 'border-color 0.2s, transform 0.2s',
@@ -115,7 +115,7 @@ export default function LabTeaser() {
               </div>
               <p
                 style={{
-                  color: '#475569',
+                  color: 'var(--fg-4)',
                   fontSize: '0.75rem',
                   lineHeight: 1.5,
                   marginTop: '0.35rem',

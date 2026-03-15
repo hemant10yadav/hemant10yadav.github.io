@@ -15,7 +15,7 @@ function PortfolioApp() {
   const { viewerType, ready } = useViewer();
 
   if (!ready) {
-    return <div className="min-h-screen" style={{ background: '#080c14' }} />;
+    return <div className="min-h-screen" style={{ background: 'var(--bg)' }} />;
   }
 
   return (
@@ -25,8 +25,8 @@ function PortfolioApp() {
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ duration: 0.3 }}
-        className="min-h-screen text-white"
-        style={{ background: '#080c14' }}
+        className="min-h-screen"
+        style={{ background: 'var(--bg)' }}
       >
         <main className="pt-20">
           <HeroSection viewerType={viewerType} />

@@ -155,7 +155,7 @@ function SkeletonLine({ width = '100%', height = '0.75rem' }: { width?: string; 
         width,
         height,
         borderRadius: '4px',
-        background: 'rgba(255,255,255,0.06)',
+        background: 'var(--border-2)',
         animation: 'pulse 1.5s ease-in-out infinite',
       }}
     />
@@ -178,7 +178,10 @@ function SkeletonCard({ lines = 5 }: { lines?: number }) {
 
 // ── temperature gauge ────────────────────────────────────────────────────────
 
-function TemperatureGauge({ value, accent }: { value: number; accent: string }) {
+function TemperatureGauge({ value, accent, colorMode }: { value: number; accent: string; colorMode: 'dark' | 'light' }) {
+  const trackColor  = colorMode === 'dark' ? 'rgba(255,255,255,0.06)' : 'rgba(0,0,0,0.07)';
+  const textPrimary = colorMode === 'dark' ? '#e2e8f0' : '#0f172a';
+  const textMuted   = colorMode === 'dark' ? '#64748b' : '#475569';
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const [animatedValue, setAnimatedValue] = useState(0);
 
@@ -228,7 +231,7 @@ function TemperatureGauge({ value, accent }: { value: number; accent: string }) 
     ctx.beginPath();
     ctx.arc(cx, cy, radius, startAngle, endAngle);
     ctx.lineWidth = 8;
-    ctx.strokeStyle = 'rgba(255,255,255,0.06)';
+    ctx.strokeStyle = trackColor;
     ctx.lineCap = 'round';
     ctx.stroke();
 
@@ -284,16 +287,16 @@ function TemperatureGauge({ value, accent }: { value: number; accent: string }) 
     }
 
     // Center value
-    ctx.fillStyle = '#e2e8f0';
+    ctx.fillStyle = textPrimary;
     ctx.font = 'bold 28px var(--font-jetbrains-mono), monospace';
     ctx.textAlign = 'center';
     ctx.textBaseline = 'bottom';
     ctx.fillText(animatedValue.toFixed(1), cx, cy - 2);
 
-    ctx.fillStyle = '#64748b';
+    ctx.fillStyle = textMuted;
     ctx.font = '10px var(--font-jetbrains-mono), monospace';
     ctx.fillText('TECH TEMPERATURE', cx, cy + 14);
-  }, [animatedValue, accent]);
+  }, [animatedValue, accent, colorMode, trackColor, textPrimary, textMuted]);
 
   const label = animatedValue < 3 ? 'Quiet day' : animatedValue < 5 ? 'Steady' : animatedValue < 7 ? 'Buzzing' : animatedValue < 9 ? 'On fire' : 'Erupting';
 
@@ -340,8 +343,8 @@ function PulseCard({
       viewport={{ once: true, margin: '-50px' }}
       transition={{ duration: 0.5, delay }}
       style={{
-        background: 'rgba(255,255,255,0.02)',
-        border: '1px solid rgba(255,255,255,0.06)',
+        background: 'var(--bg-card)',
+        border: '1px solid var(--border-2)',
         borderRadius: '12px',
         overflow: 'hidden',
         position: 'relative',
@@ -369,7 +372,7 @@ function PulseCard({
       <div
         style={{
           padding: '0.85rem 1.25rem',
-          borderBottom: '1px solid rgba(255,255,255,0.06)',
+          borderBottom: '1px solid var(--border-2)',
           display: 'flex',
           alignItems: 'center',
           gap: '0.5rem',
@@ -399,7 +402,7 @@ function PulseCard({
 // ── main Pulse component ─────────────────────────────────────────────────────
 
 export default function Pulse() {
-  const { viewerType, accent } = useViewer();
+  const { viewerType, accent, colorMode } = useViewer();
   const [data, setData] = useState<PulseData | null>(null);
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
@@ -525,7 +528,7 @@ export default function Pulse() {
             style={{
               fontSize: '1.6rem',
               fontWeight: 700,
-              color: '#e2e8f0',
+              color: 'var(--fg)',
               fontFamily: 'var(--font-jetbrains-mono), monospace',
               letterSpacing: '-0.02em',
               margin: 0,
@@ -538,13 +541,13 @@ export default function Pulse() {
             style={{
               fontSize: '0.6rem',
               fontFamily: 'var(--font-jetbrains-mono), monospace',
-              color: '#475569',
+              color: 'var(--fg-4)',
               letterSpacing: '0.08em',
               textTransform: 'uppercase',
               padding: '0.15rem 0.5rem',
               borderRadius: '999px',
-              border: '1px solid rgba(255,255,255,0.06)',
-              background: 'rgba(255,255,255,0.02)',
+              border: '1px solid var(--border-2)',
+              background: 'var(--bg-card)',
             }}
           >
             Live Feed
@@ -557,7 +560,7 @@ export default function Pulse() {
               style={{
                 fontSize: '0.65rem',
                 fontFamily: 'var(--font-jetbrains-mono), monospace',
-                color: '#475569',
+                color: 'var(--fg-4)',
               }}
             >
               Updated {timeLabel}
@@ -575,9 +578,9 @@ export default function Pulse() {
               width: '2rem',
               height: '2rem',
               borderRadius: '8px',
-              border: '1px solid rgba(255,255,255,0.08)',
-              background: 'rgba(255,255,255,0.03)',
-              color: '#64748b',
+              border: '1px solid var(--border-2)',
+              background: 'var(--bg-card)',
+              color: 'var(--fg-3)',
               cursor: refreshing ? 'not-allowed' : 'pointer',
               transition: 'color 0.2s, border-color 0.2s',
             }}
@@ -586,8 +589,8 @@ export default function Pulse() {
               (e.currentTarget as HTMLButtonElement).style.borderColor = `${accent}40`;
             }}
             onMouseLeave={(e) => {
-              (e.currentTarget as HTMLButtonElement).style.color = '#64748b';
-              (e.currentTarget as HTMLButtonElement).style.borderColor = 'rgba(255,255,255,0.08)';
+              (e.currentTarget as HTMLButtonElement).style.color = 'var(--fg-3)';
+              (e.currentTarget as HTMLButtonElement).style.borderColor = 'var(--border-2)';
             }}
           >
             <RefreshCw
@@ -640,7 +643,7 @@ export default function Pulse() {
                       transition: 'background 0.15s',
                     }}
                     onMouseEnter={(e) => {
-                      (e.currentTarget as HTMLAnchorElement).style.background = 'rgba(255,255,255,0.03)';
+                      (e.currentTarget as HTMLAnchorElement).style.background = 'var(--bg-card)';
                     }}
                     onMouseLeave={(e) => {
                       (e.currentTarget as HTMLAnchorElement).style.background = 'transparent';
@@ -663,7 +666,7 @@ export default function Pulse() {
                       <div
                         style={{
                           fontSize: '0.78rem',
-                          color: '#e2e8f0',
+                          color: 'var(--fg)',
                           lineHeight: 1.4,
                           overflow: 'hidden',
                           textOverflow: 'ellipsis',
@@ -681,7 +684,7 @@ export default function Pulse() {
                           marginTop: '0.2rem',
                           fontSize: '0.6rem',
                           fontFamily: 'var(--font-jetbrains-mono), monospace',
-                          color: '#475569',
+                          color: 'var(--fg-4)',
                         }}
                       >
                         <span>▲ {formatNum(story.score)}</span>
@@ -727,7 +730,7 @@ export default function Pulse() {
                       transition: 'background 0.15s',
                     }}
                     onMouseEnter={(e) => {
-                      (e.currentTarget as HTMLAnchorElement).style.background = 'rgba(255,255,255,0.03)';
+                      (e.currentTarget as HTMLAnchorElement).style.background = 'var(--bg-card)';
                     }}
                     onMouseLeave={(e) => {
                       (e.currentTarget as HTMLAnchorElement).style.background = 'transparent';
@@ -750,7 +753,7 @@ export default function Pulse() {
                       <div
                         style={{
                           fontSize: '0.78rem',
-                          color: '#e2e8f0',
+                          color: 'var(--fg)',
                           lineHeight: 1.4,
                           overflow: 'hidden',
                           textOverflow: 'ellipsis',
@@ -762,7 +765,7 @@ export default function Pulse() {
                       <div
                         style={{
                           fontSize: '0.6rem',
-                          color: '#64748b',
+                          color: 'var(--fg-3)',
                           marginTop: '0.15rem',
                           overflow: 'hidden',
                           textOverflow: 'ellipsis',
@@ -778,7 +781,7 @@ export default function Pulse() {
                           marginTop: '0.2rem',
                           fontSize: '0.6rem',
                           fontFamily: 'var(--font-jetbrains-mono), monospace',
-                          color: '#475569',
+                          color: 'var(--fg-4)',
                         }}
                       >
                         <span style={{ display: 'flex', alignItems: 'center', gap: '0.2rem' }}>
@@ -836,7 +839,7 @@ export default function Pulse() {
                         transition: 'background 0.15s',
                       }}
                       onMouseEnter={(e) => {
-                        (e.currentTarget as HTMLAnchorElement).style.background = 'rgba(255,255,255,0.03)';
+                        (e.currentTarget as HTMLAnchorElement).style.background = 'var(--bg-card)';
                       }}
                       onMouseLeave={(e) => {
                         (e.currentTarget as HTMLAnchorElement).style.background = 'transparent';
@@ -858,7 +861,7 @@ export default function Pulse() {
                         <div
                           style={{
                             fontSize: '0.78rem',
-                            color: '#e2e8f0',
+                            color: 'var(--fg)',
                             fontFamily: 'var(--font-jetbrains-mono), monospace',
                           }}
                         >
@@ -871,7 +874,7 @@ export default function Pulse() {
                             marginTop: '0.15rem',
                             fontSize: '0.6rem',
                             fontFamily: 'var(--font-jetbrains-mono), monospace',
-                            color: '#475569',
+                            color: 'var(--fg-4)',
                           }}
                         >
                           <span>↓ {formatNum(pkg.downloads)}/wk</span>
@@ -882,7 +885,7 @@ export default function Pulse() {
                           fontSize: '0.65rem',
                           fontFamily: 'var(--font-jetbrains-mono), monospace',
                           fontWeight: 600,
-                          color: pkg.growth > 0 ? '#22c55e' : pkg.growth < 0 ? '#ef4444' : '#64748b',
+                          color: pkg.growth > 0 ? '#22c55e' : pkg.growth < 0 ? '#ef4444' : 'var(--fg-3)',
                           whiteSpace: 'nowrap',
                         }}
                       >
@@ -908,7 +911,7 @@ export default function Pulse() {
                       width: '200px',
                       height: '130px',
                       borderRadius: '8px',
-                      background: 'rgba(255,255,255,0.04)',
+                      background: 'var(--bg-input)',
                       animation: 'pulse 1.5s ease-in-out infinite',
                     }}
                   />
@@ -921,7 +924,7 @@ export default function Pulse() {
                   transition={{ duration: 0.5 }}
                   style={{ display: 'flex', justifyContent: 'center', padding: '0.5rem 0' }}
                 >
-                  <TemperatureGauge value={data?.temperature || 5} accent={accent} />
+                  <TemperatureGauge value={data?.temperature || 5} accent={accent} colorMode={colorMode} />
                 </motion.div>
               )}
             </AnimatePresence>
@@ -953,5 +956,5 @@ function langColor(lang: string): string {
     Vue: '#41b883',
     Svelte: '#ff3e00',
   };
-  return colors[lang] || '#64748b';
+  return colors[lang] || 'var(--fg-3)';
 }

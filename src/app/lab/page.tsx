@@ -11,7 +11,7 @@ export default function LabPage() {
   const { accent, ready } = useViewer();
 
   if (!ready) {
-    return <div className="min-h-screen" style={{ background: '#080c14' }} />;
+    return <div className="min-h-screen" style={{ background: 'var(--bg)' }} />;
   }
 
   return (
@@ -21,8 +21,8 @@ export default function LabPage() {
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ duration: 0.3 }}
-        className="min-h-screen text-white"
-        style={{ background: "#080c14" }}
+        className="min-h-screen"
+        style={{ background: "var(--bg)" }}
       >
         <main className="pt-20">
           {/* Page header */}
@@ -66,7 +66,7 @@ export default function LabPage() {
                     fontFamily: "var(--font-jetbrains-mono), monospace",
                     fontSize: "clamp(1.4rem, 4vw, 2rem)",
                     fontWeight: 700,
-                    color: "#e2e8f0",
+                    color: "var(--fg)",
                     margin: 0,
                   }}
                 >
@@ -81,8 +81,8 @@ export default function LabPage() {
                     textTransform: "uppercase",
                     padding: "0.15rem 0.5rem",
                     borderRadius: "999px",
-                    border: "1px solid rgba(255,255,255,0.06)",
-                    background: "rgba(255,255,255,0.02)",
+                    border: "1px solid var(--border-2)",
+                    background: "var(--bg-card)",
                   }}
                 >
                   experiments

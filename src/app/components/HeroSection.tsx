@@ -116,7 +116,7 @@ export const HeroSection = ({ viewerType }: HeroSectionProps) => {
   return (
     <div>
       {/* Background */}
-      <div className="absolute inset-0" style={{ background: '#080c14' }}>
+      <div className="absolute inset-0" style={{ background: 'var(--bg)' }}>
         <div
           className="absolute inset-0"
           style={{
@@ -167,7 +167,7 @@ export const HeroSection = ({ viewerType }: HeroSectionProps) => {
                     fontSize: 'clamp(1.75rem, 4vw, 3rem)',
                     fontWeight: 700,
                     lineHeight: 1.2,
-                    color: '#e2e8f0',
+                    color: 'var(--fg)',
                   }}
                 >
                   {content.headline}
@@ -197,7 +197,7 @@ export const HeroSection = ({ viewerType }: HeroSectionProps) => {
                   animate={{ opacity: 1 }}
                   transition={{ delay: 0.3 }}
                   style={{
-                    color: '#94a3b8',
+                    color: 'var(--fg-2)',
                     fontSize: '1rem',
                     lineHeight: 1.75,
                     maxWidth: '42rem',
@@ -253,7 +253,7 @@ export const HeroSection = ({ viewerType }: HeroSectionProps) => {
                     gap: '0.5rem',
                     padding: '0.75rem 1.5rem',
                     background: 'transparent',
-                    color: '#e2e8f0',
+                    color: 'var(--fg)',
                     border: '1px solid rgba(226,232,240,0.2)',
                     borderRadius: '6px',
                     fontSize: '0.9rem',
@@ -282,7 +282,7 @@ export const HeroSection = ({ viewerType }: HeroSectionProps) => {
                     gap: '0.5rem',
                     padding: '0.75rem 1.5rem',
                     background: 'transparent',
-                    color: '#e2e8f0',
+                    color: 'var(--fg)',
                     border: '1px solid rgba(226,232,240,0.2)',
                     borderRadius: '6px',
                     fontSize: '0.9rem',
@@ -322,7 +322,7 @@ export const HeroSection = ({ viewerType }: HeroSectionProps) => {
                       className="p-3 rounded-full transition-all"
                       style={{
                         background: `${accent}12`,
-                        color: '#94a3b8',
+                        color: 'var(--fg-2)',
                         transition: 'color 0.2s, background 0.2s',
                       }}
                       whileHover={{ y: -2, color: accent }}

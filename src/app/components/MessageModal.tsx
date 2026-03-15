@@ -38,7 +38,7 @@ export const MessageModal = ({ onClose, viewerType }: Props) => {
         transition={{ duration: 0.25, ease: 'easeOut' }}
         className="relative z-10 w-[440px] max-w-[92vw] rounded-2xl p-5 sm:p-8"
         style={{
-          background: '#0a0e1a',
+          background: 'var(--bg-surface)',
           border: `1px solid ${accent}25`,
           boxShadow: `0 0 40px ${accent}12`,
         }}
@@ -52,14 +52,14 @@ export const MessageModal = ({ onClose, viewerType }: Props) => {
             right: '1rem',
             background: 'none',
             border: 'none',
-            color: '#475569',
+            color: 'var(--fg-4)',
             cursor: 'pointer',
             fontSize: '1.1rem',
             lineHeight: 1,
             transition: 'color 0.2s',
           }}
-          onMouseEnter={(e) => ((e.currentTarget as HTMLButtonElement).style.color = '#94a3b8')}
-          onMouseLeave={(e) => ((e.currentTarget as HTMLButtonElement).style.color = '#475569')}
+          onMouseEnter={(e) => ((e.currentTarget as HTMLButtonElement).style.color = 'var(--fg-2)')}
+          onMouseLeave={(e) => ((e.currentTarget as HTMLButtonElement).style.color = 'var(--fg-4)')}
         >
           ✕
         </button>
@@ -80,13 +80,13 @@ export const MessageModal = ({ onClose, viewerType }: Props) => {
               fontFamily: 'var(--font-jetbrains-mono), monospace',
               fontSize: 'clamp(1.1rem, 3vw, 1.35rem)',
               fontWeight: 700,
-              color: '#e2e8f0',
+              color: 'var(--fg)',
               marginBottom: '0.4rem',
             }}
           >
             {title}
           </h3>
-          <p style={{ color: '#64748b', fontSize: '0.875rem', lineHeight: 1.6 }}>{sub}</p>
+          <p style={{ color: 'var(--fg-3)', fontSize: '0.875rem', lineHeight: 1.6 }}>{sub}</p>
         </div>
 
         <MessageForm viewerType={viewerType} accent={accent} />

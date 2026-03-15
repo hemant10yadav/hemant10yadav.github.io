@@ -90,16 +90,16 @@ export const MessageForm = ({ viewerType, accent }: Props) => {
   const inputStyle = (fieldName: string): React.CSSProperties => ({
     width: '100%',
     padding: '0.7rem 1rem',
-    background: 'rgba(255,255,255,0.04)',
+    background: 'var(--bg-input)',
     border: `1px solid ${
       errors[fieldName as keyof typeof errors]
         ? '#ef4444'
         : focused === fieldName
         ? `${accent}60`
-        : 'rgba(255,255,255,0.08)'
+        : 'var(--border-2)'
     }`,
     borderRadius: '8px',
-    color: '#e2e8f0',
+    color: 'var(--fg)',
     fontSize: '0.875rem',
     outline: 'none',
     fontFamily: 'var(--font-inter), sans-serif',
@@ -125,7 +125,7 @@ export const MessageForm = ({ viewerType, accent }: Props) => {
         <p
           style={{
             fontFamily: 'var(--font-jetbrains-mono), monospace',
-            color: '#e2e8f0',
+            color: 'var(--fg)',
             fontSize: '1rem',
             fontWeight: 600,
             marginBottom: '0.35rem',
@@ -133,7 +133,7 @@ export const MessageForm = ({ viewerType, accent }: Props) => {
         >
           {s.heading}
         </p>
-        <p style={{ color: '#64748b', fontSize: '0.85rem', marginBottom: '1.25rem' }}>{s.body}</p>
+        <p style={{ color: 'var(--fg-3)', fontSize: '0.85rem', marginBottom: '1.25rem' }}>{s.body}</p>
         <button
           onClick={() => setSubmitted(false)}
           style={{

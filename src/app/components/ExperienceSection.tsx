@@ -86,7 +86,7 @@ export default function ExperienceSection({ viewerType }: ExperienceSectionProps
   };
 
   return (
-    <section className="relative py-20 overflow-hidden" style={{ background: '#080c14' }}>
+    <section className="relative py-20 overflow-hidden" style={{ background: 'var(--bg)' }}>
       {/* Subtle accent glow */}
       <div
         className="absolute inset-0 pointer-events-none"
@@ -129,7 +129,7 @@ export default function ExperienceSection({ viewerType }: ExperienceSectionProps
                   fontFamily: 'var(--font-jetbrains-mono), monospace',
                   fontSize: 'clamp(1.5rem, 3vw, 2.25rem)',
                   fontWeight: 700,
-                  color: '#e2e8f0',
+                  color: 'var(--fg)',
                 }}
               >
                 Where I&apos;ve shipped
@@ -151,7 +151,7 @@ export default function ExperienceSection({ viewerType }: ExperienceSectionProps
                 <span
                   style={{
                     fontFamily: 'var(--font-jetbrains-mono), monospace',
-                    color: '#475569',
+                    color: 'var(--fg-4)',
                     fontSize: '0.85rem',
                   }}
                 >
@@ -218,7 +218,7 @@ function RecruiterTimeline({
                 width: '2.5rem',
                 height: '2.5rem',
                 borderRadius: '50%',
-                background: exp.current ? `${accent}20` : 'rgba(255,255,255,0.04)',
+                background: exp.current ? `${accent}20` : 'var(--bg-input)',
                 border: `2px solid ${exp.current ? accent : 'rgba(255,255,255,0.1)'}`,
                 boxShadow: exp.current ? `0 0 16px ${accent}40` : 'none',
               }}
@@ -240,8 +240,8 @@ function RecruiterTimeline({
             {/* Card */}
             <div
               style={{
-                background: 'rgba(255,255,255,0.025)',
-                border: `1px solid ${exp.current ? `${accent}30` : 'rgba(255,255,255,0.06)'}`,
+                background: 'var(--bg-card)',
+                border: `1px solid ${exp.current ? `${accent}30` : 'var(--border-2)'}`,
                 borderRadius: '14px',
                 padding: 'clamp(1.25rem, 4vw, 1.75rem) clamp(1rem, 4vw, 2rem)',
                 transition: 'border-color 0.3s',
@@ -252,7 +252,7 @@ function RecruiterTimeline({
               onMouseLeave={(e) => {
                 (e.currentTarget as HTMLDivElement).style.borderColor = exp.current
                   ? `${accent}30`
-                  : 'rgba(255,255,255,0.06)';
+                  : 'var(--border-2)';
               }}
             >
               {/* Header row */}
@@ -281,7 +281,7 @@ function RecruiterTimeline({
                       fontFamily: 'var(--font-jetbrains-mono), monospace',
                       fontSize: '1.15rem',
                       fontWeight: 700,
-                      color: '#e2e8f0',
+                      color: 'var(--fg)',
                       marginBottom: '0.3rem',
                     }}
                   >
@@ -302,13 +302,13 @@ function RecruiterTimeline({
                         ((e.currentTarget as HTMLAnchorElement).style.color = accent)
                       }
                       onMouseLeave={(e) =>
-                        ((e.currentTarget as HTMLAnchorElement).style.color = '#e2e8f0')
+                        ((e.currentTarget as HTMLAnchorElement).style.color = 'var(--fg)')
                       }
                     >
                       {exp.company} <ExternalLink size={14} />
                     </a>
                   </h3>
-                  <div className="flex flex-wrap gap-4" style={{ color: '#64748b', fontSize: '0.85rem' }}>
+                  <div className="flex flex-wrap gap-4" style={{ color: 'var(--fg-3)', fontSize: '0.85rem' }}>
                     <span>{exp.role}</span>
                     <span style={{ display: 'flex', alignItems: 'center', gap: '0.3rem' }}>
                       <MapPin size={13} /> {exp.location}
@@ -339,7 +339,7 @@ function RecruiterTimeline({
                       display: 'flex',
                       alignItems: 'flex-start',
                       gap: '0.6rem',
-                      color: '#94a3b8',
+                      color: 'var(--fg-2)',
                       fontSize: '0.875rem',
                       lineHeight: 1.6,
                     }}
@@ -391,7 +391,7 @@ function DeveloperGitLog({
   return (
     <div
       style={{
-        background: '#0a0e1a',
+        background: 'var(--bg-surface)',
         border: '1px solid rgba(34,211,238,0.12)',
         borderRadius: '12px',
         overflow: 'hidden',
@@ -401,7 +401,7 @@ function DeveloperGitLog({
       {/* Terminal chrome */}
       <div
         style={{
-          background: '#111827',
+          background: 'var(--bg-chrome)',
           padding: '0.6rem 1rem',
           borderBottom: '1px solid rgba(34,211,238,0.08)',
           display: 'flex',
@@ -412,7 +412,7 @@ function DeveloperGitLog({
         <span style={{ width: '0.6rem', height: '0.6rem', borderRadius: '50%', background: '#ef4444', display: 'block' }} />
         <span style={{ width: '0.6rem', height: '0.6rem', borderRadius: '50%', background: '#6ee7b7', display: 'block' }} />
         <span style={{ width: '0.6rem', height: '0.6rem', borderRadius: '50%', background: '#22c55e', display: 'block' }} />
-        <span style={{ color: '#475569', fontSize: '0.72rem', marginLeft: '0.5rem' }}>
+        <span style={{ color: 'var(--fg-4)', fontSize: '0.72rem', marginLeft: '0.5rem' }}>
           zsh — career
         </span>
       </div>
@@ -447,7 +447,7 @@ function DeveloperGitLog({
             </div>
 
             {/* Author / Date */}
-            <div style={{ color: '#475569', fontSize: '0.78rem', marginBottom: '0.65rem', lineHeight: 1.7 }}>
+            <div style={{ color: 'var(--fg-4)', fontSize: '0.78rem', marginBottom: '0.65rem', lineHeight: 1.7 }}>
               <span>Author: {FULL_NAME}</span>
               <br />
               <span>Date: &nbsp;&nbsp;{exp.period}</span>
@@ -455,10 +455,10 @@ function DeveloperGitLog({
 
             {/* Commit message */}
             <div style={{ marginLeft: '1rem', marginBottom: '0.75rem' }}>
-              <p style={{ color: '#e2e8f0', fontSize: '0.9rem', fontWeight: 600, marginBottom: '0.5rem' }}>
+              <p style={{ color: 'var(--fg)', fontSize: '0.9rem', fontWeight: 600, marginBottom: '0.5rem' }}>
                 {exp.commitMsg}
               </p>
-              <p style={{ color: '#64748b', fontSize: '0.82rem' }}>
+              <p style={{ color: 'var(--fg-3)', fontSize: '0.82rem' }}>
                 {exp.role} ·{' '}
                 <a
                   href={exp.url}
@@ -491,7 +491,7 @@ function DeveloperGitLog({
                 <p
                   key={li}
                   style={{
-                    color: line.startsWith('//') ? '#475569' : 'transparent',
+                    color: line.startsWith('//') ? 'var(--fg-4)' : 'transparent',
                     fontSize: '0.8rem',
                     lineHeight: 1.7,
                     minHeight: line === '' ? '0.6rem' : undefined,
