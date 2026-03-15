@@ -6,11 +6,18 @@ export type ViewerType  = 'recruiter' | 'developer';
 export type ColorMode   = 'dark' | 'light';
 
 // ── theme colours — change here and it propagates everywhere ──────────────────
-export const RECRUITER_ACCENT = '#f2c078';
-export const DEVELOPER_ACCENT = '#22d3ee';
+// Dark mode accents (on dark backgrounds)
+export const RECRUITER_ACCENT       = '#f2c078';
+export const DEVELOPER_ACCENT       = '#22d3ee';
 
-export const getAccent = (type: ViewerType) =>
-  type === 'recruiter' ? RECRUITER_ACCENT : DEVELOPER_ACCENT;
+// Light mode accents (darkened for readability on light backgrounds)
+export const RECRUITER_ACCENT_LIGHT = '#b45309'; // amber-700
+export const DEVELOPER_ACCENT_LIGHT = '#0891b2'; // cyan-600
+
+export const getAccent = (type: ViewerType, mode: ColorMode = 'dark') =>
+  type === 'recruiter'
+    ? (mode === 'light' ? RECRUITER_ACCENT_LIGHT : RECRUITER_ACCENT)
+    : (mode === 'light' ? DEVELOPER_ACCENT_LIGHT : DEVELOPER_ACCENT);
 
 // ── context ───────────────────────────────────────────────────────────────────
 
@@ -92,7 +99,7 @@ export const ViewerProvider = ({ children }: { children: React.ReactNode }) => {
     });
   }, []);
 
-  const accent = getAccent(viewerType);
+  const accent = getAccent(viewerType, colorMode);
 
   return (
     <ViewerContext.Provider value={{
