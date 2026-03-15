@@ -3,7 +3,6 @@
 import { motion } from 'framer-motion';
 import { ExternalLink } from 'lucide-react';
 import Image from 'next/image';
-import { useState } from 'react';
 import { event } from 'nextjs-google-analytics';
 import { ViewerType, useViewer } from '../context/ViewerContext';
 import { PROJECT_ECOMMERCE, PROJECT_ESTORE, PROJECT_BOOKSTORE } from '../constants';
@@ -72,7 +71,6 @@ const DEVELOPER_PROJECTS = [
 
 export const ProjectSection = ({ viewerType }: ProjectSectionProps) => {
   const { accent } = useViewer();
-  const [activeDemoUrl, setActiveDemoUrl] = useState<string | null>(null);
   const isRecruiter = viewerType === 'recruiter';
 
   const handleCodeView = (projectName: string) => {
@@ -80,12 +78,8 @@ export const ProjectSection = ({ viewerType }: ProjectSectionProps) => {
   };
 
   const handleDemoClick = (url: string, title: string) => {
-    if (activeDemoUrl === url) {
-      setActiveDemoUrl(null);
-      return;
-    }
     event('Video views', { category: 'Portfolio', label: title, value: 1 });
-    setActiveDemoUrl(url);
+    window.open(url, '_blank', 'noopener,noreferrer');
   };
 
   return (
@@ -128,7 +122,6 @@ export const ProjectSection = ({ viewerType }: ProjectSectionProps) => {
                   accent={accent}
                   onCodeView={() => handleCodeView(project.title)}
                   onDemoClick={() => project.demoUrl && handleDemoClick(project.demoUrl, project.title)}
-                  activeDemoUrl={activeDemoUrl}
                 />
               ))
             : (DEVELOPER_PROJECTS as typeof DEVELOPER_PROJECTS).map((project, i) => (
@@ -139,33 +132,11 @@ export const ProjectSection = ({ viewerType }: ProjectSectionProps) => {
                   accent={accent}
                   onCodeView={() => handleCodeView(project.title)}
                   onDemoClick={() => project.demoUrl && handleDemoClick(project.demoUrl, project.title)}
-                  activeDemoUrl={activeDemoUrl}
                 />
               ))}
         </div>
       </div>
 
-      {/* Demo iframe */}
-      {activeDemoUrl && (
-        <div className="px-6 mt-8 w-full" style={{ maxWidth: '100%' }}>
-          <div className="relative w-full" style={{ height: 'min(80vh, 500px)' }}>
-            <div className="absolute inset-0">
-              <iframe
-                src={activeDemoUrl}
-                className="w-full h-full border-0"
-                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                allowFullScreen
-              />
-            </div>
-            <button
-              onClick={() => setActiveDemoUrl(null)}
-              className="absolute top-4 right-4 bg-black/50 text-white p-2 rounded-full hover:bg-black/70 z-10"
-            >
-              ×
-            </button>
-          </div>
-        </div>
-      )}
     </>
   );
 };
@@ -198,14 +169,12 @@ function RecruiterCard({
   accent,
   onCodeView,
   onDemoClick,
-  activeDemoUrl,
 }: {
   project: RecruiterProject;
   index: number;
   accent: string;
   onCodeView: () => void;
   onDemoClick: () => void;
-  activeDemoUrl: string | null;
 }) {
   return (
     <motion.div
@@ -258,7 +227,6 @@ function RecruiterCard({
       <ProjectLinks
         githubLink={project.githubLink}
         demoUrl={project.demoUrl}
-        activeDemoUrl={activeDemoUrl}
         accent={accent}
         onCodeView={onCodeView}
         onDemoClick={onDemoClick}
@@ -273,14 +241,12 @@ function DeveloperCard({
   accent,
   onCodeView,
   onDemoClick,
-  activeDemoUrl,
 }: {
   project: DeveloperProject;
   index: number;
   accent: string;
   onCodeView: () => void;
   onDemoClick: () => void;
-  activeDemoUrl: string | null;
 }) {
   return (
     <motion.div
@@ -333,7 +299,6 @@ function DeveloperCard({
       <ProjectLinks
         githubLink={project.githubLink}
         demoUrl={project.demoUrl}
-        activeDemoUrl={activeDemoUrl}
         accent={accent}
         onCodeView={onCodeView}
         onDemoClick={onDemoClick}
@@ -364,14 +329,12 @@ function TechRow({ icons }: { icons: string[] }) {
 function ProjectLinks({
   githubLink,
   demoUrl,
-  activeDemoUrl,
   accent,
   onCodeView,
   onDemoClick,
 }: {
   githubLink: string;
   demoUrl?: string;
-  activeDemoUrl: string | null;
   accent: string;
   onCodeView: () => void;
   onDemoClick: () => void;
@@ -403,7 +366,7 @@ function ProjectLinks({
           }}
           whileHover={{ x: 4, color: 'var(--fg-2)' }}
         >
-          {activeDemoUrl === demoUrl ? 'Hide Demo' : 'Live Demo'}
+          Live Demo
         </motion.button>
       )}
     </div>
