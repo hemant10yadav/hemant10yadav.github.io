@@ -3,7 +3,7 @@
 import { motion } from 'framer-motion';
 import Image from 'next/image';
 import { useEffect, useRef } from 'react';
-import { ViewerType } from '../context/ViewerContext';
+import { ViewerType, useViewer } from '../context/ViewerContext';
 
 interface SkillSectionProps {
   viewerType: NonNullable<ViewerType>;
@@ -63,9 +63,9 @@ const DEVELOPER_SKILLS: Array<{
 ];
 
 export default function SkillSection({ viewerType }: SkillSectionProps) {
+  const { accent } = useViewer();
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const isRecruiter = viewerType === 'recruiter';
-  const accent = isRecruiter ? '#6ee7b7' : '#22d3ee';
 
   // ── animated constellation background ────────────────────────────────────────
   useEffect(() => {
@@ -93,9 +93,7 @@ export default function SkillSection({ viewerType }: SkillSectionProps) {
 
     function animate() {
       ctx!.clearRect(0, 0, canvas!.width, canvas!.height);
-      ctx!.strokeStyle = isRecruiter
-        ? 'rgba(110,231,183,0.12)'
-        : 'rgba(34,211,238,0.12)';
+      ctx!.strokeStyle = `${accent}1f`;
       ctx!.lineWidth = 0.5;
 
       for (let i = 0; i < stars.length; i++) {
@@ -121,9 +119,7 @@ export default function SkillSection({ viewerType }: SkillSectionProps) {
 
         ctx!.beginPath();
         ctx!.arc(s.x, s.y, s.r, 0, Math.PI * 2);
-        ctx!.fillStyle = isRecruiter
-          ? 'rgba(110,231,183,0.3)'
-          : 'rgba(34,211,238,0.3)';
+        ctx!.fillStyle = `${accent}4d`;
         ctx!.fill();
       });
 
@@ -298,9 +294,7 @@ export default function SkillSection({ viewerType }: SkillSectionProps) {
       <div
         className="absolute inset-0 pointer-events-none"
         style={{
-          background: isRecruiter
-            ? 'radial-gradient(circle at center, rgba(110,231,183,0.03), transparent 70%)'
-            : 'radial-gradient(circle at center, rgba(34,211,238,0.03), transparent 70%)',
+          background: `radial-gradient(circle at center, ${accent}08, transparent 70%)`,
         }}
       />
     </section>

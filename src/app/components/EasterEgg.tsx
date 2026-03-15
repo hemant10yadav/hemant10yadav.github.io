@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { useViewer } from '../context/ViewerContext';
+import { useViewer, RECRUITER_ACCENT, DEVELOPER_ACCENT } from '../context/ViewerContext';
 
 // Condensed content snippets for each side of the split screen
 const RECRUITER_SNIPPET = {
@@ -14,7 +14,7 @@ const RECRUITER_SNIPPET = {
     'AWS, Docker, PostgreSQL — infrastructure that holds',
   ],
   cta: 'Let\'s talk about what I can build →',
-  accent: '#6ee7b7',
+  accent: RECRUITER_ACCENT,
 };
 
 const DEVELOPER_SNIPPET = {
@@ -26,7 +26,7 @@ const DEVELOPER_SNIPPET = {
     'AWS — still afraid of billing alerts.',
   ],
   cta: 'Let\'s build something weird together →',
-  accent: '#22d3ee',
+  accent: DEVELOPER_ACCENT,
 };
 
 export default function EasterEgg() {

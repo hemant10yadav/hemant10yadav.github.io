@@ -4,8 +4,18 @@ import { createContext, useContext, useState, useEffect, useCallback } from 'rea
 
 export type ViewerType = 'recruiter' | 'developer';
 
+// ── theme colours — change here and it propagates everywhere ──────────────────
+export const RECRUITER_ACCENT = '#d4a574';
+export const DEVELOPER_ACCENT = '#22d3ee';
+
+export const getAccent = (type: ViewerType) =>
+  type === 'recruiter' ? RECRUITER_ACCENT : DEVELOPER_ACCENT;
+
+// ── context ───────────────────────────────────────────────────────────────────
+
 interface ViewerContextValue {
   viewerType: ViewerType;
+  accent: string;
   ready: boolean;
   setViewerType: (type: ViewerType) => void;
   toggleViewerType: () => void;
@@ -13,6 +23,7 @@ interface ViewerContextValue {
 
 const ViewerContext = createContext<ViewerContextValue>({
   viewerType: 'recruiter',
+  accent: RECRUITER_ACCENT,
   ready: false,
   setViewerType: () => {},
   toggleViewerType: () => {},
@@ -28,7 +39,6 @@ export const ViewerProvider = ({ children }: { children: React.ReactNode }) => {
   const [viewerType, setViewerTypeState] = useState<ViewerType>('recruiter');
   const [ready, setReady] = useState(false);
 
-  // Read mode from URL on mount (client only)
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
     const mode = params.get('mode');
@@ -51,8 +61,10 @@ export const ViewerProvider = ({ children }: { children: React.ReactNode }) => {
     });
   }, []);
 
+  const accent = getAccent(viewerType);
+
   return (
-    <ViewerContext.Provider value={{ viewerType, ready, setViewerType, toggleViewerType }}>
+    <ViewerContext.Provider value={{ viewerType, accent, ready, setViewerType, toggleViewerType }}>
       {children}
     </ViewerContext.Provider>
   );

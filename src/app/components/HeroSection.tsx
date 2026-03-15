@@ -6,7 +6,7 @@ import { event } from 'nextjs-google-analytics';
 import { ProfileImage } from './ProfileImage';
 import { useEffect, useState } from 'react';
 import { MessageModal } from './MessageModal';
-import { ViewerType } from '../context/ViewerContext';
+import { ViewerType, useViewer } from '../context/ViewerContext';
 
 export type SocialLink = {
   icon: React.ElementType<LucideProps>;
@@ -31,12 +31,12 @@ const getRoundedExperience = (): string => {
 };
 
 export const HeroSection = ({ viewerType }: HeroSectionProps) => {
+  const { accent } = useViewer();
   const [openIframe, setOpenIframe] = useState(false);
   const [openMessage, setOpenMessage] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
 
   const isRecruiter = viewerType === 'recruiter';
-  const accent = isRecruiter ? '#6ee7b7' : '#22d3ee';
   const experience = getRoundedExperience();
 
   useEffect(() => {

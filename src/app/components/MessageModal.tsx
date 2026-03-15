@@ -2,7 +2,7 @@
 
 import { motion } from 'framer-motion';
 import { MessageForm } from './MessageForm';
-import { ViewerType } from '../context/ViewerContext';
+import { ViewerType, useViewer, RECRUITER_ACCENT, DEVELOPER_ACCENT } from '../context/ViewerContext';
 
 type Props = {
   onClose: () => void;
@@ -13,17 +13,18 @@ const CONTENT = {
   recruiter: {
     title: "Let's talk.",
     sub: "Tell me what you're building. I'll get back to you within 24 hours.",
-    accent: '#6ee7b7',
+    accent: RECRUITER_ACCENT,
   },
   developer: {
     title: "Let's build something.",
     sub: "Drop a line. I'll reply — probably with opinions.",
-    accent: '#22d3ee',
+    accent: DEVELOPER_ACCENT,
   },
 };
 
 export const MessageModal = ({ onClose, viewerType }: Props) => {
-  const { title, sub, accent } = CONTENT[viewerType];
+  const { accent } = useViewer();
+  const { title, sub } = CONTENT[viewerType];
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center" style={{ background: 'rgba(0,0,0,0.75)', backdropFilter: 'blur(4px)' }}>

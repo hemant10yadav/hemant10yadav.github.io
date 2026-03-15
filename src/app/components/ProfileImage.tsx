@@ -2,6 +2,7 @@
 
 import { motion } from 'framer-motion';
 import Image from 'next/image';
+import { useViewer } from '../context/ViewerContext';
 
 interface ProfileImageProps {
   profilePicUrl: string;
@@ -12,10 +13,8 @@ interface ProfileImageProps {
 export const ProfileImage: React.FC<ProfileImageProps> = ({
   profilePicUrl,
   size = 320,
-  viewerType,
 }) => {
-  const isRecruiter = viewerType === 'recruiter';
-  const accent = isRecruiter ? '#6ee7b7' : '#22d3ee';
+  const { accent } = useViewer();
 
   return (
     <motion.div

@@ -6,12 +6,11 @@ import Link from 'next/link';
 import { useViewer } from '../context/ViewerContext';
 
 export const NavBar = () => {
-  const { viewerType, toggleViewerType } = useViewer();
+  const { viewerType, accent, toggleViewerType } = useViewer();
   const [activeSection, setActiveSection] = useState('about');
   const [scrolled, setScrolled] = useState(false);
 
   const isRecruiter = viewerType === 'recruiter';
-  const accent = isRecruiter ? '#6ee7b7' : '#22d3ee';
 
   // Track scroll for background opacity
   useEffect(() => {

@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState } from 'react';
 import { motion } from 'framer-motion';
+import { DEVELOPER_ACCENT } from '../context/ViewerContext';
 
 interface LogEntry {
   date: string;
@@ -117,7 +118,7 @@ export default function FailuresLog() {
               marginBottom: '0.4rem',
             }}
           >
-            <span style={{ color: '#22d3ee', fontFamily: 'monospace', fontSize: '0.85rem' }}>$</span>
+            <span style={{ color: DEVELOPER_ACCENT, fontFamily: 'monospace', fontSize: '0.85rem' }}>$</span>
             <span
               style={{
                 fontFamily: 'var(--font-jetbrains-mono), monospace',
@@ -237,13 +238,13 @@ export default function FailuresLog() {
 
                 {/* Blinking cursor */}
                 <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', marginTop: '1rem' }}>
-                  <span style={{ color: '#22d3ee', fontSize: '0.82rem' }}>$</span>
+                  <span style={{ color: DEVELOPER_ACCENT, fontSize: '0.82rem' }}>$</span>
                   <span
                     style={{
                       display: 'inline-block',
                       width: '0.45rem',
                       height: '0.95rem',
-                      background: '#22d3ee',
+                      background: DEVELOPER_ACCENT,
                       opacity: 0.7,
                       animation: 'blink 1.1s step-end infinite',
                     }}

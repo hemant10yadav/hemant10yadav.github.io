@@ -3,7 +3,7 @@
 import { motion } from 'framer-motion';
 import { ExternalLink, MapPin } from 'lucide-react';
 import { event } from 'nextjs-google-analytics';
-import { ViewerType } from '../context/ViewerContext';
+import { ViewerType, useViewer } from '../context/ViewerContext';
 
 interface ExperienceSectionProps {
   viewerType: NonNullable<ViewerType>;
@@ -77,8 +77,8 @@ const EXPERIENCES = [
 // ── component ─────────────────────────────────────────────────────────────────
 
 export default function ExperienceSection({ viewerType }: ExperienceSectionProps) {
+  const { accent } = useViewer();
   const isRecruiter = viewerType === 'recruiter';
-  const accent = isRecruiter ? '#6ee7b7' : '#22d3ee';
 
   const handleLink = (company: string) => {
     event('external_links', { category: 'Portfolio', label: `${company} visits`, value: 1 });

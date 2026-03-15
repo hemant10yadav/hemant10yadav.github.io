@@ -399,13 +399,12 @@ function PulseCard({
 // ── main Pulse component ─────────────────────────────────────────────────────
 
 export default function Pulse() {
-  const { viewerType } = useViewer();
+  const { viewerType, accent } = useViewer();
   const [data, setData] = useState<PulseData | null>(null);
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
 
   const isRecruiter = viewerType === 'recruiter';
-  const accent = isRecruiter ? '#6ee7b7' : '#22d3ee';
 
   const fetchData = useCallback(async (force = false) => {
     // Check cache

@@ -34,12 +34,11 @@ function shortRepo(fullName: string): string {
 // ── component ─────────────────────────────────────────────────────────────────
 
 export default function GitHubActivity() {
-  const { viewerType } = useViewer();
+  const { viewerType, accent } = useViewer();
   const [activity, setActivity] = useState<ActivityData | null>(null);
   const [visible, setVisible] = useState(false);
 
   const isRecruiter = viewerType === 'recruiter';
-  const accent = isRecruiter ? '#6ee7b7' : '#22d3ee';
 
   useEffect(() => {
     let cancelled = false;

@@ -5,7 +5,7 @@ import { ExternalLink } from 'lucide-react';
 import Image from 'next/image';
 import { useState } from 'react';
 import { event } from 'nextjs-google-analytics';
-import { ViewerType } from '../context/ViewerContext';
+import { ViewerType, useViewer } from '../context/ViewerContext';
 
 interface ProjectSectionProps {
   viewerType: NonNullable<ViewerType>;
@@ -70,9 +70,9 @@ const DEVELOPER_PROJECTS = [
 ];
 
 export const ProjectSection = ({ viewerType }: ProjectSectionProps) => {
+  const { accent } = useViewer();
   const [activeDemoUrl, setActiveDemoUrl] = useState<string | null>(null);
   const isRecruiter = viewerType === 'recruiter';
-  const accent = isRecruiter ? '#6ee7b7' : '#22d3ee';
 
   const handleCodeView = (projectName: string) => {
     event('Code views', { category: 'Portfolio', label: projectName, value: 1 });

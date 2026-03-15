@@ -289,9 +289,7 @@ const ALL_CMDS = [
 // ── component ─────────────────────────────────────────────────────────────────
 
 export default function CLITerminal() {
-  const { viewerType, toggleViewerType } = useViewer();
-  const isRecruiter = viewerType === 'recruiter';
-  const accent = isRecruiter ? '#6ee7b7' : '#22d3ee';
+  const { viewerType, accent, toggleViewerType } = useViewer();
 
   const [history, setHistory] = useState<HistoryEntry[]>([
     { id: 0, cmd: null, output: WELCOME },
@@ -554,7 +552,7 @@ export default function CLITerminal() {
                     marginBottom: '0.25rem',
                   }}
                 >
-                  <Prompt accent={accent} />
+                  <Prompt />
                   <span
                     style={{
                       fontFamily: 'var(--font-jetbrains-mono), monospace',
@@ -590,7 +588,7 @@ export default function CLITerminal() {
               paddingBottom: '0.75rem',
             }}
           >
-            <Prompt accent={accent} />
+            <Prompt />
             <input
               ref={inputRef}
               value={input}
@@ -655,21 +653,22 @@ export default function CLITerminal() {
 
 // ── sub-components ────────────────────────────────────────────────────────────
 
-function Prompt({ accent }: { accent: string }) {
+function Prompt() {
+  const { accent } = useViewer();
   return (
     <span
       style={{
-        fontFamily: 'var(--font-jetbrains-mono), monospace',
-        fontSize: '0.75rem',
-        userSelect: 'none',
-        whiteSpace: 'nowrap',
+        fontFamily: "var(--font-jetbrains-mono), monospace",
+        fontSize: "0.75rem",
+        userSelect: "none",
+        whiteSpace: "nowrap",
         flexShrink: 0,
       }}
     >
-      <span style={{ color: '#475569' }}>visitor</span>
-      <span style={{ color: '#2d3f55' }}>@</span>
-      <span style={{ color: '#2d3f55' }}>hemant</span>
-      <span style={{ color: '#2d3f55' }}>:~$</span>
+      <span style={{ color: "#475569" }}>visitor</span>
+      <span style={{ color: "#2d3f55" }}>@</span>
+      <span style={{ color: "#2d3f55" }}>hemant</span>
+      <span style={{ color: "#2d3f55" }}>:~$</span>
     </span>
   );
 }
