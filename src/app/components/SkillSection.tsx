@@ -167,55 +167,85 @@ export default function SkillSection({ viewerType }: SkillSectionProps) {
         </motion.div>
 
         {isRecruiter ? (
-          /* ── Recruiter: grouped by capability ─────────────────────────────── */
-          <div className="space-y-14">
+          /* ── Recruiter: capability cards ────────────────────────────────────── */
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             {RECRUITER_GROUPS.map((group, gi) => (
               <motion.div
                 key={group.label}
-                initial={{ opacity: 0, y: 20 }}
+                initial={{ opacity: 0, y: 24 }}
                 whileInView={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.5, delay: gi * 0.1 }}
+                transition={{ duration: 0.5, delay: gi * 0.12 }}
+                style={{
+                  background: 'var(--bg-surface)',
+                  border: '1px solid var(--border-2)',
+                  borderRadius: '16px',
+                  overflow: 'hidden',
+                }}
               >
-                <h3
+                {/* Card header accent bar + label */}
+                <div
                   style={{
-                    fontFamily: 'var(--font-jetbrains-mono), monospace',
-                    color: accent,
-                    fontSize: '0.75rem',
-                    letterSpacing: '0.12em',
-                    textTransform: 'uppercase',
-                    marginBottom: '1.25rem',
-                    borderLeft: `2px solid ${accent}`,
-                    paddingLeft: '0.75rem',
+                    borderBottom: '1px solid var(--border-2)',
+                    padding: '1rem 1.25rem 0.9rem',
+                    background: `linear-gradient(135deg, ${accent}10, transparent)`,
                   }}
                 >
-                  {group.label}
-                </h3>
-                <div className="flex flex-wrap gap-4 sm:gap-8">
+                  <div className="flex items-center gap-2.5">
+                    <div
+                      style={{
+                        width: '3px',
+                        height: '18px',
+                        borderRadius: '2px',
+                        background: accent,
+                        flexShrink: 0,
+                      }}
+                    />
+                    <h3
+                      style={{
+                        fontFamily: 'var(--font-jetbrains-mono), monospace',
+                        color: accent,
+                        fontSize: '0.72rem',
+                        letterSpacing: '0.13em',
+                        textTransform: 'uppercase',
+                        fontWeight: 600,
+                      }}
+                    >
+                      {group.label}
+                    </h3>
+                  </div>
+                </div>
+
+                {/* Skills grid */}
+                <div className="grid grid-cols-2 gap-px" style={{ background: 'var(--border-3)' }}>
                   {group.skills.map((skill, si) => (
                     <motion.div
                       key={skill.name}
-                      className="flex flex-col items-center gap-2"
-                      initial={{ opacity: 0, scale: 0.85 }}
-                      whileInView={{ opacity: 1, scale: 1 }}
-                      transition={{ duration: 0.4, delay: si * 0.06, type: 'spring' }}
-                      whileHover={{ scale: 1.12 }}
+                      initial={{ opacity: 0 }}
+                      whileInView={{ opacity: 1 }}
+                      transition={{ duration: 0.3, delay: gi * 0.12 + si * 0.07 }}
+                      whileHover={{ background: `${accent}0d` }}
+                      className="flex items-center gap-3"
+                      style={{
+                        padding: '0.875rem 1rem',
+                        background: 'var(--bg-surface)',
+                        cursor: 'default',
+                        transition: 'background 0.2s',
+                      }}
                     >
-                      <div className="w-14 h-14 flex items-center justify-center">
-                        <Image
-                          src={skill.icon}
-                          alt={skill.name}
-                          width={52}
-                          height={52}
-                          className="rounded-xl"
-                          style={{
-                            filter: `drop-shadow(0 0 8px ${accent}40)`,
-                          }}
-                        />
-                      </div>
+                      <Image
+                        src={skill.icon}
+                        alt={skill.name}
+                        width={30}
+                        height={30}
+                        className="rounded-md flex-shrink-0"
+                        style={{ filter: `drop-shadow(0 0 6px ${accent}30)` }}
+                      />
                       <span
                         style={{
                           color: 'var(--fg-2)',
-                          fontSize: '0.8rem',
+                          fontSize: '0.82rem',
+                          fontWeight: 500,
+                          lineHeight: 1.2,
                         }}
                       >
                         {skill.name}
