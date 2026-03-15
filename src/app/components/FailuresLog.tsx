@@ -180,7 +180,7 @@ export default function FailuresLog() {
           </div>
 
           {/* Log entries */}
-          <div style={{ padding: '1.25rem 1.5rem' }}>
+          <div style={{ padding: 'clamp(0.75rem, 3vw, 1.25rem) clamp(0.75rem, 3vw, 1.5rem)' }}>
             {ENTRIES.map((entry, i) => (
               <motion.div
                 key={i}
@@ -188,33 +188,30 @@ export default function FailuresLog() {
                 animate={visibleCount > i ? { opacity: 1, x: 0 } : { opacity: 0, x: -8 }}
                 transition={{ duration: 0.25 }}
                 style={{
-                  display: 'grid',
-                  gridTemplateColumns: '7rem 5.5rem 1fr',
-                  gap: '0 0.75rem',
                   marginBottom: i < ENTRIES.length - 1 ? '0.65rem' : 0,
-                  alignItems: 'baseline',
                 }}
               >
-                {/* Date */}
-                <span style={{ color: '#334155', fontSize: '0.75rem' }}>[{entry.date}]</span>
-
-                {/* Level badge */}
-                <span
-                  style={{
-                    color: LEVEL_COLORS[entry.level],
-                    fontSize: '0.7rem',
-                    letterSpacing: '0.06em',
-                    opacity: 0.85,
-                  }}
-                >
-                  {entry.level.padEnd(8)}
-                </span>
+                {/* Date + Level on one line */}
+                <div style={{ display: 'flex', gap: '0.5rem', alignItems: 'baseline', flexWrap: 'wrap' }}>
+                  <span style={{ color: '#334155', fontSize: '0.7rem', whiteSpace: 'nowrap' }}>[{entry.date}]</span>
+                  <span
+                    style={{
+                      color: LEVEL_COLORS[entry.level],
+                      fontSize: '0.65rem',
+                      letterSpacing: '0.06em',
+                      opacity: 0.85,
+                      whiteSpace: 'nowrap',
+                    }}
+                  >
+                    {entry.level}
+                  </span>
+                </div>
 
                 {/* Message + footnote */}
-                <span>
-                  <span style={{ color: '#cbd5e1', fontSize: '0.82rem' }}>{entry.message}</span>
-                  <span style={{ color: '#475569', fontSize: '0.78rem' }}> {entry.footnote}</span>
-                </span>
+                <div style={{ marginTop: '0.15rem' }}>
+                  <span style={{ color: '#cbd5e1', fontSize: '0.8rem', lineHeight: 1.5 }}>{entry.message}</span>
+                  <span style={{ color: '#475569', fontSize: '0.75rem' }}> {entry.footnote}</span>
+                </div>
               </motion.div>
             ))}
 

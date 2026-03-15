@@ -35,7 +35,7 @@ export const MessageModal = ({ onClose, viewerType }: Props) => {
         animate={{ opacity: 1, scale: 1, y: 0 }}
         exit={{ opacity: 0, scale: 0.95, y: 8 }}
         transition={{ duration: 0.25, ease: 'easeOut' }}
-        className="relative z-10 w-[440px] max-w-[92vw] rounded-2xl p-8"
+        className="relative z-10 w-[440px] max-w-[92vw] rounded-2xl p-5 sm:p-8"
         style={{
           background: '#0a0e1a',
           border: `1px solid ${accent}25`,
@@ -77,7 +77,7 @@ export const MessageModal = ({ onClose, viewerType }: Props) => {
           <h3
             style={{
               fontFamily: 'var(--font-jetbrains-mono), monospace',
-              fontSize: '1.35rem',
+              fontSize: 'clamp(1.1rem, 3vw, 1.35rem)',
               fontWeight: 700,
               color: '#e2e8f0',
               marginBottom: '0.4rem',

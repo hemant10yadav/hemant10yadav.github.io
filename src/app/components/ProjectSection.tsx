@@ -116,7 +116,7 @@ export const ProjectSection = ({ viewerType }: ProjectSectionProps) => {
 
         <div
           className="grid gap-6"
-          style={{ gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))' }}
+          style={{ gridTemplateColumns: 'repeat(auto-fit, minmax(min(300px, 100%), 1fr))' }}
         >
           {isRecruiter
             ? (RECRUITER_PROJECTS as typeof RECRUITER_PROJECTS).map((project, i) => (
@@ -147,7 +147,7 @@ export const ProjectSection = ({ viewerType }: ProjectSectionProps) => {
       {/* Demo iframe */}
       {activeDemoUrl && (
         <div className="px-6 mt-8 w-full" style={{ maxWidth: '100%' }}>
-          <div className="relative w-full" style={{ height: '80vh' }}>
+          <div className="relative w-full" style={{ height: 'min(80vh, 500px)' }}>
             <div className="absolute inset-0">
               <iframe
                 src={activeDemoUrl}
@@ -213,9 +213,9 @@ function RecruiterCard({
       transition={{ delay: index * 0.1, duration: 0.4 }}
       style={{
         background: 'rgba(255,255,255,0.03)',
-        border: '1px solid rgba(245,158,11,0.12)',
+        border: '1px solid rgba(110,231,183,0.12)',
         borderRadius: '12px',
-        padding: '1.75rem',
+        padding: 'clamp(1.25rem, 4vw, 1.75rem)',
       }}
     >
       <h3
@@ -290,7 +290,7 @@ function DeveloperCard({
         background: 'rgba(255,255,255,0.03)',
         border: '1px solid rgba(34,211,238,0.12)',
         borderRadius: '12px',
-        padding: '1.75rem',
+        padding: 'clamp(1.25rem, 4vw, 1.75rem)',
       }}
     >
       <h3

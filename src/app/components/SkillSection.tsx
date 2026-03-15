@@ -94,7 +94,7 @@ export default function SkillSection({ viewerType }: SkillSectionProps) {
     function animate() {
       ctx!.clearRect(0, 0, canvas!.width, canvas!.height);
       ctx!.strokeStyle = isRecruiter
-        ? 'rgba(245,158,11,0.12)'
+        ? 'rgba(110,231,183,0.12)'
         : 'rgba(34,211,238,0.12)';
       ctx!.lineWidth = 0.5;
 
@@ -122,7 +122,7 @@ export default function SkillSection({ viewerType }: SkillSectionProps) {
         ctx!.beginPath();
         ctx!.arc(s.x, s.y, s.r, 0, Math.PI * 2);
         ctx!.fillStyle = isRecruiter
-          ? 'rgba(245,158,11,0.3)'
+          ? 'rgba(110,231,183,0.3)'
           : 'rgba(34,211,238,0.3)';
         ctx!.fill();
       });
@@ -194,7 +194,7 @@ export default function SkillSection({ viewerType }: SkillSectionProps) {
                 >
                   {group.label}
                 </h3>
-                <div className="flex flex-wrap gap-8">
+                <div className="flex flex-wrap gap-4 sm:gap-8">
                   {group.skills.map((skill, si) => (
                     <motion.div
                       key={skill.name}
@@ -299,7 +299,7 @@ export default function SkillSection({ viewerType }: SkillSectionProps) {
         className="absolute inset-0 pointer-events-none"
         style={{
           background: isRecruiter
-            ? 'radial-gradient(circle at center, rgba(245,158,11,0.03), transparent 70%)'
+            ? 'radial-gradient(circle at center, rgba(110,231,183,0.03), transparent 70%)'
             : 'radial-gradient(circle at center, rgba(34,211,238,0.03), transparent 70%)',
         }}
       />

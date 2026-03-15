@@ -107,14 +107,15 @@ export default function GitHubActivity() {
           transition={{ duration: 0.4, delay: 1 }}
           style={{
             position: 'fixed',
-            bottom: '1.5rem',
-            left: '1.5rem',
+            bottom: '1rem',
+            left: '1rem',
             zIndex: 30,
             display: 'flex',
             alignItems: 'center',
             gap: '0.5rem',
-            padding: '0.45rem 0.85rem',
+            padding: '0.4rem 0.75rem',
             borderRadius: '999px',
+            maxWidth: 'calc(100vw - 2rem)',
             background: 'rgba(8,12,20,0.85)',
             border: `1px solid ${accent}30`,
             backdropFilter: 'blur(10px)',
@@ -160,6 +161,8 @@ export default function GitHubActivity() {
               fontSize: '0.7rem',
               color: '#94a3b8',
               whiteSpace: 'nowrap',
+              overflow: 'hidden',
+              textOverflow: 'ellipsis',
             }}
           >
             {label}

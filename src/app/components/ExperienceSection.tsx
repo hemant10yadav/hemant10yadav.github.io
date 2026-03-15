@@ -91,7 +91,7 @@ export default function ExperienceSection({ viewerType }: ExperienceSectionProps
         className="absolute inset-0 pointer-events-none"
         style={{
           background: isRecruiter
-            ? 'radial-gradient(ellipse 60% 40% at 50% 0%, rgba(245,158,11,0.05) 0%, transparent 70%)'
+            ? 'radial-gradient(ellipse 60% 40% at 50% 0%, rgba(110,231,183,0.05) 0%, transparent 70%)'
             : 'radial-gradient(ellipse 60% 40% at 50% 0%, rgba(34,211,238,0.05) 0%, transparent 70%)',
         }}
       />
@@ -242,7 +242,7 @@ function RecruiterTimeline({
                 background: 'rgba(255,255,255,0.025)',
                 border: `1px solid ${exp.current ? `${accent}30` : 'rgba(255,255,255,0.06)'}`,
                 borderRadius: '14px',
-                padding: '1.75rem 2rem',
+                padding: 'clamp(1.25rem, 4vw, 1.75rem) clamp(1rem, 4vw, 2rem)',
                 transition: 'border-color 0.3s',
               }}
               onMouseEnter={(e) => {
@@ -417,7 +417,7 @@ function DeveloperGitLog({
       </div>
 
       {/* Log body */}
-      <div style={{ padding: '1.5rem 1.75rem' }}>
+      <div style={{ padding: 'clamp(1rem, 4vw, 1.5rem) clamp(0.75rem, 4vw, 1.75rem)' }}>
         {experiences.map((exp, i) => (
           <motion.div
             key={exp.company}

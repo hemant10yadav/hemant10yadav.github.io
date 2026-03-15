@@ -95,7 +95,7 @@ export const NavBar = () => {
           </Link>
 
           {/* Nav links */}
-          <div style={{ display: 'flex', gap: '0.25rem', alignItems: 'center' }}>
+          <div style={{ display: 'flex', gap: '0.15rem', alignItems: 'center', overflowX: 'auto', WebkitOverflowScrolling: 'touch' }}>
             {navLinks.map((link) => {
               const isActive = activeSection === link.id;
               return (
@@ -106,9 +106,9 @@ export const NavBar = () => {
                   whileHover={{ scale: 1.04 }}
                   style={{
                     position: 'relative',
-                    padding: '0.4rem 0.9rem',
+                    padding: '0.4rem 0.55rem',
                     borderRadius: '6px',
-                    fontSize: '0.85rem',
+                    fontSize: 'clamp(0.7rem, 2vw, 0.85rem)',
                     fontFamily: 'var(--font-jetbrains-mono), monospace',
                     letterSpacing: '0.04em',
                     color: isActive ? accent : '#64748b',

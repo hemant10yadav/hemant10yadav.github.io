@@ -180,10 +180,10 @@ export default function EasterEgg() {
                   animate={{ x: 0 }}
                   exit={{ x: '-100%' }}
                   transition={{ duration: 0.5, ease: 'easeOut' }}
-                  className="w-1/2 h-full overflow-y-auto flex flex-col justify-center p-16"
+                  className="w-1/2 h-full overflow-y-auto flex flex-col justify-center p-6 md:p-12 lg:p-16"
                   style={{
-                    background: 'rgba(245,158,11,0.04)',
-                    borderRight: '1px solid rgba(245,158,11,0.15)',
+                    background: 'rgba(110,231,183,0.04)',
+                    borderRight: '1px solid rgba(110,231,183,0.15)',
                   }}
                 >
                   <SideContent data={RECRUITER_SNIPPET} label="Recruiter View" />
@@ -195,7 +195,7 @@ export default function EasterEgg() {
                   animate={{ x: 0 }}
                   exit={{ x: '100%' }}
                   transition={{ duration: 0.5, ease: 'easeOut' }}
-                  className="w-1/2 h-full overflow-y-auto flex flex-col justify-center p-16"
+                  className="w-1/2 h-full overflow-y-auto flex flex-col justify-center p-6 md:p-12 lg:p-16"
                   style={{ background: 'rgba(34,211,238,0.04)' }}
                 >
                   <SideContent data={DEVELOPER_SNIPPET} label="Developer View" />

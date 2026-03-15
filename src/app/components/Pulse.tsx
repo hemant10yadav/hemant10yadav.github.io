@@ -462,7 +462,7 @@ export default function Pulse() {
       style={{
         maxWidth: '72rem',
         margin: '0 auto',
-        padding: '4rem 1.5rem 2rem',
+        padding: 'clamp(2rem, 6vw, 4rem) 1.5rem 2rem',
         position: 'relative',
       }}
     >
@@ -605,7 +605,7 @@ export default function Pulse() {
       <div
         style={{
           display: 'grid',
-          gridTemplateColumns: isRecruiter ? 'repeat(auto-fit, minmax(300px, 1fr))' : 'repeat(auto-fit, minmax(280px, 1fr))',
+          gridTemplateColumns: isRecruiter ? 'repeat(auto-fit, minmax(min(300px, 100%), 1fr))' : 'repeat(auto-fit, minmax(min(280px, 100%), 1fr))',
           gap: '1rem',
         }}
       >
