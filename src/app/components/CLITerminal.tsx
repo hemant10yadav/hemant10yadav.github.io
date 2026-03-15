@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useRef, useState, useCallback } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion } from 'framer-motion';
 import { useViewer } from '../context/ViewerContext';
 import {
   FULL_NAME, EMAIL, MAILTO, GITHUB_URL, GITHUB_USERNAME,
@@ -23,26 +23,23 @@ interface Line {
 
 interface HistoryEntry {
   id: number;
-  cmd: string | null; // null = welcome message
+  cmd: string | null;
   output: Line[];
+  processing?: boolean;
+  typewriter?: boolean;
 }
 
-// ── constants ─────────────────────────────────────────────────────────────────
-
-const RESUME_PDF = RESUME_PDF_URL;
-const RESUME_VIEW = RESUME_VIEW_URL;
+// ── data ──────────────────────────────────────────────────────────────────────
 
 const WELCOME: Line[] = [
   { text: '╔════════════════════════════════════════════════════╗', color: 'dim' },
-  { text: '║   hemant@portfolio  ·  v1.0.0  ·  interactive cli  ║', color: 'accent' },
+  { text: '║   hemant@portfolio  ·  v2.0.0  ·  interactive cli  ║', color: 'accent' },
   { text: '╚════════════════════════════════════════════════════╝', color: 'dim' },
   { text: '' },
   { text: "  Type 'help' to see all commands.", color: 'muted' },
-  { text: '  Some commands have surprises. Explore.', color: 'dim' },
+  { text: '  Some files are hidden. Explore.', color: 'dim' },
   { text: '' },
 ];
-
-// ── static command outputs ────────────────────────────────────────────────────
 
 const STATIC_COMMANDS: Record<string, Line[]> = {
   whoami: [
@@ -54,7 +51,7 @@ const STATIC_COMMANDS: Record<string, Line[]> = {
   ],
 
   about: [
-    { text: 'Software engineer', color: 'normal' },
+    { text: 'Software engineer.', color: 'normal' },
     { text: '' },
     { text: 'Spent 4 years closing the gap between', color: 'muted' },
     { text: '"works on my machine" and "works for 10,000 users."', color: 'accent' },
@@ -97,15 +94,15 @@ const STATIC_COMMANDS: Record<string, Line[]> = {
   ],
 
   contact: [
-    { text: `Email     ${EMAIL}`,                                   color: 'normal', href: MAILTO },
-    { text: `GitHub    github.com/${GITHUB_USERNAME}`,              color: 'normal', href: GITHUB_URL },
-    { text: `LinkedIn  linkedin.com/in/${LINKEDIN_HANDLE}`,         color: 'normal', href: LINKEDIN_URL },
-    { text: `Stack     ${SO_URL.replace('https://', '')}`,          color: 'normal', href: SO_URL },
+    { text: `Email     ${EMAIL}`,                                color: 'normal', href: MAILTO },
+    { text: `GitHub    github.com/${GITHUB_USERNAME}`,           color: 'normal', href: GITHUB_URL },
+    { text: `LinkedIn  linkedin.com/in/${LINKEDIN_HANDLE}`,      color: 'normal', href: LINKEDIN_URL },
+    { text: `Stack     ${SO_URL.replace('https://', '')}`,       color: 'normal', href: SO_URL },
   ],
 
   resume: [
-    { text: '↗ View online', color: 'blue', href: RESUME_VIEW },
-    { text: '↓ Download PDF', color: 'blue', href: RESUME_PDF },
+    { text: '↗ View online',   color: 'blue', href: RESUME_VIEW_URL },
+    { text: '↓ Download PDF',  color: 'blue', href: RESUME_PDF_URL },
   ],
 
   ls: [
@@ -128,6 +125,16 @@ const STATIC_COMMANDS: Record<string, Line[]> = {
     { text: 'about/  contact/  experience/  projects/  skills/  .mistakes/', color: 'normal' },
   ],
 
+  'll': [
+    { text: 'total 42', color: 'dim' },
+    { text: 'drwxr-xr-x  about/', color: 'normal' },
+    { text: 'drwxr-xr-x  contact/', color: 'normal' },
+    { text: 'drwxr-xr-x  experience/', color: 'normal' },
+    { text: 'drwxr-xr-x  projects/', color: 'normal' },
+    { text: 'drwxr-xr-x  skills/', color: 'normal' },
+    { text: 'drwx------  .mistakes/', color: 'red' },
+  ],
+
   'ls .mistakes/': [
     { text: 'production.log', color: 'orange' },
     { text: '' },
@@ -146,7 +153,7 @@ const STATIC_COMMANDS: Record<string, Line[]> = {
     { text: '  // Corrupted table data. Had to debug and repair manually.', color: 'muted' },
     { text: '' },
     { text: '[2023-09-05]  DEBUG', color: 'orange' },
-    { text: '  Built a feature on top of an existing one, updated logic in most places.', color: 'normal' },
+    { text: '  Built a feature on top of existing one, updated logic in most places.', color: 'normal' },
     { text: '  // Missed one edge case. Production broke later.', color: 'muted' },
     { text: '' },
     { text: '[2024-02-21]  HUBRIS', color: 'orange' },
@@ -166,16 +173,28 @@ const STATIC_COMMANDS: Record<string, Line[]> = {
     { text: '// 6 logged. more pending review. growth in progress.', color: 'dim' },
   ],
 
-  pwd: [
-    { text: '/home/visitor/hemant-portfolio', color: 'normal' },
+  pwd: [{ text: '/home/visitor/hemant-portfolio', color: 'normal' }],
+  uname: [{ text: 'hemant-portfolio Darwin 24.0.0 arm64', color: 'normal' }],
+  'echo $USER': [{ text: 'visitor', color: 'normal' }],
+
+  env: [
+    { text: 'USER=visitor', color: 'normal' },
+    { text: `HOME=/home/visitor/${GITHUB_USERNAME}-portfolio`, color: 'normal' },
+    { text: 'SHELL=/bin/zsh', color: 'normal' },
+    { text: 'STACK=python:django:react:aws', color: 'accent' },
+    { text: 'COFFEE_CONSUMED=∞', color: 'normal' },
+    { text: 'BUGS_FIXED=many', color: 'green' },
+    { text: 'BUGS_INTRODUCED=some', color: 'orange' },
+    { text: 'DEADLINE=soon™', color: 'red' },
+    { text: 'CURRENT_MOOD=building', color: 'normal' },
+    { text: 'IMPOSTOR_SYNDROME=disabled', color: 'green' },
   ],
 
-  uname: [
-    { text: 'hemant-portfolio Darwin 24.0.0 arm64', color: 'normal' },
-  ],
-
-  'echo $USER': [
-    { text: 'visitor', color: 'normal' },
+  alias: [
+    { text: "alias ll='ls -la'", color: 'normal' },
+    { text: "alias cls='clear'", color: 'normal' },
+    { text: "alias hire='sudo hire-me'", color: 'normal' },
+    { text: "alias fix='git commit -m \"fix\"'", color: 'normal' },
   ],
 
   'cat /etc/motivation': [
@@ -260,9 +279,9 @@ const STATIC_COMMANDS: Record<string, Line[]> = {
   ],
 
   neofetch: [
-    { text: `          ██████           visitor@${GITHUB_USERNAME}-portfolio`, color: 'accent' },
+    { text: `          ██████           visitor@${GITHUB_USERNAME}`, color: 'accent' },
     { text: '        ██      ██         ─────────────────────────', color: 'accent' },
-    { text: '      ██  ████  ██         OS: Portfolio v1.0.0', color: 'normal' },
+    { text: '      ██  ████  ██         OS: Portfolio v2.0.0', color: 'normal' },
     { text: '      ██  ████  ██         Shell: zsh', color: 'normal' },
     { text: '        ██████             Stack: Python · Django · React', color: 'normal' },
     { text: '      ██      ██           Theme: dark (obviously)', color: 'normal' },
@@ -277,6 +296,8 @@ const STATIC_COMMANDS: Record<string, Line[]> = {
   ],
 
   'npm install talent': [
+    { text: 'npm warn deprecated shortcuts@1.0.0', color: 'orange' },
+    { text: '' },
     { text: 'added 1 package in 4 years', color: 'green' },
     { text: '' },
     { text: '1 package is looking for funding', color: 'muted' },
@@ -287,39 +308,113 @@ const STATIC_COMMANDS: Record<string, Line[]> = {
     { text: 'PING google.com: 56 data bytes', color: 'normal' },
     { text: '64 bytes from 142.250.80.46: icmp_seq=0 ttl=116 time=12.3 ms', color: 'muted' },
     { text: '64 bytes from 142.250.80.46: icmp_seq=1 ttl=116 time=11.8 ms', color: 'muted' },
+    { text: '64 bytes from 142.250.80.46: icmp_seq=2 ttl=116 time=13.1 ms', color: 'muted' },
     { text: '' },
+    { text: '--- google.com ping statistics ---', color: 'dim' },
+    { text: '3 packets transmitted, 3 received, 0% packet loss', color: 'green' },
     { text: '(now hire me to build fast systems)', color: 'dim' },
   ],
 };
 
-// ── dynamic help command (depends on current mode) ────────────────────────────
+// ── man pages ─────────────────────────────────────────────────────────────────
 
-function getHelp(viewerType: string): Line[] {
-  const otherMode = viewerType === 'recruiter' ? 'developer' : 'recruiter';
-  return [
-    { text: '┌── Commands ──────────────────────────────────────────┐', color: 'dim' },
-    { text: '│', color: 'dim' },
-    { text: '│  whoami       who am I?', color: 'normal' },
-    { text: '│  about        background & philosophy', color: 'normal' },
-    { text: '│  skills       tech stack', color: 'normal' },
-    { text: '│  experience   work history', color: 'normal' },
-    { text: '│  projects     things I built', color: 'normal' },
-    { text: '│  contact      reach me', color: 'normal' },
-    { text: '│  resume       view / download resume', color: 'normal' },
-    { text: `│  mode         switch to ${otherMode} view`, color: 'normal' },
-    { text: '│  clear        clear terminal', color: 'normal' },
-    { text: '│', color: 'dim' },
-    { text: '│  Tab          autocomplete', color: 'dim' },
-    { text: '│  ↑ / ↓        command history', color: 'dim' },
-    { text: '│  Ctrl+C       cancel input', color: 'dim' },
-    { text: '│', color: 'dim' },
-    { text: '└──────────────────────────────────────────────────────┘', color: 'dim' },
+const MAN_PAGES: Record<string, Line[]> = {
+  ls: [
+    { text: 'LS(1)              Portfolio Manual             LS(1)', color: 'dim' },
     { text: '' },
-    { text: "  There are hidden commands. Explore.", color: 'dim' },
-  ];
-}
+    { text: 'NAME', color: 'white' },
+    { text: '     ls — list portfolio contents', color: 'normal' },
+    { text: '' },
+    { text: 'SYNOPSIS', color: 'white' },
+    { text: '     ls [-la] [-a] [directory]', color: 'normal' },
+    { text: '' },
+    { text: 'OPTIONS', color: 'white' },
+    { text: '     -la   long format, show hidden files', color: 'normal' },
+    { text: '     -a    show all including dotfiles', color: 'normal' },
+    { text: '' },
+    { text: 'EXAMPLES', color: 'white' },
+    { text: "     ls -la        # reveals hidden directories", color: 'muted' },
+    { text: "     ls .mistakes/ # peek inside", color: 'muted' },
+  ],
+  cat: [
+    { text: 'CAT(1)             Portfolio Manual             CAT(1)', color: 'dim' },
+    { text: '' },
+    { text: 'NAME', color: 'white' },
+    { text: '     cat — display file contents', color: 'normal' },
+    { text: '' },
+    { text: 'EXAMPLES', color: 'white' },
+    { text: '     cat /etc/motivation', color: 'muted' },
+    { text: '     cat ~/.mistakes/production.log', color: 'muted' },
+  ],
+  grep: [
+    { text: 'GREP(1)            Portfolio Manual             GREP(1)', color: 'dim' },
+    { text: '' },
+    { text: 'NAME', color: 'white' },
+    { text: '     grep — search lines matching a pattern', color: 'normal' },
+    { text: '' },
+    { text: 'SYNOPSIS', color: 'white' },
+    { text: '     command | grep <pattern>', color: 'normal' },
+    { text: '' },
+    { text: 'EXAMPLES', color: 'white' },
+    { text: '     ls -la | grep mistakes', color: 'muted' },
+    { text: '     git log | grep Xcaliber', color: 'muted' },
+    { text: '     experience | grep Django', color: 'muted' },
+  ],
+  whoami: [
+    { text: 'WHOAMI(1)          Portfolio Manual          WHOAMI(1)', color: 'dim' },
+    { text: '' },
+    { text: 'NAME', color: 'white' },
+    { text: '     whoami — display effective user identity', color: 'normal' },
+    { text: '' },
+    { text: 'DESCRIPTION', color: 'white' },
+    { text: '     Shows the portfolio owner identity.', color: 'normal' },
+    { text: `     Spoiler: it's ${FULL_NAME}.`, color: 'dim' },
+  ],
+  git: [
+    { text: 'GIT(1)             Portfolio Manual              GIT(1)', color: 'dim' },
+    { text: '' },
+    { text: 'AVAILABLE SUBCOMMANDS', color: 'white' },
+    { text: '     git log        career history', color: 'normal' },
+    { text: '     git blame      find who to blame', color: 'normal' },
+    { text: '     git status     current state of things', color: 'normal' },
+  ],
+  mode: [
+    { text: 'MODE(1)            Portfolio Manual            MODE(1)', color: 'dim' },
+    { text: '' },
+    { text: 'NAME', color: 'white' },
+    { text: '     mode — switch between recruiter and developer view', color: 'normal' },
+    { text: '' },
+    { text: 'DESCRIPTION', color: 'white' },
+    { text: '     Toggles the entire portfolio between two modes.', color: 'normal' },
+    { text: '     Changes content, accent color, and visible sections.', color: 'muted' },
+  ],
+};
 
-// ── color resolver ────────────────────────────────────────────────────────────
+// ── slow commands (show processing spinner before output) ─────────────────────
+
+const SLOW_COMMANDS = new Set([
+  'cat ~/.mistakes/production.log',
+  'ping google.com',
+  'npm install talent',
+  'neofetch',
+  'git log',
+]);
+
+// ── completion list ───────────────────────────────────────────────────────────
+
+const ALL_CMDS = [
+  'help', 'whoami', 'about', 'skills', 'experience', 'projects',
+  'contact', 'resume', 'mode', 'clear', 'history', 'ls', 'ls -la',
+  'ls -a', 'll', 'ls .mistakes/', 'pwd', 'uname', 'env', 'alias',
+  'neofetch', 'vim', 'nano', 'exit', 'date', 'echo', 'grep',
+  'git log', 'git blame', 'git status', 'ssh hemant',
+  'sudo hire-me', 'rm -rf bugs', 'curl ifconfig.me',
+  'npm install talent', 'cat /etc/motivation',
+  'cat ~/.mistakes/production.log', 'ping google.com',
+  'echo $USER', 'man',
+];
+
+// ── helpers ───────────────────────────────────────────────────────────────────
 
 function resolveColor(color: LineColor | undefined, accent: string): string {
   switch (color) {
@@ -336,49 +431,90 @@ function resolveColor(color: LineColor | undefined, accent: string): string {
   }
 }
 
-// ── all known command names (for tab completion) ──────────────────────────────
+function getHelp(viewerType: string): Line[] {
+  const otherMode = viewerType === 'recruiter' ? 'developer' : 'recruiter';
+  return [
+    { text: '┌── Commands ─────────────────────────────────────────────┐', color: 'dim' },
+    { text: '│', color: 'dim' },
+    { text: '│  whoami       who am I?', color: 'normal' },
+    { text: '│  about        background & philosophy', color: 'normal' },
+    { text: '│  skills       tech stack', color: 'normal' },
+    { text: '│  experience   work history', color: 'normal' },
+    { text: '│  projects     things I built', color: 'normal' },
+    { text: '│  contact      reach me', color: 'normal' },
+    { text: '│  resume       view / download resume', color: 'normal' },
+    { text: `│  mode         switch to ${otherMode} view`, color: 'normal' },
+    { text: '│  history      recent commands', color: 'normal' },
+    { text: '│  man <cmd>    read the manual', color: 'normal' },
+    { text: '│  clear        clear terminal', color: 'normal' },
+    { text: '│', color: 'dim' },
+    { text: '│  Tab          autocomplete / show all matches', color: 'dim' },
+    { text: '│  ↑ / ↓        command history', color: 'dim' },
+    { text: '│  Ctrl+R       reverse history search', color: 'dim' },
+    { text: '│  Ctrl+L       clear screen', color: 'dim' },
+    { text: '│  Ctrl+A/E     start / end of line', color: 'dim' },
+    { text: '│  Ctrl+W       delete last word', color: 'dim' },
+    { text: '│  Ctrl+U       clear line', color: 'dim' },
+    { text: '│', color: 'dim' },
+    { text: '└─────────────────────────────────────────────────────────┘', color: 'dim' },
+    { text: '' },
+    { text: '  Some files are hidden. Explore with ls.', color: 'dim' },
+    { text: '  Click any output line to copy it.', color: 'dim' },
+  ];
+}
 
-const ALL_CMDS = [
-  'help', 'whoami', 'about', 'skills', 'experience', 'projects',
-  'contact', 'resume', 'mode', 'clear', 'ls', 'pwd', 'uname',
-  'neofetch', 'vim', 'nano', 'exit', 'git log', 'git blame',
-  'git status', 'ssh hemant', 'sudo hire-me', 'rm -rf bugs',
-  'curl ifconfig.me', 'npm install talent', 'cat /etc/motivation',
-  'ping google.com', 'echo $USER',
-];
+// Returns output lines for a given command (used by pipe)
+function getCommandOutput(cmd: string, viewerType: string): Line[] {
+  const lower = cmd.trim().toLowerCase();
+  if (lower === 'help') return getHelp(viewerType);
+  if (lower in STATIC_COMMANDS) return STATIC_COMMANDS[lower];
+  return [{ text: `command not found: ${lower}`, color: 'red' }];
+}
+
+// Fuzzy "did you mean?" — finds closest command name
+function findSimilar(input: string, commands: string[]): string | null {
+  if (input.length < 2) return null;
+  const prefix = input.slice(0, Math.min(3, input.length)).toLowerCase();
+  return commands.find(c => c !== input && (c.startsWith(prefix) || c.includes(prefix))) ?? null;
+}
+
+// Reverse search through command history
+function findInHistory(history: string[], query: string): string {
+  if (!query) return '';
+  return history.find(c => c.toLowerCase().includes(query.toLowerCase())) ?? '';
+}
 
 // ── component ─────────────────────────────────────────────────────────────────
 
 export default function CLITerminal() {
   const { viewerType, accent, toggleViewerType } = useViewer();
 
-  const [history, setHistory] = useState<HistoryEntry[]>([
+  const [entries, setEntries] = useState<HistoryEntry[]>([
     { id: 0, cmd: null, output: WELCOME },
   ]);
   const [input, setInput] = useState('');
   const [cmdHistory, setCmdHistory] = useState<string[]>([]);
-  const [cmdIdx, setCmdIdx] = useState(-1);
-  const [isFocused, setIsFocused] = useState(false);
+  const [cmdIdx, setCmdIdx]         = useState(-1);
+  const [isFocused, setIsFocused]   = useState(false);
+  const [copiedId, setCopiedId]     = useState<string | null>(null);
+
+  // Ctrl+R reverse search
+  const [searchMode, setSearchMode]   = useState(false);
+  const [searchQuery, setSearchQuery] = useState('');
 
   const inputRef = useRef<HTMLInputElement>(null);
-  const bodyRef = useRef<HTMLDivElement>(null);
-  const idRef = useRef(1);
+  const bodyRef  = useRef<HTMLDivElement>(null);
+  const idRef    = useRef(1);
 
-  // Auto-scroll to bottom on new entry
+  // Auto-scroll
   useEffect(() => {
-    if (bodyRef.current) {
-      bodyRef.current.scrollTop = bodyRef.current.scrollHeight;
-    }
-  }, [history]);
+    if (bodyRef.current) bodyRef.current.scrollTop = bodyRef.current.scrollHeight;
+  }, [entries]);
 
-  // Global shortcut: backtick focuses terminal
+  // Global ` shortcut
   useEffect(() => {
     const handler = (e: KeyboardEvent) => {
-      if (
-        e.key === '`' &&
-        !(e.target instanceof HTMLInputElement) &&
-        !(e.target instanceof HTMLTextAreaElement)
-      ) {
+      if (e.key === '`' && !(e.target instanceof HTMLInputElement) && !(e.target instanceof HTMLTextAreaElement)) {
         e.preventDefault();
         inputRef.current?.focus();
         inputRef.current?.scrollIntoView({ behavior: 'smooth', block: 'center' });
@@ -388,65 +524,154 @@ export default function CLITerminal() {
     return () => window.removeEventListener('keydown', handler);
   }, []);
 
-  const addEntry = useCallback((cmd: string, output: Line[]) => {
-    setHistory((prev) => [...prev, { id: idRef.current++, cmd, output }]);
+  const pushEntry = useCallback((cmd: string, output: Line[], opts?: { typewriter?: boolean }) => {
+    setEntries(prev => [...prev, { id: idRef.current++, cmd, output, typewriter: opts?.typewriter }]);
   }, []);
 
-  const runCommand = useCallback(
-    (raw: string) => {
-      const cmd = raw.trim();
-      if (!cmd) return;
+  const copyLine = useCallback((text: string, lineId: string) => {
+    if (!text.trim()) return;
+    navigator.clipboard.writeText(text).then(() => {
+      setCopiedId(lineId);
+      setTimeout(() => setCopiedId(null), 1400);
+    }).catch(() => {});
+  }, []);
 
-      const lower = cmd.toLowerCase();
+  const runCommand = useCallback((raw: string) => {
+    const cmd = raw.trim();
+    if (!cmd) return;
+    const lower = cmd.toLowerCase();
 
-      setCmdHistory((prev) => [cmd, ...prev.slice(0, 49)]);
-      setCmdIdx(-1);
+    setCmdHistory(prev => [cmd, ...prev.slice(0, 49)]);
+    setCmdIdx(-1);
 
-      // ── built-ins ──────────────────────────────────────────────────────────
-
-      if (lower === 'clear') {
-        setHistory([{ id: idRef.current++, cmd: null, output: WELCOME }]);
-        return;
+    // ── pipe ────────────────────────────────────────────────────────────────
+    if (cmd.includes('|')) {
+      const parts = cmd.split('|').map(s => s.trim());
+      let result = getCommandOutput(parts[0], viewerType);
+      for (let i = 1; i < parts.length; i++) {
+        const part = parts[i].trim();
+        if (part.startsWith('grep ')) {
+          const pattern = part.slice(5).trim().toLowerCase();
+          const filtered = result.filter(l => l.text.toLowerCase().includes(pattern));
+          result = filtered.length
+            ? filtered
+            : [{ text: `grep: no matches for '${pattern}'`, color: 'red' }];
+        }
       }
+      pushEntry(cmd, result);
+      return;
+    }
 
-      if (lower === 'help') {
-        addEntry(cmd, getHelp(viewerType));
-        return;
-      }
+    // ── built-ins ────────────────────────────────────────────────────────────
+    if (lower === 'clear') {
+      setEntries([{ id: idRef.current++, cmd: null, output: WELCOME }]);
+      return;
+    }
 
-      if (lower === 'mode') {
-        const next = viewerType === 'recruiter' ? 'developer' : 'recruiter';
-        toggleViewerType();
-        addEntry(cmd, [
-          { text: `✓ Switched to ${next} view.`, color: 'green' },
-          { text: '  Scroll up — the whole site just changed.', color: 'dim' },
-        ]);
-        return;
-      }
+    if (lower === 'help') { pushEntry(cmd, getHelp(viewerType)); return; }
 
-      if (lower === 'date') {
-        addEntry(cmd, [{ text: new Date().toLocaleString(), color: 'normal' }]);
-        return;
-      }
-
-      // ── static commands ────────────────────────────────────────────────────
-
-      if (lower in STATIC_COMMANDS) {
-        addEntry(cmd, STATIC_COMMANDS[lower]);
-        return;
-      }
-
-      // ── unknown ────────────────────────────────────────────────────────────
-
-      addEntry(cmd, [
-        { text: `zsh: command not found: ${cmd}`, color: 'red' },
-        { text: "Type 'help' for available commands.", color: 'dim' },
+    if (lower === 'mode') {
+      const next = viewerType === 'recruiter' ? 'developer' : 'recruiter';
+      toggleViewerType();
+      pushEntry(cmd, [
+        { text: `✓ Switched to ${next} view.`, color: 'green' },
+        { text: '  Scroll up — the whole site just changed.', color: 'dim' },
       ]);
-    },
-    [viewerType, toggleViewerType, addEntry],
-  );
+      return;
+    }
+
+    if (lower === 'date') {
+      pushEntry(cmd, [{ text: new Date().toLocaleString(), color: 'normal' }]);
+      return;
+    }
+
+    if (lower.startsWith('echo ') && lower !== 'echo $user') {
+      pushEntry(cmd, [{ text: cmd.slice(5), color: 'normal' }]);
+      return;
+    }
+
+    if (lower === 'history') {
+      pushEntry(cmd, cmdHistory.length
+        ? cmdHistory.slice(0, 25).map((c, i) => ({
+            text: `  ${String(cmdHistory.length - i).padStart(3)}  ${c}`,
+            color: 'normal' as LineColor,
+          }))
+        : [{ text: 'No commands in history yet.', color: 'dim' }]);
+      return;
+    }
+
+    if (lower.startsWith('man ')) {
+      const target = lower.slice(4).trim();
+      pushEntry(cmd, MAN_PAGES[target] ?? [
+        { text: `No manual entry for ${target}`, color: 'red' },
+        { text: '(try: man ls, man cat, man grep, man whoami, man git, man mode)', color: 'dim' },
+      ]);
+      return;
+    }
+
+    if (lower === 'grep' || (lower.startsWith('grep ') && !cmd.includes('|'))) {
+      pushEntry(cmd, [
+        { text: 'usage: command | grep <pattern>', color: 'red' },
+        { text: 'example: ls -la | grep mistakes', color: 'dim' },
+      ]);
+      return;
+    }
+
+    // ── slow commands — show spinner then reveal output ──────────────────────
+    if (SLOW_COMMANDS.has(lower)) {
+      const entryId = idRef.current++;
+      const isTypewriter = lower === 'cat ~/.mistakes/production.log';
+
+      setEntries(prev => [...prev, { id: entryId, cmd, output: [], processing: true }]);
+
+      const delay = 600 + Math.random() * 500;
+      setTimeout(() => {
+        setEntries(prev => prev.map(e =>
+          e.id === entryId
+            ? { ...e, output: STATIC_COMMANDS[lower] ?? [], processing: false, typewriter: isTypewriter }
+            : e
+        ));
+      }, delay);
+      return;
+    }
+
+    // ── static commands ──────────────────────────────────────────────────────
+    if (lower in STATIC_COMMANDS) {
+      pushEntry(cmd, STATIC_COMMANDS[lower]);
+      return;
+    }
+
+    // ── did you mean? ────────────────────────────────────────────────────────
+    const similar = findSimilar(lower, ALL_CMDS);
+    const notFoundLines: Line[] = [
+      { text: `zsh: command not found: ${cmd}`, color: 'red' },
+      ...(similar ? [{ text: `Did you mean '${similar}'?`, color: 'dim' } as Line] : []),
+      { text: "Type 'help' for available commands.", color: 'dim' },
+    ];
+    pushEntry(cmd, notFoundLines);
+  }, [viewerType, toggleViewerType, pushEntry, cmdHistory]);
 
   const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    // ── search mode ──────────────────────────────────────────────────────────
+    if (searchMode) {
+      if (e.key === 'Enter') {
+        const found = findInHistory(cmdHistory, searchQuery);
+        setSearchMode(false);
+        setSearchQuery('');
+        if (found) setInput(found);
+      } else if (e.key === 'Escape' || (e.key === 'c' && e.ctrlKey)) {
+        setSearchMode(false);
+        setSearchQuery('');
+      } else if (e.key === 'Backspace') {
+        setSearchQuery(prev => prev.slice(0, -1));
+      } else if (e.key.length === 1 && !e.ctrlKey && !e.altKey) {
+        setSearchQuery(prev => prev + e.key);
+      }
+      e.preventDefault();
+      return;
+    }
+
+    // ── normal mode ──────────────────────────────────────────────────────────
     if (e.key === 'Enter') {
       runCommand(input);
       setInput('');
@@ -462,14 +687,55 @@ export default function CLITerminal() {
       setInput(next === -1 ? '' : (cmdHistory[next] ?? ''));
     } else if (e.key === 'Tab') {
       e.preventDefault();
-      const match = ALL_CMDS.find(
-        (c) => c.startsWith(input.toLowerCase()) && c !== input.toLowerCase(),
-      );
-      if (match) setInput(match);
-    } else if (e.key === 'c' && e.ctrlKey) {
-      setInput('');
+      const matches = ALL_CMDS.filter(c => c.startsWith(input.toLowerCase()) && c !== input.toLowerCase());
+      if (matches.length === 1) {
+        setInput(matches[0]);
+      } else if (matches.length > 1) {
+        // Show all matches without executing
+        pushEntry(input, [{ text: matches.join('   '), color: 'accent' }]);
+      }
+    } else if (e.ctrlKey) {
+      switch (e.key.toLowerCase()) {
+        case 'c':
+          e.preventDefault();
+          if (input) {
+            pushEntry(input + '^C', []);
+            setInput('');
+          }
+          break;
+        case 'l':
+          e.preventDefault();
+          setEntries([{ id: idRef.current++, cmd: null, output: WELCOME }]);
+          break;
+        case 'a':
+          e.preventDefault();
+          setTimeout(() => inputRef.current?.setSelectionRange(0, 0));
+          break;
+        case 'e':
+          e.preventDefault();
+          setTimeout(() => inputRef.current?.setSelectionRange(input.length, input.length));
+          break;
+        case 'w': {
+          e.preventDefault();
+          const trimmed = input.trimEnd();
+          const lastSpace = trimmed.lastIndexOf(' ');
+          setInput(lastSpace === -1 ? '' : trimmed.slice(0, lastSpace + 1));
+          break;
+        }
+        case 'u':
+          e.preventDefault();
+          setInput('');
+          break;
+        case 'r':
+          e.preventDefault();
+          setSearchMode(true);
+          setSearchQuery('');
+          break;
+      }
     }
   };
+
+  const searchResult = searchMode ? findInHistory(cmdHistory, searchQuery) : '';
 
   return (
     <section
@@ -481,58 +747,39 @@ export default function CLITerminal() {
         position: 'relative',
       }}
     >
-      {/* Section label */}
+      {/* Section header */}
       <motion.div
         initial={{ opacity: 0, y: -16 }}
         whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: true }}
         transition={{ duration: 0.4 }}
-        style={{
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'space-between',
-          marginBottom: '1.5rem',
-          flexWrap: 'wrap',
-          gap: '0.5rem',
-        }}
+        style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '1.25rem', flexWrap: 'wrap', gap: '0.5rem' }}
       >
         <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
-          <h2
-            style={{
-              fontFamily: 'var(--font-jetbrains-mono), monospace',
-              fontSize: '1.6rem',
-              fontWeight: 700,
-              color: '#e2e8f0',
-              margin: 0,
-            }}
-          >
+          {/* Live indicator */}
+          <span style={{ position: 'relative', display: 'flex', alignItems: 'center' }}>
+            <span style={{ position: 'absolute', width: '0.55rem', height: '0.55rem', borderRadius: '50%', background: accent, opacity: 0.35, animation: 'ping 2s cubic-bezier(0,0,0.2,1) infinite' }} />
+            <span style={{ width: '0.5rem', height: '0.5rem', borderRadius: '50%', background: accent, display: 'block', position: 'relative' }} />
+          </span>
+          <h2 style={{ fontFamily: 'var(--font-jetbrains-mono), monospace', fontSize: '1.6rem', fontWeight: 700, color: '#e2e8f0', margin: 0 }}>
             Terminal
           </h2>
-          <span
-            style={{
-              fontSize: '0.6rem',
-              fontFamily: 'var(--font-jetbrains-mono), monospace',
-              color: '#475569',
-              letterSpacing: '0.08em',
-              textTransform: 'uppercase',
-              padding: '0.15rem 0.5rem',
-              borderRadius: '999px',
-              border: '1px solid rgba(255,255,255,0.06)',
-              background: 'rgba(255,255,255,0.02)',
-            }}
-          >
-            Interactive
+          <span style={{ fontSize: '0.6rem', fontFamily: 'var(--font-jetbrains-mono), monospace', color: '#475569', letterSpacing: '0.08em', textTransform: 'uppercase', padding: '0.15rem 0.5rem', borderRadius: '999px', border: `1px solid ${accent}25`, background: `${accent}08` }}>
+            interactive
           </span>
         </div>
-        <span
-          style={{
-            fontFamily: 'var(--font-jetbrains-mono), monospace',
-            fontSize: '0.65rem',
-            color: '#2d3f55',
-          }}
-        >
-          press <span style={{ color: accent }}>` </span>anywhere to focus
-        </span>
+        <div style={{ display: 'flex', gap: '1rem', alignItems: 'center', flexWrap: 'wrap' }}>
+          {[
+            ['`', 'focus'],
+            ['Ctrl+R', 'search'],
+            ['Ctrl+L', 'clear'],
+            ['Tab', 'complete'],
+          ].map(([key, desc]) => (
+            <span key={key} style={{ fontFamily: 'var(--font-jetbrains-mono), monospace', fontSize: '0.6rem', color: '#2d3f55' }}>
+              <span style={{ color: `${accent}90` }}>{key}</span> {desc}
+            </span>
+          ))}
+        </div>
       </motion.div>
 
       {/* Terminal window */}
@@ -543,207 +790,180 @@ export default function CLITerminal() {
         transition={{ duration: 0.5 }}
         onClick={() => inputRef.current?.focus()}
         style={{
-          background: '#060a12',
+          background: '#0b1120',
           borderRadius: '12px',
           overflow: 'hidden',
-          border: `1px solid ${isFocused ? `${accent}35` : 'rgba(255,255,255,0.06)'}`,
-          boxShadow: isFocused ? `0 0 30px ${accent}10` : '0 0 0px transparent',
-          transition: 'border-color 0.3s, box-shadow 0.3s',
+          border: `1px solid ${isFocused ? `${accent}50` : 'rgba(255,255,255,0.12)'}`,
+          boxShadow: isFocused
+            ? `0 0 0 1px ${accent}20, 0 24px 60px rgba(0,0,0,0.6)`
+            : '0 4px 6px rgba(0,0,0,0.3), 0 24px 60px rgba(0,0,0,0.5)',
+          transition: 'border-color 0.25s, box-shadow 0.25s',
           cursor: 'text',
           fontFamily: 'var(--font-jetbrains-mono), monospace',
         }}
       >
-        {/* Chrome bar */}
-        <div
-          style={{
-            background: '#0d1117',
-            padding: '0.65rem 1rem',
-            borderBottom: '1px solid rgba(255,255,255,0.05)',
-            display: 'flex',
-            alignItems: 'center',
-            gap: '0.5rem',
-            userSelect: 'none',
-          }}
-        >
+        {/* Chrome */}
+        <div style={{ background: '#141c2e', padding: '0.65rem 1rem', borderBottom: `1px solid ${isFocused ? `${accent}18` : 'rgba(255,255,255,0.06)'}`, display: 'flex', alignItems: 'center', gap: '0.5rem', userSelect: 'none', transition: 'border-color 0.25s' }}>
           {['#ef4444', '#f59e0b', '#22c55e'].map((c) => (
-            <span
-              key={c}
-              style={{
-                width: '0.55rem',
-                height: '0.55rem',
-                borderRadius: '50%',
-                background: c,
-                display: 'block',
-                opacity: 0.75,
-              }}
-            />
+            <span key={c} style={{ width: '0.55rem', height: '0.55rem', borderRadius: '50%', background: c, display: 'block', opacity: 0.8 }} />
           ))}
-          <span
-            style={{
-              fontFamily: 'var(--font-jetbrains-mono), monospace',
-              fontSize: '0.68rem',
-              color: '#2d3f55',
-              marginLeft: '0.4rem',
-            }}
-          >
-            visitor@hemant — portfolio
+          <span style={{ fontFamily: 'var(--font-jetbrains-mono), monospace', fontSize: '0.68rem', color: '#334155', marginLeft: '0.4rem' }}>
+            visitor@hemant — ~/portfolio
           </span>
+          {isFocused && (
+            <span style={{ marginLeft: 'auto', fontSize: '0.6rem', color: `${accent}60`, fontFamily: 'var(--font-jetbrains-mono), monospace' }}>
+              ● active
+            </span>
+          )}
         </div>
 
         {/* Body */}
         <div
           ref={bodyRef}
-          style={{
-            height: 'clamp(320px, 50vh, 480px)',
-            overflowY: 'auto',
-            padding: '1rem 1.25rem 0.5rem',
-            scrollbarWidth: 'thin',
-            scrollbarColor: `${accent}20 transparent`,
-          }}
+          style={{ height: 'clamp(360px, 55vh, 520px)', overflowY: 'auto', padding: '1rem 1.25rem 0.5rem', scrollbarWidth: 'thin', scrollbarColor: `${accent}25 transparent` }}
         >
-          {history.map((entry) => (
+          {entries.map((entry) => (
             <div key={entry.id} style={{ marginBottom: '0.5rem' }}>
-              {/* Command echo */}
               {entry.cmd !== null && (
-                <div
-                  style={{
-                    display: 'flex',
-                    alignItems: 'center',
-                    gap: '0.5rem',
-                    marginBottom: '0.25rem',
-                  }}
-                >
-                  <Prompt />
-                  <span
-                    style={{
-                      fontFamily: 'var(--font-jetbrains-mono), monospace',
-                      fontSize: '0.82rem',
-                      color: '#e2e8f0',
-                    }}
-                  >
+                <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '0.2rem' }}>
+                  <Prompt accent={accent} />
+                  <span style={{ fontFamily: 'var(--font-jetbrains-mono), monospace', fontSize: '0.82rem', color: '#e2e8f0' }}>
                     {entry.cmd}
                   </span>
                 </div>
               )}
 
-              {/* Output */}
-              <AnimatePresence>
-                {entry.output.map((line, li) => (
-                  <OutputLine
-                    key={li}
-                    line={line}
-                    index={li}
-                  />
-                ))}
-              </AnimatePresence>
+              {entry.processing && <ProcessingDots accent={accent} />}
+
+              {!entry.processing && entry.output.map((line, li) => (
+                <OutputLine
+                  key={li}
+                  line={line}
+                  index={li}
+                  accent={accent}
+                  slow={entry.typewriter}
+                  lineId={`${entry.id}-${li}`}
+                  copiedId={copiedId}
+                  onCopy={copyLine}
+                />
+              ))}
             </div>
           ))}
 
-          {/* Live input line */}
-          <div
-            style={{
-              display: 'flex',
-              alignItems: 'center',
-              gap: '0.5rem',
-              paddingBottom: '0.75rem',
-            }}
-          >
-            <Prompt />
-            <input
-              ref={inputRef}
-              value={input}
-              onChange={(e) => setInput(e.target.value)}
-              onKeyDown={handleKeyDown}
-              onFocus={() => setIsFocused(true)}
-              onBlur={() => setIsFocused(false)}
-              spellCheck={false}
-              autoComplete="off"
-              autoCapitalize="off"
-              style={{
-                flex: 1,
-                background: 'transparent',
-                border: 'none',
-                outline: 'none',
-                fontFamily: 'var(--font-jetbrains-mono), monospace',
-                fontSize: '0.82rem',
-                color: '#e2e8f0',
-                caretColor: accent,
-                minWidth: 0,
-              }}
-            />
+          {/* Input row */}
+          <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', paddingBottom: '0.75rem' }}>
+            {searchMode ? (
+              // Ctrl+R search mode
+              <>
+                <span style={{ fontFamily: 'var(--font-jetbrains-mono), monospace', fontSize: '0.75rem', color: accent, whiteSpace: 'nowrap', flexShrink: 0 }}>
+                  (reverse-i-search)`{searchQuery}&apos;:
+                </span>
+                <span style={{ fontFamily: 'var(--font-jetbrains-mono), monospace', fontSize: '0.82rem', color: '#e2e8f0', flex: 1 }}>
+                  {searchResult}
+                  <span style={{ display: 'inline-block', width: '0.45rem', height: '0.9rem', background: accent, opacity: 0.7, marginLeft: '1px', animation: 'blink 1.1s step-end infinite', verticalAlign: 'text-bottom' }} />
+                </span>
+              </>
+            ) : (
+              <>
+                <Prompt accent={accent} />
+                <input
+                  ref={inputRef}
+                  value={input}
+                  onChange={(e) => setInput(e.target.value)}
+                  onKeyDown={handleKeyDown}
+                  onFocus={() => setIsFocused(true)}
+                  onBlur={() => setIsFocused(false)}
+                  spellCheck={false}
+                  autoComplete="off"
+                  autoCapitalize="off"
+                  style={{ flex: 1, background: 'transparent', border: 'none', outline: 'none', fontFamily: 'var(--font-jetbrains-mono), monospace', fontSize: '0.82rem', color: '#e2e8f0', caretColor: accent, minWidth: 0 }}
+                />
+              </>
+            )}
           </div>
         </div>
       </motion.div>
 
-      {/* Hint row */}
-      <motion.div
-        initial={{ opacity: 0 }}
-        whileInView={{ opacity: 1 }}
-        viewport={{ once: true }}
-        transition={{ delay: 0.4 }}
-        style={{
-          display: 'flex',
-          gap: '1.5rem',
-          flexWrap: 'wrap',
-          marginTop: '0.75rem',
-          paddingLeft: '0.25rem',
-        }}
-      >
-        {[
-          ['Tab', 'autocomplete'],
-          ['↑↓', 'history'],
-          ['Ctrl+C', 'cancel'],
-          ['clear', 'reset'],
-        ].map(([key, desc]) => (
-          <span
-            key={key}
-            style={{
-              fontFamily: 'var(--font-jetbrains-mono), monospace',
-              fontSize: '0.6rem',
-              color: '#1e2d3d',
-            }}
-          >
-            <span style={{ color: accent }}>{key}</span> {desc}
-          </span>
-        ))}
-      </motion.div>
+      {/* Copy toast */}
+      {copiedId && (
+        <motion.div
+          initial={{ opacity: 0, y: 4 }}
+          animate={{ opacity: 1, y: 0 }}
+          exit={{ opacity: 0 }}
+          style={{ position: 'absolute', bottom: '3.5rem', right: '1.5rem', fontFamily: 'var(--font-jetbrains-mono), monospace', fontSize: '0.65rem', color: accent, background: `${accent}15`, border: `1px solid ${accent}30`, padding: '0.25rem 0.6rem', borderRadius: '6px', pointerEvents: 'none' }}
+        >
+          ✓ copied
+        </motion.div>
+      )}
     </section>
   );
 }
 
 // ── sub-components ────────────────────────────────────────────────────────────
 
-function Prompt() {
+function Prompt({ accent }: { accent: string }) {
   return (
-    <span
-      style={{
-        fontFamily: "var(--font-jetbrains-mono), monospace",
-        fontSize: "0.75rem",
-        userSelect: "none",
-        whiteSpace: "nowrap",
-        flexShrink: 0,
-      }}
-    >
-      <span style={{ color: "#475569" }}>visitor</span>
-      <span style={{ color: "#2d3f55" }}>@</span>
-      <span style={{ color: "#2d3f55" }}>hemant</span>
-      <span style={{ color: "#2d3f55" }}>:~$</span>
+    <span style={{ fontFamily: 'var(--font-jetbrains-mono), monospace', fontSize: '0.75rem', userSelect: 'none', whiteSpace: 'nowrap', flexShrink: 0 }}>
+      <span style={{ color: '#475569' }}>visitor</span>
+      <span style={{ color: '#2d3f55' }}>@</span>
+      <span style={{ color: accent }}>hemant</span>
+      <span style={{ color: '#2d3f55' }}>:~$</span>
     </span>
   );
 }
 
-function OutputLine({ line, index }: { line: Line; index: number }) {
-  const { accent } = useViewer();
+function ProcessingDots({ accent }: { accent: string }) {
+  return (
+    <motion.div
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      style={{ display: 'flex', gap: '0.3rem', padding: '0.2rem 0', alignItems: 'center' }}
+    >
+      {[0, 1, 2].map((i) => (
+        <motion.span
+          key={i}
+          animate={{ opacity: [0.2, 1, 0.2] }}
+          transition={{ duration: 1, repeat: Infinity, delay: i * 0.2 }}
+          style={{ width: '0.35rem', height: '0.35rem', borderRadius: '50%', background: accent, display: 'block' }}
+        />
+      ))}
+    </motion.div>
+  );
+}
+
+function OutputLine({
+  line, index, accent, slow, lineId, copiedId, onCopy,
+}: {
+  line: Line;
+  index: number;
+  accent: string;
+  slow?: boolean;
+  lineId: string;
+  copiedId: string | null;
+  onCopy: (text: string, id: string) => void;
+}) {
   const color = resolveColor(line.color, accent);
+  const isCopied = copiedId === lineId;
+  const delay = slow ? index * 0.09 : index * 0.025;
+
   const base: React.CSSProperties = {
     fontFamily: 'var(--font-jetbrains-mono), monospace',
     fontSize: '0.78rem',
     lineHeight: 1.65,
-    color,
+    color: isCopied ? accent : color,
     display: 'block',
     whiteSpace: 'pre',
     minHeight: '1.1em',
+    cursor: line.text.trim() ? 'copy' : 'default',
+    transition: 'color 0.2s, background 0.2s',
+    borderRadius: '3px',
+    padding: '0 2px',
   };
+
+  const handleClick = () => line.text.trim() && onCopy(line.text, lineId);
+
+  const hoverIn = (el: HTMLElement) => { if (line.text.trim() && !line.href) el.style.background = 'rgba(255,255,255,0.04)'; };
+  const hoverOut = (el: HTMLElement) => { el.style.background = 'transparent'; };
 
   if (line.href) {
     return (
@@ -753,20 +973,10 @@ function OutputLine({ line, index }: { line: Line; index: number }) {
         rel="noopener noreferrer"
         initial={{ opacity: 0, x: -6 }}
         animate={{ opacity: 1, x: 0 }}
-        transition={{ duration: 0.18, delay: index * 0.03 }}
-        style={{
-          ...base,
-          textDecoration: 'none',
-          cursor: 'pointer',
-          borderBottom: `1px solid ${color}40`,
-          transition: 'color 0.15s',
-        }}
-        onMouseEnter={(e) => {
-          (e.currentTarget as HTMLAnchorElement).style.color = accent;
-        }}
-        onMouseLeave={(e) => {
-          (e.currentTarget as HTMLAnchorElement).style.color = color;
-        }}
+        transition={{ duration: 0.18, delay }}
+        style={{ ...base, textDecoration: 'none', borderBottom: `1px solid ${color}40`, cursor: 'pointer' }}
+        onMouseEnter={(e) => { (e.currentTarget as HTMLElement).style.color = accent; }}
+        onMouseLeave={(e) => { (e.currentTarget as HTMLElement).style.color = color; }}
       >
         {line.text || '\u00A0'}
       </motion.a>
@@ -775,10 +985,14 @@ function OutputLine({ line, index }: { line: Line; index: number }) {
 
   return (
     <motion.span
-      initial={{ opacity: 0, x: -6 }}
+      initial={{ opacity: 0, x: slow ? -8 : -4 }}
       animate={{ opacity: 1, x: 0 }}
-      transition={{ duration: 0.18, delay: index * 0.03 }}
+      transition={{ duration: slow ? 0.25 : 0.18, delay }}
       style={base}
+      onClick={handleClick}
+      onMouseEnter={(e) => hoverIn(e.currentTarget as HTMLElement)}
+      onMouseLeave={(e) => hoverOut(e.currentTarget as HTMLElement)}
+      title={line.text.trim() ? 'Click to copy' : undefined}
     >
       {line.text || '\u00A0'}
     </motion.span>
