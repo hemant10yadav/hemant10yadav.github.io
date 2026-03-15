@@ -110,6 +110,60 @@ const STATIC_COMMANDS: Record<string, Line[]> = {
 
   ls: [
     { text: 'about/     contact/     experience/     projects/     skills/', color: 'accent' },
+    { text: '' },
+    { text: "// use 'ls -la' to see everything", color: 'dim' },
+  ],
+
+  'ls -la': [
+    { text: 'total 42', color: 'dim' },
+    { text: 'drwxr-xr-x  about/', color: 'normal' },
+    { text: 'drwxr-xr-x  contact/', color: 'normal' },
+    { text: 'drwxr-xr-x  experience/', color: 'normal' },
+    { text: 'drwxr-xr-x  projects/', color: 'normal' },
+    { text: 'drwxr-xr-x  skills/', color: 'normal' },
+    { text: 'drwx------  .mistakes/', color: 'red' },
+  ],
+
+  'ls -a': [
+    { text: 'about/  contact/  experience/  projects/  skills/  .mistakes/', color: 'normal' },
+  ],
+
+  'ls .mistakes/': [
+    { text: 'production.log', color: 'orange' },
+    { text: '' },
+    { text: '// cat ~/.mistakes/production.log', color: 'dim' },
+  ],
+
+  'cat ~/.mistakes/production.log': [
+    { text: 'LOADING 6 ENTRIES...', color: 'dim' },
+    { text: '' },
+    { text: '[2022-06-18]  INCIDENT', color: 'red' },
+    { text: '  Added new functionality to the editor for Android.', color: 'normal' },
+    { text: '  // Later discovered it crashes on iPhone.', color: 'muted' },
+    { text: '' },
+    { text: '[2023-03-12]  PROD', color: 'red' },
+    { text: '  Ran a migration that contained a logic bug.', color: 'normal' },
+    { text: '  // Corrupted table data. Had to debug and repair manually.', color: 'muted' },
+    { text: '' },
+    { text: '[2023-09-05]  DEBUG', color: 'orange' },
+    { text: '  Built a feature on top of an existing one, updated logic in most places.', color: 'normal' },
+    { text: '  // Missed one edge case. Production broke later.', color: 'muted' },
+    { text: '' },
+    { text: '[2024-02-21]  HUBRIS', color: 'orange' },
+    { text: "  Pushed a 'simple one-line fix' to production without testing.", color: 'normal' },
+    { text: '  // It broke the notification system.', color: 'muted' },
+    { text: '' },
+    { text: '[2024-07-30]  REVIEW', color: 'red' },
+    { text: '  Tested the feature on staging using only a superuser account.', color: 'normal' },
+    { text: '  // Permissions failed for normal users in production.', color: 'muted' },
+    { text: '' },
+    { text: '[2026-01-16]  PROD', color: 'red' },
+    { text: '  Forgot to create the PostGIS extension on the secondary database.', color: 'normal' },
+    { text: '  // Deployment failed when spatial queries started running.', color: 'muted' },
+    { text: '' },
+    { text: '────────────────────────────────────────────────────', color: 'dim' },
+    { text: 'EOF', color: 'dim' },
+    { text: '// 6 logged. more pending review. growth in progress.', color: 'dim' },
   ],
 
   pwd: [

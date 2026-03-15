@@ -2,6 +2,9 @@ import type { Metadata } from 'next';
 import { Inter, JetBrains_Mono } from 'next/font/google';
 import './globals.css';
 import { FULL_NAME, TITLE, SITE_URL } from './constants';
+import { ViewerProvider } from './context/ViewerContext';
+import { NavBar } from './components/Navbar';
+import GitHubActivity from './components/GitHubActivity';
 
 const inter = Inter({
   variable: '--font-inter',
@@ -57,7 +60,11 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={`${inter.variable} ${jetbrainsMono.variable} antialiased`}>
-        {children}
+        <ViewerProvider>
+          <NavBar />
+          {children}
+          <GitHubActivity />
+        </ViewerProvider>
       </body>
     </html>
   );

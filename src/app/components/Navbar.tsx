@@ -3,25 +3,28 @@
 import { motion } from 'framer-motion';
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
+import { usePathname } from 'next/navigation';
 import { useViewer } from '../context/ViewerContext';
 
 export const NavBar = () => {
   const { viewerType, accent, toggleViewerType } = useViewer();
+  const pathname = usePathname();
   const [activeSection, setActiveSection] = useState('about');
   const [scrolled, setScrolled] = useState(false);
 
   const isRecruiter = viewerType === 'recruiter';
+  const isLab = pathname === '/lab';
 
-  // Track scroll for background opacity
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 20);
     window.addEventListener('scroll', onScroll, { passive: true });
     return () => window.removeEventListener('scroll', onScroll);
   }, []);
 
-  // Auto-highlight active section via IntersectionObserver
+  // Only observe sections on the main page
   useEffect(() => {
-    const sections = ['about', 'skills', 'projects', 'pulse', 'terminal'];
+    if (isLab) return;
+    const sections = ['about', 'skills', 'projects'];
     const observers: IntersectionObserver[] = [];
 
     sections.forEach((id) => {
@@ -36,14 +39,12 @@ export const NavBar = () => {
     });
 
     return () => observers.forEach((o) => o.disconnect());
-  }, []);
+  }, [isLab]);
 
-  const navLinks = [
-    { id: 'about', label: 'About' },
-    { id: 'skills', label: 'Skills' },
+  const hashLinks = [
+    { id: 'about',    label: 'About' },
+    { id: 'skills',   label: 'Skills' },
     { id: 'projects', label: 'Projects' },
-    { id: 'pulse', label: 'Pulse' },
-    { id: 'terminal', label: 'Terminal' },
   ];
 
   return (
@@ -62,9 +63,8 @@ export const NavBar = () => {
         transition: 'background 0.3s, border-color 0.3s',
       }}
     >
-      {/* Thin accent line at the very top */}
-      <motion.div
-        layoutId="nav-accent-line"
+      {/* Thin accent line */}
+      <div
         style={{
           position: 'absolute',
           top: 0,
@@ -77,26 +77,18 @@ export const NavBar = () => {
       />
 
       <div style={{ maxWidth: '72rem', margin: '0 auto', padding: '0 1.5rem' }}>
-        <div
-          style={{
-            display: 'flex',
-            justifyContent: 'space-between',
-            alignItems: 'center',
-            height: '4rem',
-          }}
-        >
-          {/* Logo */}
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', height: '4rem' }}>
+
+          {/* Logo — always links home */}
           <Link href="/" passHref>
-            <motion.div
-              whileHover={{ scale: 1.04 }}
-              style={{ cursor: 'pointer', display: 'flex', alignItems: 'center' }}
-            >
-            </motion.div>
+            <motion.div whileHover={{ scale: 1.04 }} style={{ cursor: 'pointer' }} />
           </Link>
 
           {/* Nav links */}
           <div style={{ display: 'flex', gap: '0.15rem', alignItems: 'center', overflowX: 'auto', WebkitOverflowScrolling: 'touch' }}>
-            {navLinks.map((link) => {
+
+            {/* Hash links — only meaningful on main page */}
+            {!isLab && hashLinks.map((link) => {
               const isActive = activeSection === link.id;
               return (
                 <motion.a
@@ -115,14 +107,13 @@ export const NavBar = () => {
                     textDecoration: 'none',
                     transition: 'color 0.2s',
                     background: isActive ? `${accent}0f` : 'transparent',
+                    whiteSpace: 'nowrap',
                   }}
                   onMouseEnter={(e) => {
-                    if (!isActive)
-                      (e.currentTarget as HTMLAnchorElement).style.color = '#94a3b8';
+                    if (!isActive) (e.currentTarget as HTMLAnchorElement).style.color = '#94a3b8';
                   }}
                   onMouseLeave={(e) => {
-                    if (!isActive)
-                      (e.currentTarget as HTMLAnchorElement).style.color = '#64748b';
+                    if (!isActive) (e.currentTarget as HTMLAnchorElement).style.color = '#64748b';
                   }}
                 >
                   {isActive && (
@@ -147,13 +138,62 @@ export const NavBar = () => {
               );
             })}
 
-            {/* Viewer type toggle */}
+            {/* Lab link */}
+            <Link href={isLab ? '/' : '/lab'} passHref>
+              <motion.span
+                whileHover={{ scale: 1.04 }}
+                style={{
+                  position: 'relative',
+                  padding: '0.4rem 0.55rem',
+                  borderRadius: '6px',
+                  fontSize: 'clamp(0.7rem, 2vw, 0.85rem)',
+                  fontFamily: 'var(--font-jetbrains-mono), monospace',
+                  letterSpacing: '0.04em',
+                  color: isLab ? accent : '#64748b',
+                  textDecoration: 'none',
+                  cursor: 'pointer',
+                  transition: 'color 0.2s',
+                  background: isLab ? `${accent}0f` : 'transparent',
+                  whiteSpace: 'nowrap',
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  gap: '0.25rem',
+                }}
+                onMouseEnter={(e) => {
+                  if (!isLab) (e.currentTarget as HTMLElement).style.color = '#94a3b8';
+                }}
+                onMouseLeave={(e) => {
+                  if (!isLab) (e.currentTarget as HTMLElement).style.color = '#64748b';
+                }}
+              >
+                {isLab && (
+                  <motion.span
+                    layoutId="nav-indicator"
+                    style={{
+                      position: 'absolute',
+                      bottom: '2px',
+                      left: '50%',
+                      transform: 'translateX(-50%)',
+                      width: '4px',
+                      height: '4px',
+                      borderRadius: '50%',
+                      background: accent,
+                      display: 'block',
+                      boxShadow: `0 0 6px ${accent}`,
+                    }}
+                  />
+                )}
+                {isLab ? '← home' : '/lab'}
+              </motion.span>
+            </Link>
+
+            {/* Viewer toggle */}
             <motion.button
               onClick={toggleViewerType}
               whileHover={{ scale: 1.06 }}
               whileTap={{ scale: 0.95 }}
               style={{
-                marginLeft: '0.75rem',
+                marginLeft: '0.5rem',
                 padding: '0.2rem 0.65rem',
                 borderRadius: '999px',
                 background: `${accent}14`,

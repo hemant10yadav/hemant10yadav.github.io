@@ -5,7 +5,7 @@ import { createContext, useContext, useState, useEffect, useCallback } from 'rea
 export type ViewerType = 'recruiter' | 'developer';
 
 // ── theme colours — change here and it propagates everywhere ──────────────────
-export const RECRUITER_ACCENT = '#d4a574';
+export const RECRUITER_ACCENT = "#f2c078";
 export const DEVELOPER_ACCENT = '#22d3ee';
 
 export const getAccent = (type: ViewerType) =>
