@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState, useCallback } from 'react';
 import { motion } from 'framer-motion';
+import { event } from 'nextjs-google-analytics';
 import { useViewer } from '../context/ViewerContext';
 import {
   FULL_NAME, EMAIL, MAILTO, GITHUB_URL, GITHUB_USERNAME,
@@ -513,6 +514,13 @@ export default function CLITerminal() {
 
     setCmdHistory(prev => [cmd, ...prev.slice(0, 49)]);
     setCmdIdx(-1);
+
+    // Track command usage — sanitize echo to avoid logging user-typed content
+    event('terminal_command', {
+      category: 'Terminal',
+      label: lower.startsWith('echo ') ? 'echo' : lower,
+      value: 1,
+    });
 
     // ── pipe ─────────────────────────────────────────────────────────────────
     if (cmd.includes('|')) {
