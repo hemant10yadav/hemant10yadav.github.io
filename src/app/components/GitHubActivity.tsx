@@ -4,7 +4,8 @@ import { useEffect, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useViewer } from '../context/ViewerContext';
 
-const GITHUB_USER = 'hemant10yadav';
+import { GITHUB_USERNAME, GITHUB_URL } from '../constants';
+const GITHUB_USER = GITHUB_USERNAME;
 const CACHE_KEY = 'hy_gh_activity';
 const CACHE_TTL = 5 * 60 * 1000; // 5 min
 
@@ -97,7 +98,7 @@ export default function GitHubActivity() {
     <AnimatePresence>
       {visible && (
         <motion.a
-          href={`https://github.com/${GITHUB_USER}`}
+          href={GITHUB_URL}
           target="_blank"
           rel="noopener noreferrer"
           initial={{ opacity: 0, y: 12 }}

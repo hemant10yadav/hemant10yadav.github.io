@@ -4,6 +4,7 @@ import { motion } from 'framer-motion';
 import { ExternalLink, MapPin } from 'lucide-react';
 import { event } from 'nextjs-google-analytics';
 import { ViewerType, useViewer } from '../context/ViewerContext';
+import { FULL_NAME, DIMAGI, XCALIBER } from '../constants';
 
 interface ExperienceSectionProps {
   viewerType: NonNullable<ViewerType>;
@@ -14,11 +15,11 @@ interface ExperienceSectionProps {
 const EXPERIENCES = [
   {
     role: "Software Engineer",
-    company: "Dimagi Inc.",
-    url: "https://dimagi.com/",
-    location: "Delhi, India",
-    period: "Dec 2023 — Present",
-    current: true,
+    company: DIMAGI.name,
+    url: DIMAGI.url,
+    location: DIMAGI.location,
+    period: DIMAGI.period,
+    current: DIMAGI.current,
     skills: ["Python", "Django", "Docker", "AWS", "PostgreSQL"],
     // recruiter view
     impact: [
@@ -45,11 +46,11 @@ const EXPERIENCES = [
   },
   {
     role: "Software Engineer",
-    company: "Xcaliber Infotech Pvt. Ltd.",
-    url: "https://xcaliberinfotech.com/",
-    location: "Pune, India",
-    period: "Dec 2021 — Dec 2023",
-    current: false,
+    company: XCALIBER.name,
+    url: XCALIBER.url,
+    location: XCALIBER.location,
+    period: XCALIBER.period,
+    current: XCALIBER.current,
     skills: ["Spring Boot", "Angular", "Hibernate", "REST APIs", "Amazon S3"],
     impact: [
       "Delivered Spring Boot REST APIs for enterprise clients",
@@ -447,7 +448,7 @@ function DeveloperGitLog({
 
             {/* Author / Date */}
             <div style={{ color: '#475569', fontSize: '0.78rem', marginBottom: '0.65rem', lineHeight: 1.7 }}>
-              <span>Author: Hemant Singh Yadav</span>
+              <span>Author: {FULL_NAME}</span>
               <br />
               <span>Date: &nbsp;&nbsp;{exp.period}</span>
             </div>

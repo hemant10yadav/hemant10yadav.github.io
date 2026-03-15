@@ -1,6 +1,7 @@
 import type { Metadata } from 'next';
 import { Inter, JetBrains_Mono } from 'next/font/google';
 import './globals.css';
+import { FULL_NAME, TITLE, SITE_URL } from './constants';
 
 const inter = Inter({
   variable: '--font-inter',
@@ -12,8 +13,10 @@ const jetbrainsMono = JetBrains_Mono({
   subsets: ['latin'],
 });
 
+const PAGE_TITLE = `${FULL_NAME} - ${TITLE}`;
+
 export const metadata: Metadata = {
-  title: 'Hemant Singh Yadav - Software Engineer',
+  title: PAGE_TITLE,
   description:
     'Software Engineer with 4 years of experience specializing in Python, Java, and full-stack development. View my projects and experience in scalable system architecture.',
   keywords: [
@@ -28,11 +31,11 @@ export const metadata: Metadata = {
     'Angular',
   ],
   openGraph: {
-    title: 'Hemant Singh Yadav - Software Engineer',
+    title: PAGE_TITLE,
     description: 'Software Engineer with 4 years of experience building scalable systems.',
     type: 'website',
     locale: 'en_US',
-    siteName: 'Hemant Singh Yadav',
+    siteName: FULL_NAME,
   },
   verification: {
     google: '2NWImAWGUUGBF1n43abjdyS6cskF6yjKXIBjYnkU17k',
@@ -42,7 +45,7 @@ export const metadata: Metadata = {
     follow: true,
   },
   alternates: {
-    canonical: 'https://hemant10yadav.github.io/',
+    canonical: `${SITE_URL}/`,
   },
 };
 

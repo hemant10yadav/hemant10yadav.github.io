@@ -2,14 +2,14 @@
 
 import { useState } from 'react';
 import { ViewerType } from '../context/ViewerContext';
+import { CONTACT_SCRIPT_URL } from '../constants';
 
 interface Props {
   viewerType: NonNullable<ViewerType>;
   accent: string;
 }
 
-const SCRIPT_URL =
-  'https://script.google.com/macros/s/AKfycbw8CDP86j0c-n7llXDuZgexwSkP1FeMy_Ihpl5Qw2q4rAM36ORehcj4qu_7J_X3mr2-/exec';
+const SCRIPT_URL = CONTACT_SCRIPT_URL;
 
 const SUCCESS_CONTENT = {
   recruiter: {

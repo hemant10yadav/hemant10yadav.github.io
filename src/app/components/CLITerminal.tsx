@@ -3,6 +3,13 @@
 import { useEffect, useRef, useState, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useViewer } from '../context/ViewerContext';
+import {
+  FULL_NAME, EMAIL, MAILTO, GITHUB_URL, GITHUB_USERNAME,
+  LINKEDIN_URL, LINKEDIN_HANDLE, SO_URL,
+  RESUME_PDF_URL, RESUME_VIEW_URL,
+  DIMAGI, XCALIBER,
+  PROJECT_ECOMMERCE, PROJECT_ESTORE, PROJECT_BOOKSTORE,
+} from '../constants';
 
 // ── types ─────────────────────────────────────────────────────────────────────
 
@@ -22,8 +29,8 @@ interface HistoryEntry {
 
 // ── constants ─────────────────────────────────────────────────────────────────
 
-const RESUME_PDF = 'https://docs.google.com/document/d/1slEvO5HrIn7_M5ehOEjefiW7ND6MDfgW0UtzZCKT0Qo/export?format=pdf';
-const RESUME_VIEW = 'https://docs.google.com/document/d/e/2PACX-1vRy5MkRddjiK9wAMN2uIEqFV7t58Ywa8XVK_gNIqpz-7YajDTfmhdqdYjMe2mG5ZHkPVQg1WzK2DbDq/pub';
+const RESUME_PDF = RESUME_PDF_URL;
+const RESUME_VIEW = RESUME_VIEW_URL;
 
 const WELCOME: Line[] = [
   { text: '╔════════════════════════════════════════════════════╗', color: 'dim' },
@@ -39,9 +46,9 @@ const WELCOME: Line[] = [
 
 const STATIC_COMMANDS: Record<string, Line[]> = {
   whoami: [
-    { text: 'Hemant Singh Yadav', color: 'accent' },
+    { text: FULL_NAME, color: 'accent' },
     { text: 'Software Engineer · 4+ years', color: 'normal' },
-    { text: 'Currently @ Dimagi Inc.', color: 'muted' },
+    { text: `Currently @ ${DIMAGI.name}`, color: 'muted' },
     { text: '' },
     { text: '"I build for the person on-call at 3am."', color: 'dim' },
   ],
@@ -64,36 +71,36 @@ const STATIC_COMMANDS: Record<string, Line[]> = {
   ],
 
   experience: [
-    { text: '● Dec 2023 — Present', color: 'accent' },
-    { text: '  Dimagi Inc. · Software Engineer · Delhi, India', color: 'normal' },
+    { text: `● ${DIMAGI.period}`, color: 'accent' },
+    { text: `  ${DIMAGI.name} · Software Engineer · ${DIMAGI.location}`, color: 'normal' },
     { text: '  Systems serving frontline health workers in 130+ countries.', color: 'muted' },
     { text: '  Python · Django · Docker · AWS · PostgreSQL', color: 'dim' },
     { text: '' },
-    { text: '○ Dec 2021 — Dec 2023', color: 'normal' },
-    { text: '  Xcaliber Infotech · Software Engineer · Pune, India', color: 'normal' },
+    { text: `○ ${XCALIBER.period}`, color: 'normal' },
+    { text: `  ${XCALIBER.name} · Software Engineer · ${XCALIBER.location}`, color: 'normal' },
     { text: '  Spring Boot APIs powering web, Android, iOS simultaneously.', color: 'muted' },
     { text: '  Spring Boot · Angular · Hibernate · Amazon S3', color: 'dim' },
   ],
 
   projects: [
-    { text: '01 · E-Commerce Platform', color: 'accent' },
+    { text: `01 · ${PROJECT_ECOMMERCE.title}`, color: 'accent' },
     { text: '   Spring Boot + Angular + PostgreSQL', color: 'muted' },
-    { text: '   ↗ github.com/hemant10yadav/E-Commerce-website', color: 'blue', href: 'https://github.com/hemant10yadav/E-Commerce-website' },
+    { text: `   ↗ ${PROJECT_ECOMMERCE.githubUrl.replace('https://', '')}`, color: 'blue', href: PROJECT_ECOMMERCE.githubUrl },
     { text: '' },
-    { text: '02 · E-Store', color: 'accent' },
+    { text: `02 · ${PROJECT_ESTORE.title}`, color: 'accent' },
     { text: '   MERN stack — MongoDB, Express, React, Node', color: 'muted' },
-    { text: '   ↗ github.com/hemant10yadav/Sell2U-Node', color: 'blue', href: 'https://github.com/hemant10yadav/Sell2U-Node' },
+    { text: `   ↗ ${PROJECT_ESTORE.githubUrl.replace('https://', '')}`, color: 'blue', href: PROJECT_ESTORE.githubUrl },
     { text: '' },
-    { text: '03 · Book Store  [live demo]', color: 'accent' },
+    { text: `03 · ${PROJECT_BOOKSTORE.title}  [live demo]`, color: 'accent' },
     { text: '   Angular + Google Books API', color: 'muted' },
-    { text: '   ↗ hemant10yadav.github.io/book-store', color: 'blue', href: 'https://hemant10yadav.github.io/book-store/' },
+    { text: `   ↗ ${PROJECT_BOOKSTORE.demoUrl.replace('https://', '')}`, color: 'blue', href: PROJECT_BOOKSTORE.demoUrl },
   ],
 
   contact: [
-    { text: 'Email     hemant.10.yadav@gmail.com', color: 'normal', href: 'mailto:hemant.10.yadav@gmail.com' },
-    { text: 'GitHub    github.com/hemant10yadav', color: 'normal', href: 'https://github.com/hemant10yadav' },
-    { text: 'LinkedIn  linkedin.com/in/hemantyad', color: 'normal', href: 'https://www.linkedin.com/in/hemantyad' },
-    { text: 'Stack     stackoverflow.com/users/20470646', color: 'normal', href: 'https://stackoverflow.com/users/20470646' },
+    { text: `Email     ${EMAIL}`,                                   color: 'normal', href: MAILTO },
+    { text: `GitHub    github.com/${GITHUB_USERNAME}`,              color: 'normal', href: GITHUB_URL },
+    { text: `LinkedIn  linkedin.com/in/${LINKEDIN_HANDLE}`,         color: 'normal', href: LINKEDIN_URL },
+    { text: `Stack     ${SO_URL.replace('https://', '')}`,          color: 'normal', href: SO_URL },
   ],
 
   resume: [
@@ -130,7 +137,7 @@ const STATIC_COMMANDS: Record<string, Line[]> = {
     { text: '[sudo] password for visitor: ', color: 'normal' },
     { text: 'sudo: 3 incorrect password attempts', color: 'red' },
     { text: '' },
-    { text: '...but seriously. hemant.10.yadav@gmail.com', color: 'accent', href: 'mailto:hemant.10.yadav@gmail.com' },
+    { text: `...but seriously. ${EMAIL}`, color: 'accent', href: MAILTO },
   ],
 
   'rm -rf bugs': [
@@ -152,16 +159,16 @@ const STATIC_COMMANDS: Record<string, Line[]> = {
 
   'git log': [
     { text: 'commit a3f2b1c (HEAD -> main)', color: 'orange' },
-    { text: 'Author: Hemant Singh Yadav <hemant.10.yadav@gmail.com>', color: 'muted' },
-    { text: 'Date:   Dec 2023', color: 'dim' },
+    { text: `Author: ${FULL_NAME} <${EMAIL}>`, color: 'muted' },
+    { text: `Date:   ${DIMAGI.period.split(' — ')[0]}`, color: 'dim' },
     { text: '' },
-    { text: '    feat: joined Dimagi Inc.', color: 'normal' },
+    { text: `    feat: joined ${DIMAGI.name}`, color: 'normal' },
     { text: '' },
     { text: 'commit 7d89e2a (origin/xcaliber)', color: 'orange' },
-    { text: 'Author: Hemant Singh Yadav <hemant.10.yadav@gmail.com>', color: 'muted' },
-    { text: 'Date:   Dec 2021', color: 'dim' },
+    { text: `Author: ${FULL_NAME} <${EMAIL}>`, color: 'muted' },
+    { text: `Date:   ${XCALIBER.period.split(' — ')[0]}`, color: 'dim' },
     { text: '' },
-    { text: '    feat: joined Xcaliber Infotech', color: 'normal' },
+    { text: `    feat: joined ${XCALIBER.name}`, color: 'normal' },
   ],
 
   'git status': [
@@ -178,7 +185,7 @@ const STATIC_COMMANDS: Record<string, Line[]> = {
   'ssh hemant': [
     { text: 'ssh: connect to host hemant port 22: Connection refused', color: 'red' },
     { text: '(try email instead)', color: 'dim' },
-    { text: '↗ hemant.10.yadav@gmail.com', color: 'blue', href: 'mailto:hemant.10.yadav@gmail.com' },
+    { text: `↗ ${EMAIL}`, color: 'blue', href: MAILTO },
   ],
 
   exit: [
@@ -199,7 +206,7 @@ const STATIC_COMMANDS: Record<string, Line[]> = {
   ],
 
   neofetch: [
-    { text: '          ██████           visitor@hemant-portfolio', color: 'accent' },
+    { text: `          ██████           visitor@${GITHUB_USERNAME}-portfolio`, color: 'accent' },
     { text: '        ██      ██         ─────────────────────────', color: 'accent' },
     { text: '      ██  ████  ██         OS: Portfolio v1.0.0', color: 'normal' },
     { text: '      ██  ████  ██         Shell: zsh', color: 'normal' },
@@ -571,7 +578,6 @@ export default function CLITerminal() {
                   <OutputLine
                     key={li}
                     line={line}
-                    accent={accent}
                     index={li}
                   />
                 ))}
@@ -654,7 +660,6 @@ export default function CLITerminal() {
 // ── sub-components ────────────────────────────────────────────────────────────
 
 function Prompt() {
-  const { accent } = useViewer();
   return (
     <span
       style={{
@@ -673,15 +678,8 @@ function Prompt() {
   );
 }
 
-function OutputLine({
-  line,
-  accent,
-  index,
-}: {
-  line: Line;
-  accent: string;
-  index: number;
-}) {
+function OutputLine({ line, index }: { line: Line; index: number }) {
+  const { accent } = useViewer();
   const color = resolveColor(line.color, accent);
   const base: React.CSSProperties = {
     fontFamily: 'var(--font-jetbrains-mono), monospace',

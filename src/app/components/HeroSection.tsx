@@ -7,6 +7,10 @@ import { ProfileImage } from './ProfileImage';
 import { useEffect, useState } from 'react';
 import { MessageModal } from './MessageModal';
 import { ViewerType, useViewer } from '../context/ViewerContext';
+import {
+  FULL_NAME, GITHUB_URL, LINKEDIN_URL, SO_URL, MAILTO,
+  PROFILE_PIC_URL, RESUME_PDF_URL, RESUME_EMBED_URL, CAREER_START,
+} from '../constants';
 
 export type SocialLink = {
   icon: React.ElementType<LucideProps>;
@@ -19,7 +23,7 @@ interface HeroSectionProps {
 }
 
 const getRoundedExperience = (): string => {
-  const start = new Date('2021-12-01');
+  const start = CAREER_START;
   const now = new Date();
   let years = now.getFullYear() - start.getFullYear();
   let months = now.getMonth() - start.getMonth();
@@ -63,26 +67,16 @@ export const HeroSection = ({ viewerType }: HeroSectionProps) => {
   }, []);
 
   const socialLinks: SocialLink[] = [
-    { icon: Github, link: 'https://github.com/hemant10yadav', title: 'GitHub' },
-    { icon: Linkedin, link: 'https://www.linkedin.com/in/hemantyad', title: 'Linkedin' },
-    { icon: Mail, link: 'mailto:hemant.10.yadav@gmail.com', title: 'Mail' },
-    {
-      icon: Layers,
-      link: 'https://stackoverflow.com/users/20470646/hemant-singh-yadav',
-      title: 'Stackoverflow',
-    },
+    { icon: Github,   link: GITHUB_URL,   title: 'GitHub' },
+    { icon: Linkedin, link: LINKEDIN_URL,  title: 'Linkedin' },
+    { icon: Mail,     link: MAILTO,        title: 'Mail' },
+    { icon: Layers,   link: SO_URL,        title: 'Stackoverflow' },
   ];
-
-  const domain = 'https://raw.githubusercontent.com/hemant10yadav/Resources/main/';
-  const profilePicUrl = `${domain}hy-min.png`;
 
   const handleResumeDownload = () => {
     event('resume_download', { category: 'Portfolio', label: 'Resume Downloads', value: 1 });
     if (isMobile) {
-      window.open(
-        'https://docs.google.com/document/d/1slEvO5HrIn7_M5ehOEjefiW7ND6MDfgW0UtzZCKT0Qo/export?format=pdf',
-        '_blank',
-      );
+      window.open(RESUME_PDF_URL, '_blank');
     } else {
       setOpenIframe(true);
     }
@@ -104,7 +98,7 @@ export const HeroSection = ({ viewerType }: HeroSectionProps) => {
           `I built one Spring Boot backend that powered web, Android, and iOS simultaneously. ` +
           `I build for scale, correctness, and the person on-call at 3am.`,
         ctaLabel: "Let's talk about what I can build for your team →",
-        ctaHref: "mailto:hemant.10.yadav@gmail.com",
+        ctaHref: MAILTO,
       }
     : {
         headline: "Here's what actually happened.",
@@ -116,7 +110,7 @@ export const HeroSection = ({ viewerType }: HeroSectionProps) => {
           `"it works for 10,000 users." I've over-engineered things, simplified them, shipped ` +
           `them, and learned why boring code is often the best code.`,
         ctaLabel: "Let's build something weird together →",
-        ctaHref: "https://github.com/hemant10yadav",
+        ctaHref: GITHUB_URL,
       };
 
   return (
@@ -160,7 +154,7 @@ export const HeroSection = ({ viewerType }: HeroSectionProps) => {
                     fontFamily: 'var(--font-jetbrains-mono), monospace',
                   }}
                 >
-                  Hemant Singh Yadav
+                  {FULL_NAME}
                 </motion.span>
 
                 {/* Headline */}
@@ -343,7 +337,7 @@ export const HeroSection = ({ viewerType }: HeroSectionProps) => {
 
             {/* ── Profile image ────────────────────────────────────────────────── */}
             <div className="relative hidden md:block" style={{ flexShrink: 0 }}>
-              <ProfileImage profilePicUrl={profilePicUrl} viewerType={viewerType} />
+              <ProfileImage profilePicUrl={PROFILE_PIC_URL} viewerType={viewerType} />
             </div>
           </div>
         </div>
@@ -357,7 +351,7 @@ export const HeroSection = ({ viewerType }: HeroSectionProps) => {
             <div className="relative bg-white rounded-lg shadow-xl w-[820px] max-w-[95vw] h-[95vh]">
               <div className="absolute top-3 right-3 z-20 flex gap-2">
                 <a
-                  href="https://docs.google.com/document/d/1slEvO5HrIn7_M5ehOEjefiW7ND6MDfgW0UtzZCKT0Qo/export?format=pdf"
+                  href={RESUME_PDF_URL}
                   rel="noopener noreferrer"
                   className="bg-black/70 text-white px-3 py-1 rounded hover:bg-black/80"
                   title="Download PDF"
@@ -373,7 +367,7 @@ export const HeroSection = ({ viewerType }: HeroSectionProps) => {
                 </button>
               </div>
               <IframeWithLoader
-                src="https://docs.google.com/document/d/e/2PACX-1vRy5MkRddjiK9wAMN2uIEqFV7t58Ywa8XVK_gNIqpz-7YajDTfmhdqdYjMe2mG5ZHkPVQg1WzK2DbDq/pub?embedded=true"
+                src={RESUME_EMBED_URL}
                 title="Resume"
               />
             </div>

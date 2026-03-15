@@ -3,6 +3,7 @@
 import { motion } from 'framer-motion';
 import Image from 'next/image';
 import { useViewer } from '../context/ViewerContext';
+import { FULL_NAME } from '../constants';
 
 interface ProfileImageProps {
   profilePicUrl: string;
@@ -74,7 +75,7 @@ export const ProfileImage: React.FC<ProfileImageProps> = ({
       >
         <Image
           src={profilePicUrl}
-          alt="Hemant Singh Yadav"
+          alt={FULL_NAME}
           fill
           className="object-cover"
           priority

@@ -6,6 +6,7 @@ import Image from 'next/image';
 import { useState } from 'react';
 import { event } from 'nextjs-google-analytics';
 import { ViewerType, useViewer } from '../context/ViewerContext';
+import { PROJECT_ECOMMERCE, PROJECT_ESTORE, PROJECT_BOOKSTORE } from '../constants';
 
 interface ProjectSectionProps {
   viewerType: NonNullable<ViewerType>;
@@ -15,56 +16,56 @@ interface ProjectSectionProps {
 
 const RECRUITER_PROJECTS = [
   {
-    title: 'E-Commerce Platform',
+    title: PROJECT_ECOMMERCE.title,
     problem: 'Personal project to explore full-stack architecture — from auth to checkout — using a Java + Angular stack.',
     solution: 'Spring Boot REST API, Angular SPA, PostgreSQL with clean schema design, JWT auth with layered service/repository separation.',
     impact: 'Demonstrates system design thinking: bounded contexts, DTO patterns, and an architecture structured to scale.',
-    githubLink: 'https://github.com/hemant10yadav/E-Commerce-website',
+    githubLink: PROJECT_ECOMMERCE.githubUrl,
     tech: ['java.png', 'spring.png', 'angular.png', 'typescript.png', 'postgres.png'],
   },
   {
-    title: 'E-Store',
+    title: PROJECT_ESTORE.title,
     problem: 'Side project to learn the MERN stack end-to-end — from React component design to MongoDB document modelling.',
     solution: 'React frontend, Node/Express REST APIs, MongoDB with Mongoose, auth and session handling.',
     impact: 'Shows ability to pick up a new stack independently and deliver a complete, working full-stack application.',
-    githubLink: 'https://github.com/hemant10yadav/Sell2U-Node',
+    githubLink: PROJECT_ESTORE.githubUrl,
     tech: ['typescript.png', 'react.png', 'node.png', 'express.png', 'mongo.png'],
   },
   {
-    title: 'Book Store',
+    title: PROJECT_BOOKSTORE.title,
     problem: 'Side project to practice Angular\'s component model and API integration — no backend required.',
     solution: 'Angular SPA consuming the Google Books API, search by title/author/keyword, rich detail views, deployed on GitHub Pages.',
     impact: 'Live demo available. Shows frontend-first thinking: fast load, responsive UI, zero infrastructure overhead.',
-    githubLink: 'https://github.com/hemant10yadav/book-store',
-    demoUrl: 'https://hemant10yadav.github.io/book-store/',
+    githubLink: PROJECT_BOOKSTORE.githubUrl,
+    demoUrl: PROJECT_BOOKSTORE.demoUrl,
     tech: ['bootstrap.png', 'angular.png', 'typescript.png'],
   },
 ];
 
 const DEVELOPER_PROJECTS = [
   {
-    title: 'E-Commerce Platform',
+    title: PROJECT_ECOMMERCE.title,
     tried: 'Started with a custom auth system with refresh token rotation and per-device sessions. Very elegant. Very overengineered.',
     broke: 'Broke in staging when two concurrent requests hit the token refresh endpoint. Race condition.',
     learned: 'Boring code is good code. Simplified to standard JWT + stateless. Shipped. Never thought about it again.',
-    githubLink: 'https://github.com/hemant10yadav/E-Commerce-website',
+    githubLink: PROJECT_ECOMMERCE.githubUrl,
     tech: ['java.png', 'spring.png', 'angular.png', 'typescript.png', 'postgres.png'],
   },
   {
-    title: 'E-Store',
+    title: PROJECT_ESTORE.title,
     tried: 'MongoDB because "schemaless = flexible." Designed the product documents to hold everything: reviews, variants, stock.',
     broke: 'Querying nested arrays for specific review authors became an aggregation pipeline nightmare.',
     learned: 'Schema-less doesn\'t mean schema-free. Design your documents for how you read, not how you write.',
-    githubLink: 'https://github.com/hemant10yadav/Sell2U-Node',
+    githubLink: PROJECT_ESTORE.githubUrl,
     tech: ['typescript.png', 'react.png', 'node.png', 'express.png', 'mongo.png'],
   },
   {
-    title: 'Book Store',
+    title: PROJECT_BOOKSTORE.title,
     tried: 'Wanted infinite scroll, offline caching, and a custom debounce hook — for a book search page.',
     broke: 'Nothing broke, but I spent 3 days on things no user would notice.',
     learned: 'Sometimes a simple input + button is the product. Shipped a fast, usable app. Live demo still runs.',
-    githubLink: 'https://github.com/hemant10yadav/book-store',
-    demoUrl: 'https://hemant10yadav.github.io/book-store/',
+    githubLink: PROJECT_BOOKSTORE.githubUrl,
+    demoUrl: PROJECT_BOOKSTORE.demoUrl,
     tech: ['bootstrap.png', 'angular.png', 'typescript.png'],
   },
 ];
