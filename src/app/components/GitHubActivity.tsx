@@ -108,7 +108,7 @@ export default function GitHubActivity() {
           style={{
             position: 'fixed',
             bottom: '1rem',
-            left: '1rem',
+            right: '2rem',
             zIndex: 30,
             display: 'flex',
             alignItems: 'center',
