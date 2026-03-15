@@ -127,7 +127,7 @@ export const HeroSection = ({ viewerType }: HeroSectionProps) => {
           className="absolute inset-0"
           style={{
             background: isRecruiter
-              ? 'radial-gradient(ellipse at center, rgba(245,158,11,0.06) 0%, transparent 70%)'
+              ? 'radial-gradient(ellipse at center, rgba(110,231,183,0.06) 0%, transparent 70%)'
               : 'radial-gradient(ellipse at center, rgba(34,211,238,0.06) 0%, transparent 70%)',
           }}
         />
