@@ -16,7 +16,7 @@ const RECRUITER_GROUPS = [
     label: 'Backend Systems',
     skills: [
       { name: 'Python', icon: '/assets/python.png' },
-      { name: 'Django', icon: '/assets/python.png' },
+      { name: 'Django', icon: '/assets/django.png' },
       { name: 'Java', icon: '/assets/java.png' },
       { name: 'Spring Boot', icon: '/assets/spring.png' },
     ],

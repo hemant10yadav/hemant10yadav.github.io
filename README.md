@@ -1,93 +1,105 @@
-# Hemant Singh Yadav - Portfolio 🚀
+# hemant10yadav.github.io
 
-Welcome to my portfolio project! This website is built using [Next.js](https://nextjs.org), and showcases my skills, projects, and professional background. It reflects my passion for crafting robust and scalable software systems that bridge the gap between front-end aesthetics and back-end functionality.
+Personal portfolio built with **Next.js 15**, **TypeScript**, **Tailwind CSS**, and **Framer Motion**. Features a dual-viewer experience that adapts content and design based on whether the visitor is a recruiter or a developer.
 
-## 🌟 Live Demo
-Check out the live version here: [Hemant's Portfolio](https://hemant10yadav.github.io/portfolio/)
-
----
-
-## 🎯 Key Features
-- **Interactive Design**: Seamless animations and transitions powered by [Framer Motion](https://www.framer.com/motion/).
-- **Modern Tech Stack**: Built with Next.js, Tailwind CSS, and other cutting-edge tools.
-- **Showcase Projects**: Highlighting real-world applications I've built, complete with technologies used and live links.
-- **Downloadable Resume**: Quick access to my professional resume.
-- **Social Links**: Connect with me via GitHub, LinkedIn, and more.
+**Live:** [hemant10yadav.github.io](https://hemant10yadav.github.io)
 
 ---
 
-## 🚀 Getting Started
+## Highlights
 
-To run this project locally:
-
-1. **Clone the Repository**:
-   ```bash
-   git clone https://github.com/hemant10yadav/portfolio.git
-   cd portfolio
-   ```
-
-2. **Install Dependencies**:
-   ```bash
-   npm install
-   # or
-   yarn install
-   ```
-
-3. **Run the Development Server**:
-   ```bash
-   npm run dev
-   # or
-   yarn dev
-   ```
-
-4. **Open in Browser**:
-   Navigate to [http://localhost:3000](http://localhost:3000) to view the application.
+- **Dual Viewer Mode** — visitors choose between a recruiter view (amber accent, professional focus) and a developer view (cyan accent, technical depth including a failures log)
+- **Cinematic Entry** — an interactive splash screen (`WatchingYou`) with phase-based transitions before revealing the main portfolio
+- **Smooth Animations** — page sections animate in with Framer Motion; skill widgets, project cards, and the navbar all respond to scroll and interaction
+- **GitHub Activity Feed** — live contribution data pulled directly from GitHub
+- **Contact Form** — reCAPTCHA-protected message form with modal confirmation
+- **Easter Egg** — hidden interactive surprise for curious visitors
+- **Google Analytics** — pageview tracking via `nextjs-google-analytics`
 
 ---
 
-## 📂 Project Structure
+## Tech Stack
 
-```plaintext
-📦 portfolio
-├── 📁 app
-│   ├── 📄 page.tsx       # Main entry point for the application
-├── 📁 components
-│   ├── 📄 HeroSection.tsx # Hero section with intro and social links
-│   ├── 📄 ProjectSection.tsx # Showcasing projects
-│   ├── 📄 SkillSection.tsx   # Displaying tech stack
-├── 📁 public
-│   ├── 📁 assets          # Static assets (logos, images)
-├── 📄 README.md          # Documentation
+| Layer | Tools |
+|-------|-------|
+| Framework | Next.js 15 (App Router, Turbopack) |
+| Language | TypeScript |
+| Styling | Tailwind CSS |
+| Animation | Framer Motion |
+| UI Icons | Lucide React |
+| Analytics | Google Analytics (`nextjs-google-analytics`) |
+| Deployment | GitHub Pages via GitHub Actions |
+
+---
+
+## Getting Started
+
+```bash
+# Clone
+git clone https://github.com/hemant10yadav/hemant10yadav.github.io.git
+cd hemant10yadav.github.io
+
+# Install
+npm install
+
+# Environment — create a .env file
+NEXT_PUBLIC_RECAPTCHA_SITE_KEY=<your-recaptcha-site-key>
+
+# Dev server (Turbopack)
+npm run dev
+```
+
+Open [http://localhost:3000](http://localhost:3000) to view the site.
+
+### Other Commands
+
+```bash
+npm run build    # Production build
+npm run start    # Start production server
+npm run lint     # Run ESLint
 ```
 
 ---
 
-## 💻 Tech Stack
+## Project Structure
 
-- **Next.js**
-- **React.js**
-- **Tailwind CSS**
-- **Framer Motion**
-- **AWS**
-- **Git**
+```
+src/app/
+├── page.tsx                  # Root page — phase-based rendering (Act 1 → Fade → Portfolio)
+├── layout.tsx                # Root layout with metadata and fonts
+├── globals.css               # Global styles and Tailwind directives
+├── context/
+│   └── ViewerContext.tsx      # Recruiter / Developer viewer mode state
+├── components/
+│   ├── WatchingYou.tsx        # Interactive splash screen (Act 1)
+│   ├── Navbar.tsx             # Sticky navigation bar
+│   ├── HeroSection.tsx        # Intro, typing animation, social links
+│   ├── ExperienceSection.tsx  # Work experience timeline
+│   ├── SkillSection.tsx       # Tech stack grid
+│   ├── SkillWidget.tsx        # Individual skill card
+│   ├── ProjectSection.tsx     # Featured projects showcase
+│   ├── GitHubActivity.tsx     # GitHub contribution feed
+│   ├── FailuresLog.tsx        # Developer-only failures/learnings section
+│   ├── MessageForm.tsx        # Contact form with reCAPTCHA
+│   ├── MessageModal.tsx       # Message confirmation modal
+│   ├── ProfileImage.tsx       # Profile image component
+│   └── EasterEgg.tsx          # Hidden easter egg
+├── def/
+│   └── types.ts               # Shared type definitions
+└── hooks/
+    └── useMousePosition.ts    # Custom hook for mouse tracking
+```
 
 ---
 
----
+## Deployment
 
-
-## 📄 Resume
-
-Download my latest resume here:  
-[Hemant's Resume](https://raw.githubusercontent.com/hemant10yadav/Resources/main/Hemant-Software-Developer-Resume.pdf)
+Pushes to `main` trigger the GitHub Actions workflow (`.github/workflows/nextjs.yml`) which builds and deploys to GitHub Pages. The `GA_MEASUREMENT_ID` secret is injected at build time.
 
 ---
 
-## 🤝 Connect with Me
+## Connect
 
-- **GitHub**: [@hemant10yadav](https://github.com/hemant10yadav)
-- **LinkedIn**: [Hemant Yadav](https://www.linkedin.com/in/hemantyad)
-- **Email**: [hemant.10.yadav@gmail.com](mailto:hemant.10.yadav@gmail.com)
-- **Instagram**: [@h.e.m.a.n.t.10](https://www.instagram.com/h.e.m.a.n.t.10)
-
----
+- **GitHub:** [@hemant10yadav](https://github.com/hemant10yadav)
+- **LinkedIn:** [Hemant Yadav](https://www.linkedin.com/in/hemantyad)
+- **Email:** [hemant.10.yadav@gmail.com](mailto:hemant.10.yadav@gmail.com)

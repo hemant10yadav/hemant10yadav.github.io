@@ -6,7 +6,7 @@ import Link from 'next/link';
 import { useViewer } from '../context/ViewerContext';
 
 export const NavBar = () => {
-  const { viewerType } = useViewer();
+  const { viewerType, toggleViewerType } = useViewer();
   const [activeSection, setActiveSection] = useState('about');
   const [scrolled, setScrolled] = useState(false);
 
@@ -22,7 +22,7 @@ export const NavBar = () => {
 
   // Auto-highlight active section via IntersectionObserver
   useEffect(() => {
-    const sections = ['about', 'skills', 'projects'];
+    const sections = ['about', 'skills', 'projects', 'pulse'];
     const observers: IntersectionObserver[] = [];
 
     sections.forEach((id) => {
@@ -43,6 +43,7 @@ export const NavBar = () => {
     { id: 'about', label: 'About' },
     { id: 'skills', label: 'Skills' },
     { id: 'projects', label: 'Projects' },
+    { id: 'pulse', label: 'Pulse' },
   ];
 
   return (
@@ -146,8 +147,11 @@ export const NavBar = () => {
               );
             })}
 
-            {/* Viewer type pill */}
-            <div
+            {/* Viewer type toggle */}
+            <motion.button
+              onClick={toggleViewerType}
+              whileHover={{ scale: 1.06 }}
+              whileTap={{ scale: 0.95 }}
               style={{
                 marginLeft: '0.75rem',
                 padding: '0.2rem 0.65rem',
@@ -160,10 +164,20 @@ export const NavBar = () => {
                 letterSpacing: '0.08em',
                 textTransform: 'uppercase',
                 whiteSpace: 'nowrap',
+                cursor: 'pointer',
+                transition: 'background 0.2s, border-color 0.2s',
+              }}
+              onMouseEnter={(e) => {
+                (e.currentTarget as HTMLButtonElement).style.background = `${accent}25`;
+                (e.currentTarget as HTMLButtonElement).style.borderColor = `${accent}60`;
+              }}
+              onMouseLeave={(e) => {
+                (e.currentTarget as HTMLButtonElement).style.background = `${accent}14`;
+                (e.currentTarget as HTMLButtonElement).style.borderColor = `${accent}30`;
               }}
             >
-              {isRecruiter ? 'Recruiter View' : 'Dev View'}
-            </div>
+              {isRecruiter ? 'Recruiter View' : 'Dev View'} ⇄
+            </motion.button>
           </div>
         </div>
       </div>
