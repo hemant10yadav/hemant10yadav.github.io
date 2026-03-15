@@ -11,7 +11,7 @@ export const NavBar = () => {
   const [scrolled, setScrolled] = useState(false);
 
   const isRecruiter = viewerType === 'recruiter';
-  const accent = isRecruiter ? '#f59e0b' : '#22d3ee';
+  const accent = isRecruiter ? '#6ee7b7' : '#22d3ee';
 
   // Track scroll for background opacity
   useEffect(() => {

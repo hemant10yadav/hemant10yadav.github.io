@@ -78,7 +78,7 @@ const EXPERIENCES = [
 
 export default function ExperienceSection({ viewerType }: ExperienceSectionProps) {
   const isRecruiter = viewerType === 'recruiter';
-  const accent = isRecruiter ? '#f59e0b' : '#22d3ee';
+  const accent = isRecruiter ? '#6ee7b7' : '#22d3ee';
 
   const handleLink = (company: string) => {
     event('external_links', { category: 'Portfolio', label: `${company} visits`, value: 1 });
@@ -409,7 +409,7 @@ function DeveloperGitLog({
         }}
       >
         <span style={{ width: '0.6rem', height: '0.6rem', borderRadius: '50%', background: '#ef4444', display: 'block' }} />
-        <span style={{ width: '0.6rem', height: '0.6rem', borderRadius: '50%', background: '#f59e0b', display: 'block' }} />
+        <span style={{ width: '0.6rem', height: '0.6rem', borderRadius: '50%', background: '#6ee7b7', display: 'block' }} />
         <span style={{ width: '0.6rem', height: '0.6rem', borderRadius: '50%', background: '#22c55e', display: 'block' }} />
         <span style={{ color: '#475569', fontSize: '0.72rem', marginLeft: '0.5rem' }}>
           zsh — career

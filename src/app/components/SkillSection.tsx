@@ -65,7 +65,7 @@ const DEVELOPER_SKILLS: Array<{
 export default function SkillSection({ viewerType }: SkillSectionProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const isRecruiter = viewerType === 'recruiter';
-  const accent = isRecruiter ? '#f59e0b' : '#22d3ee';
+  const accent = isRecruiter ? '#6ee7b7' : '#22d3ee';
 
   // ── animated constellation background ────────────────────────────────────────
   useEffect(() => {

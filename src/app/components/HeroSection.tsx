@@ -36,7 +36,7 @@ export const HeroSection = ({ viewerType }: HeroSectionProps) => {
   const [isMobile, setIsMobile] = useState(false);
 
   const isRecruiter = viewerType === 'recruiter';
-  const accent = isRecruiter ? '#f59e0b' : '#22d3ee';
+  const accent = isRecruiter ? '#6ee7b7' : '#22d3ee';
   const experience = getRoundedExperience();
 
   useEffect(() => {

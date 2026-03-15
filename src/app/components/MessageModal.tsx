@@ -13,7 +13,7 @@ const CONTENT = {
   recruiter: {
     title: "Let's talk.",
     sub: "Tell me what you're building. I'll get back to you within 24 hours.",
-    accent: '#f59e0b',
+    accent: '#6ee7b7',
   },
   developer: {
     title: "Let's build something.",

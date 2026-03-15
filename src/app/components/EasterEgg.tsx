@@ -14,7 +14,7 @@ const RECRUITER_SNIPPET = {
     'AWS, Docker, PostgreSQL — infrastructure that holds',
   ],
   cta: 'Let\'s talk about what I can build →',
-  accent: '#f59e0b',
+  accent: '#6ee7b7',
 };
 
 const DEVELOPER_SNIPPET = {

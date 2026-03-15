@@ -168,7 +168,7 @@ export default function FailuresLog() {
               gap: '0.45rem',
             }}
           >
-            {['#ef4444', '#f59e0b', '#22c55e'].map((c) => (
+            {['#ef4444', '#6ee7b7', '#22c55e'].map((c) => (
               <span
                 key={c}
                 style={{ width: '0.55rem', height: '0.55rem', borderRadius: '50%', background: c, display: 'block', opacity: 0.8 }}

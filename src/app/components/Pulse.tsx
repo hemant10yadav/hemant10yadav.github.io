@@ -405,7 +405,7 @@ export default function Pulse() {
   const [refreshing, setRefreshing] = useState(false);
 
   const isRecruiter = viewerType === 'recruiter';
-  const accent = isRecruiter ? '#f59e0b' : '#22d3ee';
+  const accent = isRecruiter ? '#6ee7b7' : '#22d3ee';
 
   const fetchData = useCallback(async (force = false) => {
     // Check cache

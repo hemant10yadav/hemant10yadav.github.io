@@ -39,7 +39,7 @@ export default function GitHubActivity() {
   const [visible, setVisible] = useState(false);
 
   const isRecruiter = viewerType === 'recruiter';
-  const accent = isRecruiter ? '#f59e0b' : '#22d3ee';
+  const accent = isRecruiter ? '#6ee7b7' : '#22d3ee';
 
   useEffect(() => {
     let cancelled = false;

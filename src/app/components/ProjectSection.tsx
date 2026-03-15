@@ -72,7 +72,7 @@ const DEVELOPER_PROJECTS = [
 export const ProjectSection = ({ viewerType }: ProjectSectionProps) => {
   const [activeDemoUrl, setActiveDemoUrl] = useState<string | null>(null);
   const isRecruiter = viewerType === 'recruiter';
-  const accent = isRecruiter ? '#f59e0b' : '#22d3ee';
+  const accent = isRecruiter ? '#6ee7b7' : '#22d3ee';
 
   const handleCodeView = (projectName: string) => {
     event('Code views', { category: 'Portfolio', label: projectName, value: 1 });

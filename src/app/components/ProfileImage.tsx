@@ -31,7 +31,7 @@ function RecruiterFrame({
   profilePicUrl: string;
   size: number;
 }) {
-  const accent = '#f59e0b';
+  const accent = '#6ee7b7';
   const [scanning, setScanning] = useState(false);
 
   // Start scan sweep every 4 seconds
@@ -87,7 +87,7 @@ function RecruiterFrame({
           priority
           draggable={false}
           style={{ objectPosition: 'center top' }}
-        />
+                />
 
         {/* Scan-line sweep */}
         <motion.div
@@ -308,7 +308,7 @@ function DeveloperFrame({
             gap: '0.45rem',
           }}
         >
-          {['#ef4444', '#f59e0b', '#22c55e'].map((c) => (
+          {['#ef4444', '#6ee7b7', '#22c55e'].map((c) => (
             <span
               key={c}
               style={{
