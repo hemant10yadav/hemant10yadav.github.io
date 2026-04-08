@@ -129,7 +129,7 @@ export const HeroSection = ({ viewerType }: HeroSectionProps) => {
 
       <section
         id="about"
-        className="min-h-screen flex items-center relative overflow-hidden"
+        className="min-h-[100dvh] flex items-center relative overflow-hidden"
       >
         <div className="container mx-auto px-6 py-16 relative">
           <div className="flex flex-col md:flex-row items-center gap-16">
@@ -157,30 +157,49 @@ export const HeroSection = ({ viewerType }: HeroSectionProps) => {
                   {FULL_NAME}
                 </motion.span>
 
-                {/* Headline */}
-                <motion.h1
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: 0.15 }}
+                {/* Headline — word-by-word stagger */}
+                <h1
                   style={{
-                    fontFamily: 'var(--font-jetbrains-mono), monospace',
-                    fontSize: 'clamp(1.75rem, 4vw, 3rem)',
-                    fontWeight: 700,
-                    lineHeight: 1.2,
+                    fontFamily: 'var(--font-outfit), var(--font-inter), sans-serif',
+                    fontSize: 'clamp(2rem, 4.5vw, 3.5rem)',
+                    fontWeight: 800,
+                    lineHeight: 1.15,
+                    letterSpacing: '-0.025em',
                     color: 'var(--fg)',
                   }}
                 >
-                  {content.headline}
+                  {content.headline.split(' ').map((word, i) => (
+                    <motion.span
+                      key={i}
+                      initial={{ opacity: 0, y: 28 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ delay: 0.1 + i * 0.055, duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
+                      style={{ display: 'inline-block', marginRight: '0.28em' }}
+                    >
+                      {word}
+                    </motion.span>
+                  ))}
                   {content.headlineSub && (
-                    <span style={{ color: accent }}> {content.headlineSub}</span>
+                    <motion.span
+                      initial={{ opacity: 0, y: 28 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{
+                        delay: 0.1 + content.headline.split(' ').length * 0.055,
+                        duration: 0.5,
+                        ease: [0.22, 1, 0.36, 1],
+                      }}
+                      style={{ display: 'inline-block', color: accent, marginLeft: '0.15em' }}
+                    >
+                      {content.headlineSub}
+                    </motion.span>
                   )}
-                </motion.h1>
+                </h1>
 
                 {/* Sub-line */}
                 <motion.p
                   initial={{ opacity: 0, y: 16 }}
                   animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: 0.2 }}
+                  transition={{ delay: 0.48, duration: 0.45, ease: [0.22, 1, 0.36, 1] }}
                   style={{
                     fontFamily: 'var(--font-jetbrains-mono), monospace',
                     color: accent,
@@ -193,9 +212,9 @@ export const HeroSection = ({ viewerType }: HeroSectionProps) => {
 
                 {/* About */}
                 <motion.p
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  transition={{ delay: 0.3 }}
+                  initial={{ opacity: 0, y: 12 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.58, duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
                   style={{
                     color: 'var(--fg-2)',
                     fontSize: '1rem',
@@ -211,14 +230,16 @@ export const HeroSection = ({ viewerType }: HeroSectionProps) => {
               <motion.div
                 initial={{ opacity: 0, y: 16 }}
                 animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.35 }}
+                transition={{ delay: 0.68, duration: 0.45, ease: [0.22, 1, 0.36, 1] }}
                 className="flex flex-wrap gap-4"
               >
                 {/* Primary CTA */}
-                <a
+                <motion.a
                   href={content.ctaHref}
                   target={isRecruiter ? '_self' : '_blank'}
                   rel="noopener noreferrer"
+                  whileHover={{ scale: 1.04 }}
+                  whileTap={{ scale: 0.97 }}
                   style={{
                     display: 'inline-flex',
                     alignItems: 'center',
@@ -231,22 +252,18 @@ export const HeroSection = ({ viewerType }: HeroSectionProps) => {
                     fontSize: '0.9rem',
                     fontFamily: 'var(--font-jetbrains-mono), monospace',
                     textDecoration: 'none',
-                    transition: 'opacity 0.2s, box-shadow 0.2s',
-                    boxShadow: `0 0 20px ${accent}40`,
-                  }}
-                  onMouseEnter={(e) => {
-                    (e.currentTarget as HTMLAnchorElement).style.opacity = '0.85';
-                  }}
-                  onMouseLeave={(e) => {
-                    (e.currentTarget as HTMLAnchorElement).style.opacity = '1';
+                    boxShadow: `0 4px 14px ${accent}35`,
                   }}
                 >
                   {content.ctaLabel}
-                </a>
+                </motion.a>
 
                 {/* Resume */}
-                <button
+                <motion.button
+                  type="button"
                   onClick={handleResumeDownload}
+                  whileHover={{ scale: 1.04 }}
+                  whileTap={{ scale: 0.97 }}
                   style={{
                     display: 'inline-flex',
                     alignItems: 'center',
@@ -254,28 +271,25 @@ export const HeroSection = ({ viewerType }: HeroSectionProps) => {
                     padding: '0.75rem 1.5rem',
                     background: 'transparent',
                     color: 'var(--fg)',
-                    border: '1px solid rgba(226,232,240,0.2)',
+                    border: '1px solid var(--border)',
                     borderRadius: '6px',
                     fontSize: '0.9rem',
                     cursor: 'pointer',
                     transition: 'border-color 0.2s',
                   }}
-                  onMouseEnter={(e) => {
-                    (e.currentTarget as HTMLButtonElement).style.borderColor =
-                      'rgba(226,232,240,0.5)';
-                  }}
-                  onMouseLeave={(e) => {
-                    (e.currentTarget as HTMLButtonElement).style.borderColor =
-                      'rgba(226,232,240,0.2)';
-                  }}
+                  onMouseEnter={(e) => { (e.currentTarget as HTMLButtonElement).style.borderColor = 'var(--fg-3)'; }}
+                  onMouseLeave={(e) => { (e.currentTarget as HTMLButtonElement).style.borderColor = 'var(--border)'; }}
                 >
                   <FileDown size={18} />
                   Resume
-                </button>
+                </motion.button>
 
                 {/* Message */}
-                <button
+                <motion.button
+                  type="button"
                   onClick={() => setOpenMessage(true)}
+                  whileHover={{ scale: 1.04 }}
+                  whileTap={{ scale: 0.97 }}
                   style={{
                     display: 'inline-flex',
                     alignItems: 'center',
@@ -283,31 +297,25 @@ export const HeroSection = ({ viewerType }: HeroSectionProps) => {
                     padding: '0.75rem 1.5rem',
                     background: 'transparent',
                     color: 'var(--fg)',
-                    border: '1px solid rgba(226,232,240,0.2)',
+                    border: '1px solid var(--border)',
                     borderRadius: '6px',
                     fontSize: '0.9rem',
                     cursor: 'pointer',
                     transition: 'border-color 0.2s',
                   }}
-                  onMouseEnter={(e) => {
-                    (e.currentTarget as HTMLButtonElement).style.borderColor =
-                      'rgba(226,232,240,0.5)';
-                  }}
-                  onMouseLeave={(e) => {
-                    (e.currentTarget as HTMLButtonElement).style.borderColor =
-                      'rgba(226,232,240,0.2)';
-                  }}
+                  onMouseEnter={(e) => { (e.currentTarget as HTMLButtonElement).style.borderColor = 'var(--fg-3)'; }}
+                  onMouseLeave={(e) => { (e.currentTarget as HTMLButtonElement).style.borderColor = 'var(--border)'; }}
                 >
                   <Mail size={18} />
                   Message Me
-                </button>
+                </motion.button>
               </motion.div>
 
               {/* Social icons */}
               <motion.div
                 initial={{ opacity: 0, y: 16 }}
                 animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.4 }}
+                transition={{ delay: 0.76, duration: 0.45, ease: [0.22, 1, 0.36, 1] }}
                 className="flex gap-4"
               >
                 {socialLinks.map((social, index) => {
@@ -383,9 +391,9 @@ export const HeroSection = ({ viewerType }: HeroSectionProps) => {
 // ── iframe loader ──────────────────────────────────────────────────────────────
 
 const phrases = [
-  'Summoning PDF powers… 💫',
-  'Almost there… ✨',
-  'Fetching the magic… 🪄',
+  'Loading resume…',
+  'Almost there…',
+  'Hang tight…',
 ];
 
 const IframeWithLoader = ({ src, title }: { src: string; title: string }) => {

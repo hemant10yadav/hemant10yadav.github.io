@@ -95,7 +95,7 @@ export const MessageForm = ({ viewerType, accent }: Props) => {
     background: 'var(--bg-input)',
     border: `1px solid ${
       errors[fieldName as keyof typeof errors]
-        ? '#ef4444'
+        ? 'var(--color-danger)'
         : focused === fieldName
         ? `${accent}60`
         : 'var(--border-2)'
@@ -210,7 +210,7 @@ export const MessageForm = ({ viewerType, accent }: Props) => {
             />
           )}
           {errors[name] && (
-            <p style={{ color: '#ef4444', fontSize: '0.75rem', marginTop: '0.3rem' }}>
+            <p style={{ color: 'var(--color-danger)', fontSize: '0.75rem', marginTop: '0.3rem' }}>
               {errors[name]}
             </p>
           )}

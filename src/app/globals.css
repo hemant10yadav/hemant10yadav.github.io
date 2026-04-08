@@ -9,6 +9,11 @@
 
 :root,
 [data-theme="dark"] {
+  /* semantic */
+  --color-danger:  #f87171;
+  --color-success: #34d399;
+  --color-warning: #fbbf24;
+
   /* backgrounds */
   --bg:              #080c14;
   --bg-surface:      #0b1120;
@@ -35,6 +40,11 @@
 }
 
 [data-theme="light"] {
+  /* semantic */
+  --color-danger:  #dc2626;
+  --color-success: #059669;
+  --color-warning: #d97706;
+
   /* backgrounds */
   --bg:              #f0f4f8;
   --bg-surface:      #ffffff;
@@ -62,6 +72,10 @@
 
 /* ── base ──────────────────────────────────────────────────────────────────── */
 
+html {
+  scroll-behavior: smooth;
+}
+
 html, body {
   overflow-x: hidden;
 }
@@ -77,6 +91,29 @@ body {
 
 .font-mono-display {
   font-family: var(--font-jetbrains-mono), monospace;
+}
+
+.font-display {
+  font-family: var(--font-outfit), var(--font-inter), sans-serif;
+}
+
+/* Subtle noise grain overlay — breaks digital flatness */
+body::after {
+  content: '';
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 9998;
+  opacity: 0.018;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
+  background-size: 200px 200px;
+}
+
+/* ── easing tokens ──────────────────────────────────────────────────────────── */
+
+:root {
+  --ease-out-quint: cubic-bezier(0.22, 1, 0.36, 1);
+  --ease-out-expo:  cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 /* ── animations ─────────────────────────────────────────────────────────────── */
@@ -97,4 +134,15 @@ body {
 @keyframes pulse {
   0%, 100% { opacity: 1; }
   50% { opacity: 0.4; }
+}
+
+/* ── accessibility ──────────────────────────────────────────────────────────── */
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+  html { scroll-behavior: auto !important; }
 }

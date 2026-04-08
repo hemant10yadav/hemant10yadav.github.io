@@ -101,19 +101,29 @@ export default function ExperienceSection({ viewerType }: ExperienceSectionProps
         {/* ── Heading ──────────────────────────────────────────────────────────── */}
         <motion.div
           key={viewerType}
-          initial={{ opacity: 0, y: -12 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5 }}
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true }}
+          variants={{ hidden: { opacity: 0, y: -12 }, visible: { opacity: 1, y: 0, transition: { duration: 0.5, ease: [0.22, 1, 0.36, 1] } } }}
           className="mb-14"
         >
           {isRecruiter ? (
-            <div className="text-center">
-              <span
+            <motion.div
+              variants={{
+                hidden: { opacity: 0 },
+                visible: { opacity: 1, transition: { staggerChildren: 0.13 } },
+              }}
+            >
+              <motion.span
+                variants={{
+                  hidden: { opacity: 0, x: -14 },
+                  visible: { opacity: 1, x: 0, transition: { duration: 0.4, ease: [0.22, 1, 0.36, 1] } },
+                }}
                 style={{
                   display: 'inline-block',
-                  padding: '0.25rem 1rem',
-                  borderRadius: '999px',
-                  background: `${accent}18`,
+                  padding: '0.2rem 0.75rem',
+                  borderRadius: '4px',
+                  background: `${accent}14`,
                   color: accent,
                   fontFamily: 'var(--font-jetbrains-mono), monospace',
                   fontSize: '0.7rem',
@@ -122,19 +132,25 @@ export default function ExperienceSection({ viewerType }: ExperienceSectionProps
                   marginBottom: '0.75rem',
                 }}
               >
-                Career Journey
-              </span>
-              <h2
+                Experience
+              </motion.span>
+              <motion.h2
+                variants={{
+                  hidden: { opacity: 0, y: 18 },
+                  visible: { opacity: 1, y: 0, transition: { duration: 0.5, ease: [0.22, 1, 0.36, 1] } },
+                }}
                 style={{
-                  fontFamily: 'var(--font-jetbrains-mono), monospace',
-                  fontSize: 'clamp(1.5rem, 3vw, 2.25rem)',
-                  fontWeight: 700,
+                  fontFamily: 'var(--font-outfit), var(--font-inter), sans-serif',
+                  fontSize: 'clamp(1.75rem, 3.5vw, 2.5rem)',
+                  fontWeight: 800,
+                  letterSpacing: '-0.02em',
                   color: 'var(--fg)',
+                  display: 'block',
                 }}
               >
                 Where I&apos;ve shipped
-              </h2>
-            </div>
+              </motion.h2>
+            </motion.div>
           ) : (
             <div>
               <div
@@ -208,7 +224,9 @@ function RecruiterTimeline({
             key={exp.company}
             initial={{ opacity: 0, x: -20 }}
             whileInView={{ opacity: 1, x: 0 }}
-            transition={{ duration: 0.5, delay: i * 0.12 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.5, delay: i * 0.12, ease: [0.22, 1, 0.36, 1] }}
+            whileHover={{ y: -3, transition: { duration: 0.2, ease: [0.22, 1, 0.36, 1] } }}
             className="md:pl-16 relative"
           >
             {/* Timeline node */}
@@ -409,9 +427,9 @@ function DeveloperGitLog({
           gap: '0.5rem',
         }}
       >
-        <span style={{ width: '0.6rem', height: '0.6rem', borderRadius: '50%', background: '#ef4444', display: 'block' }} />
-        <span style={{ width: '0.6rem', height: '0.6rem', borderRadius: '50%', background: '#6ee7b7', display: 'block' }} />
-        <span style={{ width: '0.6rem', height: '0.6rem', borderRadius: '50%', background: '#22c55e', display: 'block' }} />
+        <span style={{ width: '0.6rem', height: '0.6rem', borderRadius: '50%', background: '#FF5F57', display: 'block' }} />
+        <span style={{ width: '0.6rem', height: '0.6rem', borderRadius: '50%', background: '#FFBD2E', display: 'block' }} />
+        <span style={{ width: '0.6rem', height: '0.6rem', borderRadius: '50%', background: '#28C940', display: 'block' }} />
         <span style={{ color: 'var(--fg-4)', fontSize: '0.72rem', marginLeft: '0.5rem' }}>
           zsh — career
         </span>
@@ -424,6 +442,7 @@ function DeveloperGitLog({
             key={exp.company}
             initial={{ opacity: 0, y: 12 }}
             whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
             transition={{ duration: 0.45, delay: i * 0.15 }}
             style={{ marginBottom: i < experiences.length - 1 ? '2.5rem' : 0 }}
           >
@@ -516,7 +535,7 @@ function DeveloperGitLog({
                 <span
                   key={skill}
                   style={{
-                    color: '#22c55e',
+                    color: 'var(--color-success)',
                     fontSize: '0.75rem',
                     padding: '0.15rem 0.5rem',
                     background: 'rgba(34,197,94,0.07)',

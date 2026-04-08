@@ -32,32 +32,9 @@ export const ProfileImage: React.FC<ProfileImageProps> = ({
       <div
         style={{
           position: 'absolute',
-          inset: '-20%',
+          inset: '-15%',
           borderRadius: '50%',
-          background: `radial-gradient(circle, ${accent}12 0%, transparent 70%)`,
-          pointerEvents: 'none',
-        }}
-      />
-
-      {/* Accent ring */}
-      <div
-        style={{
-          position: 'absolute',
-          inset: '-3px',
-          borderRadius: '50%',
-          background: `conic-gradient(from 180deg, ${accent}50, transparent 40%, transparent 60%, ${accent}50)`,
-          animation: 'spin 8s linear infinite',
-          pointerEvents: 'none',
-        }}
-      />
-
-      {/* Dark ring gap */}
-      <div
-        style={{
-          position: 'absolute',
-          inset: '0px',
-          borderRadius: '50%',
-          background: 'var(--bg)',
+          background: `radial-gradient(circle, ${accent}0e 0%, transparent 70%)`,
           pointerEvents: 'none',
         }}
       />
@@ -70,7 +47,8 @@ export const ProfileImage: React.FC<ProfileImageProps> = ({
           height: '100%',
           borderRadius: '50%',
           overflow: 'hidden',
-          border: '2px solid var(--border-2)',
+          border: `2px solid ${accent}35`,
+          boxShadow: `0 0 0 4px ${accent}08, 0 0 28px ${accent}18`,
         }}
       >
         <Image
@@ -88,7 +66,7 @@ export const ProfileImage: React.FC<ProfileImageProps> = ({
           style={{
             position: 'absolute',
             inset: 0,
-            background: 'linear-gradient(180deg, transparent 40%, rgba(8,12,20,0.7) 100%)',
+            background: 'linear-gradient(180deg, transparent 40%, var(--bg) 100%)',
             pointerEvents: 'none',
           }}
         />
@@ -109,7 +87,7 @@ export const ProfileImage: React.FC<ProfileImageProps> = ({
           gap: '0.35rem',
           padding: '0.25rem 0.7rem',
           borderRadius: '999px',
-          background: 'rgba(8,12,20,0.85)',
+          background: 'var(--bg-overlay)',
           border: `1px solid ${accent}35`,
           backdropFilter: 'blur(8px)',
           whiteSpace: 'nowrap',

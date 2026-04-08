@@ -16,7 +16,7 @@ const RECRUITER_GROUPS = [
     label: 'Backend Systems',
     skills: [
       { name: 'Python', icon: '/assets/python.png' },
-      { name: 'Django', icon: '/assets/django.png' },
+      { name: 'Django', icon: '/assets/python.png' },
       { name: 'Java', icon: '/assets/java.png' },
       { name: 'Spring Boot', icon: '/assets/spring.png' },
     ],
@@ -34,7 +34,7 @@ const RECRUITER_GROUPS = [
     label: 'Infrastructure',
     skills: [
       { name: 'AWS', icon: '/assets/aws.png' },
-      { name: 'Docker', icon: '/assets/python.png' },
+      { name: 'Docker', icon: '/assets/git.png' },
       { name: 'PostgreSQL', icon: '/assets/postgres.png' },
       { name: 'MongoDB', icon: '/assets/mongo.png' },
     ],
@@ -81,19 +81,19 @@ export default function SkillSection({ viewerType }: SkillSectionProps) {
     resize();
     window.addEventListener('resize', resize);
 
-    const stars = Array.from({ length: 80 }, () => ({
+    const stars = Array.from({ length: 50 }, () => ({
       x: Math.random() * canvas.width,
       y: Math.random() * canvas.height,
-      r: Math.random() * 1.2,
-      dx: (Math.random() - 0.5) * 0.3,
-      dy: (Math.random() - 0.5) * 0.3,
+      r: Math.random() * 1.0,
+      dx: (Math.random() - 0.5) * 0.2,
+      dy: (Math.random() - 0.5) * 0.2,
     }));
 
     let rafId: number;
 
     function animate() {
       ctx!.clearRect(0, 0, canvas!.width, canvas!.height);
-      ctx!.strokeStyle = `${accent}1f`;
+      ctx!.strokeStyle = `${accent}14`;
       ctx!.lineWidth = 0.5;
 
       for (let i = 0; i < stars.length; i++) {
@@ -119,7 +119,7 @@ export default function SkillSection({ viewerType }: SkillSectionProps) {
 
         ctx!.beginPath();
         ctx!.arc(s.x, s.y, s.r, 0, Math.PI * 2);
-        ctx!.fillStyle = `${accent}4d`;
+        ctx!.fillStyle = `${accent}35`;
         ctx!.fill();
       });
 
@@ -144,25 +144,61 @@ export default function SkillSection({ viewerType }: SkillSectionProps) {
         {/* Heading */}
         <motion.div
           key={viewerType}
-          initial={{ opacity: 0, y: -16 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5 }}
-          className="text-center mb-16"
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true }}
+          variants={{
+            hidden: { opacity: 0 },
+            visible: { opacity: 1, transition: { staggerChildren: 0.13 } },
+          }}
+          className="mb-16"
         >
-          <h2
+          <motion.span
+            variants={{
+              hidden: { opacity: 0, x: -14 },
+              visible: { opacity: 1, x: 0, transition: { duration: 0.4, ease: [0.22, 1, 0.36, 1] } },
+            }}
             style={{
-              fontFamily: 'var(--font-jetbrains-mono), monospace',
-              fontSize: 'clamp(1.5rem, 3vw, 2.25rem)',
-              fontWeight: 700,
+              display: 'inline-block',
+              padding: '0.2rem 0.75rem',
+              borderRadius: '4px',
+              background: `${accent}14`,
               color: accent,
+              fontFamily: 'var(--font-jetbrains-mono), monospace',
+              fontSize: '0.7rem',
+              letterSpacing: '0.12em',
+              textTransform: 'uppercase' as const,
+              marginBottom: '0.75rem',
+            }}
+          >
+            {isRecruiter ? 'Skills' : '// skills'}
+          </motion.span>
+          <motion.h2
+            variants={{
+              hidden: { opacity: 0, y: 18 },
+              visible: { opacity: 1, y: 0, transition: { duration: 0.5, ease: [0.22, 1, 0.36, 1] } },
+            }}
+            style={{
+              fontFamily: 'var(--font-outfit), var(--font-inter), sans-serif',
+              fontSize: 'clamp(1.75rem, 3.5vw, 2.5rem)',
+              fontWeight: 800,
+              letterSpacing: '-0.02em',
+              color: 'var(--fg)',
+              display: 'block',
             }}
           >
             {isRecruiter ? 'What I bring to your team' : 'What I actually know'}
-          </h2>
+          </motion.h2>
           {!isRecruiter && (
-            <p style={{ color: 'var(--fg-4)', marginTop: '0.5rem', fontSize: '0.875rem' }}>
+            <motion.p
+              variants={{
+                hidden: { opacity: 0, y: 8 },
+                visible: { opacity: 1, y: 0, transition: { duration: 0.4, ease: [0.22, 1, 0.36, 1] } },
+              }}
+              style={{ color: 'var(--fg-4)', marginTop: '0.4rem', fontSize: '0.875rem', fontFamily: 'var(--font-jetbrains-mono), monospace' }}
+            >
               with honest annotations
-            </p>
+            </motion.p>
           )}
         </motion.div>
 
@@ -174,7 +210,9 @@ export default function SkillSection({ viewerType }: SkillSectionProps) {
                 key={group.label}
                 initial={{ opacity: 0, y: 24 }}
                 whileInView={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.5, delay: gi * 0.12 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.5, delay: gi * 0.12, ease: [0.22, 1, 0.36, 1] }}
+                whileHover={{ y: -5, transition: { duration: 0.2, ease: [0.22, 1, 0.36, 1] } }}
                 style={{
                   background: 'var(--bg-surface)',
                   border: '1px solid var(--border-2)',
@@ -222,6 +260,7 @@ export default function SkillSection({ viewerType }: SkillSectionProps) {
                       key={skill.name}
                       initial={{ opacity: 0 }}
                       whileInView={{ opacity: 1 }}
+                      viewport={{ once: true }}
                       transition={{ duration: 0.3, delay: gi * 0.12 + si * 0.07 }}
                       whileHover={{ background: `${accent}0d` }}
                       className="flex items-center gap-3"
@@ -264,8 +303,9 @@ export default function SkillSection({ viewerType }: SkillSectionProps) {
                 key={skill.name}
                 initial={{ opacity: 0, y: 16 }}
                 whileInView={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.4, delay: i * 0.05 }}
-                whileHover={{ scale: 1.02 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.4, delay: i * 0.05, ease: [0.22, 1, 0.36, 1] }}
+                whileHover={{ y: -4, transition: { duration: 0.2, ease: [0.22, 1, 0.36, 1] } }}
                 style={{
                   background: 'var(--bg-card)',
                   border: '1px solid rgba(34,211,238,0.1)',

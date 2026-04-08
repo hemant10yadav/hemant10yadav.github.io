@@ -1,5 +1,5 @@
 import type { Metadata } from 'next';
-import { Inter, JetBrains_Mono } from 'next/font/google';
+import { Inter, JetBrains_Mono, Outfit } from 'next/font/google';
 import './globals.css';
 import { FULL_NAME, TITLE, SITE_URL } from './constants';
 import { ViewerProvider } from './context/ViewerContext';
@@ -14,6 +14,12 @@ const inter = Inter({
 const jetbrainsMono = JetBrains_Mono({
   variable: '--font-jetbrains-mono',
   subsets: ['latin'],
+});
+
+const outfit = Outfit({
+  variable: '--font-outfit',
+  subsets: ['latin'],
+  weight: ['400', '500', '600', '700', '800', '900'],
 });
 
 const PAGE_TITLE = `${FULL_NAME} - ${TITLE}`;
@@ -63,7 +69,7 @@ export default function RootLayout({
         {/* Prevent flash of wrong theme — runs before React hydrates */}
         <script dangerouslySetInnerHTML={{ __html: `(function(){try{var m=localStorage.getItem('hy_color_mode')||'dark';document.documentElement.setAttribute('data-theme',m);}catch(e){}})();` }} />
       </head>
-      <body className={`${inter.variable} ${jetbrainsMono.variable} antialiased`}>
+      <body className={`${inter.variable} ${jetbrainsMono.variable} ${outfit.variable} antialiased`}>
         <ViewerProvider>
           <NavBar />
           {children}

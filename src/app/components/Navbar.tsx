@@ -66,14 +66,6 @@ export const NavBar = () => {
         transition: 'background 0.3s, border-color 0.3s',
       }}
     >
-      {/* Accent top line */}
-      <div
-        style={{
-          position: 'absolute', top: 0, left: 0, right: 0, height: '2px',
-          background: `linear-gradient(90deg, transparent 0%, ${accent} 30%, ${accent} 70%, transparent 100%)`,
-          opacity: 0.6,
-        }}
-      />
 
       <div style={{ maxWidth: '72rem', margin: '0 auto', padding: '0 1.5rem' }}>
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', height: '4rem' }}>
@@ -143,6 +135,7 @@ export const NavBar = () => {
               }}
               whileHover={{ scale: 1.1 }}
               whileTap={{ scale: 0.9 }}
+              aria-label={isDark ? 'Switch to light mode' : 'Switch to dark mode'}
               title={isDark ? 'Switch to light mode' : 'Switch to dark mode'}
               style={{
                 marginLeft: '0.4rem',
@@ -173,6 +166,7 @@ export const NavBar = () => {
 
             {/* Viewer toggle */}
             <motion.button
+              aria-label={isRecruiter ? 'Switch to developer view' : 'Switch to recruiter view'}
               onClick={() => {
                 event('viewer_type_toggled', { category: 'UI', label: isRecruiter ? 'developer' : 'recruiter', value: 1 });
                 toggleViewerType();

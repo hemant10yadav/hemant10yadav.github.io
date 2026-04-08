@@ -87,26 +87,61 @@ export const ProjectSection = ({ viewerType }: ProjectSectionProps) => {
       <div className="container mx-auto px-6">
         <motion.div
           key={viewerType}
-          initial={{ opacity: 0, y: -12 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5 }}
-          className="text-center mb-16"
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true }}
+          variants={{
+            hidden: { opacity: 0 },
+            visible: { opacity: 1, transition: { staggerChildren: 0.13 } },
+          }}
+          className="mb-16"
         >
-          <h2
+          <motion.span
+            variants={{
+              hidden: { opacity: 0, x: -14 },
+              visible: { opacity: 1, x: 0, transition: { duration: 0.4, ease: [0.22, 1, 0.36, 1] } },
+            }}
             style={{
-              fontFamily: 'var(--font-jetbrains-mono), monospace',
-              fontSize: 'clamp(1.5rem, 3vw, 2.25rem)',
-              fontWeight: 700,
+              display: 'inline-block',
+              padding: '0.2rem 0.75rem',
+              borderRadius: '4px',
+              background: `${accent}14`,
               color: accent,
+              fontFamily: 'var(--font-jetbrains-mono), monospace',
+              fontSize: '0.7rem',
+              letterSpacing: '0.12em',
+              textTransform: 'uppercase' as const,
+              marginBottom: '0.75rem',
+            }}
+          >
+            {isRecruiter ? 'Projects' : '// projects'}
+          </motion.span>
+          <motion.h2
+            variants={{
+              hidden: { opacity: 0, y: 18 },
+              visible: { opacity: 1, y: 0, transition: { duration: 0.5, ease: [0.22, 1, 0.36, 1] } },
+            }}
+            style={{
+              fontFamily: 'var(--font-outfit), var(--font-inter), sans-serif',
+              fontSize: 'clamp(1.75rem, 3.5vw, 2.5rem)',
+              fontWeight: 800,
+              letterSpacing: '-0.02em',
+              color: 'var(--fg)',
+              display: 'block',
             }}
           >
             {isRecruiter ? 'Things I built' : 'What actually happened'}
-          </h2>
-          <p style={{ color: 'var(--fg-4)', marginTop: '0.5rem', fontSize: '0.875rem' }}>
+          </motion.h2>
+          <motion.p
+            variants={{
+              hidden: { opacity: 0, y: 8 },
+              visible: { opacity: 1, y: 0, transition: { duration: 0.4, ease: [0.22, 1, 0.36, 1] } },
+            }}
+            style={{ color: 'var(--fg-4)', marginTop: '0.4rem', fontSize: '0.875rem' }}>
             {isRecruiter
               ? 'personal projects · real decisions · code on GitHub'
               : 'the unedited version'}
-          </p>
+          </motion.p>
         </motion.div>
 
         <div
@@ -180,7 +215,9 @@ function RecruiterCard({
     <motion.div
       initial={{ opacity: 0, y: 20 }}
       whileInView={{ opacity: 1, y: 0 }}
-      transition={{ delay: index * 0.1, duration: 0.4 }}
+      viewport={{ once: true }}
+      transition={{ delay: index * 0.1, duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
+      whileHover={{ y: -6, transition: { duration: 0.2, ease: [0.22, 1, 0.36, 1] } }}
       style={{
         background: 'var(--bg-card)',
         border: '1px solid rgba(110,231,183,0.12)',
@@ -201,15 +238,15 @@ function RecruiterCard({
       </h3>
 
       {[
-        { label: 'Problem', text: project.problem },
-        { label: 'Solution', text: project.solution },
-        { label: 'Impact', text: project.impact },
-      ].map(({ label, text }) => (
+        { label: 'Problem',  text: project.problem,  color: accent },
+        { label: 'Solution', text: project.solution, color: accent },
+        { label: 'Impact',   text: project.impact,   color: 'var(--color-success)' },
+      ].map(({ label, text, color }) => (
         <div key={label} className="mb-3">
           <span
             style={{
               fontFamily: 'var(--font-jetbrains-mono), monospace',
-              color: accent,
+              color,
               fontSize: '0.7rem',
               letterSpacing: '0.1em',
               textTransform: 'uppercase',
@@ -252,7 +289,9 @@ function DeveloperCard({
     <motion.div
       initial={{ opacity: 0, y: 20 }}
       whileInView={{ opacity: 1, y: 0 }}
-      transition={{ delay: index * 0.1, duration: 0.4 }}
+      viewport={{ once: true }}
+      transition={{ delay: index * 0.1, duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
+      whileHover={{ y: -6, transition: { duration: 0.2, ease: [0.22, 1, 0.36, 1] } }}
       style={{
         background: 'var(--bg-card)',
         border: '1px solid rgba(34,211,238,0.12)',
@@ -273,15 +312,15 @@ function DeveloperCard({
       </h3>
 
       {[
-        { label: 'What I tried', text: project.tried },
-        { label: 'What broke', text: project.broke },
-        { label: 'What I learned', text: project.learned },
-      ].map(({ label, text }) => (
+        { label: 'What I tried', text: project.tried, color: accent },
+        { label: 'What broke',   text: project.broke,   color: 'var(--color-danger)' },
+        { label: 'What I learned', text: project.learned, color: 'var(--color-success)' },
+      ].map(({ label, text, color }) => (
         <div key={label} className="mb-3">
           <span
             style={{
               fontFamily: 'var(--font-jetbrains-mono), monospace',
-              color: accent,
+              color,
               fontSize: '0.7rem',
               letterSpacing: '0.1em',
               textTransform: 'uppercase',

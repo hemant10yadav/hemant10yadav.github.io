@@ -36,7 +36,7 @@ export default function LabTeaser() {
         initial={{ scaleX: 0 }}
         whileInView={{ scaleX: 1 }}
         viewport={{ once: true }}
-        transition={{ duration: 0.6 }}
+        transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
         style={{
           height: '1px',
           background: `linear-gradient(90deg, transparent, ${accent}30, transparent)`,
@@ -139,7 +139,8 @@ export default function LabTeaser() {
           <Link href="/lab" passHref>
             <motion.span
               onClick={() => event('lab_cta_clicked', { category: 'Navigation', label: 'LabTeaser', value: 1 })}
-              whileHover={{ x: 4 }}
+              whileHover={{ scale: 1.04 }}
+              whileTap={{ scale: 0.97 }}
               style={{
                 display: 'inline-flex',
                 alignItems: 'center',
