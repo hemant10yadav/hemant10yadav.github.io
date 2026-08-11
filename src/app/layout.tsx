@@ -5,6 +5,7 @@ import { FULL_NAME, TITLE, SITE_URL } from './constants';
 import { ViewerProvider } from './context/ViewerContext';
 import { NavBar } from './components/Navbar';
 import GitHubActivity from './components/GitHubActivity';
+import WeatherAmbient from './components/WeatherAmbient';
 
 const inter = Inter({
   variable: '--font-inter',
@@ -71,6 +72,7 @@ export default function RootLayout({
       </head>
       <body className={`${inter.variable} ${jetbrainsMono.variable} ${outfit.variable} antialiased`}>
         <ViewerProvider>
+          <WeatherAmbient devMode={process.env.DEV === 'true'} />
           <NavBar />
           {children}
           <GitHubActivity />
