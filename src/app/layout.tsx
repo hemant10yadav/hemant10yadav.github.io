@@ -26,6 +26,7 @@ const outfit = Outfit({
 const PAGE_TITLE = `${FULL_NAME} - ${TITLE}`;
 
 export const metadata: Metadata = {
+  metadataBase: new URL(SITE_URL),
   title: PAGE_TITLE,
   description:
     'Software Engineer with 4 years of experience specializing in Python, Java, and full-stack development. View my projects and experience in scalable system architecture.',
@@ -43,9 +44,15 @@ export const metadata: Metadata = {
   openGraph: {
     title: PAGE_TITLE,
     description: 'Software Engineer with 4 years of experience building scalable systems.',
+    url: SITE_URL,
     type: 'website',
     locale: 'en_US',
     siteName: FULL_NAME,
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: PAGE_TITLE,
+    description: 'Software Engineer with 4 years of experience building scalable systems.',
   },
   verification: {
     google: '2NWImAWGUUGBF1n43abjdyS6cskF6yjKXIBjYnkU17k',
