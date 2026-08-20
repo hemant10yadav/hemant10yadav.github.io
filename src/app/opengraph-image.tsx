@@ -10,6 +10,7 @@ const STACK = ['Python', 'Java', 'JavaScript', 'React', 'Node.js', 'AWS'];
 export const alt = `${FULL_NAME} — ${TITLE}`;
 export const size = { width: 1200, height: 630 };
 export const contentType = 'image/png';
+export const dynamic = 'force-static';
 
 async function loadGoogleFont(family: string, weight: number, text: string) {
   const css = await (
