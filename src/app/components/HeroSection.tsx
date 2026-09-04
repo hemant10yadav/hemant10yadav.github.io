@@ -96,7 +96,7 @@ export const HeroSection = ({ viewerType }: HeroSectionProps) => {
         about:
           `At Dimagi, I maintain systems used by frontline health workers across 130 countries. At Xcaliber, ` +
           `I built one Spring Boot backend that powered web, Android, and iOS simultaneously. ` +
-          `I build for scale, correctness, and the person on-call at 3am.`,
+          `I build things that work, and more importantly, keep working after I stop looking at them.`,
         ctaLabel: "Let's talk about what I can build for your team →",
         ctaHref: MAILTO,
       }
@@ -104,7 +104,7 @@ export const HeroSection = ({ viewerType }: HeroSectionProps) => {
         headline: "Here's what actually happened.",
         headlineSub: "",
         subline:
-          "The decisions, the tradeoffs, the 2am bugs. The real version.",
+          "The decisions, the tradeoffs, the code I'm mildly embarrassed by. The real version.",
         about:
           `I've spent ${experience} navigating the gap between "it works on my machine" and ` +
           `"it works for 10,000 users." I've over-engineered things, simplified them, shipped ` +
