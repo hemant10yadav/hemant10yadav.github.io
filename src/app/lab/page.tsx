@@ -8,11 +8,7 @@ import Pulse from '../components/Pulse';
 import CLITerminal from '../components/CLITerminal';
 
 export default function LabPage() {
-  const { accent, ready } = useViewer();
-
-  if (!ready) {
-    return <div className="min-h-screen" style={{ background: 'var(--bg)' }} />;
-  }
+  const { accent } = useViewer();
 
   return (
     <>

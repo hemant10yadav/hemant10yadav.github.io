@@ -25,7 +25,6 @@ interface ViewerContextValue {
   viewerType: ViewerType;
   accent: string;
   colorMode: ColorMode;
-  ready: boolean;
   setViewerType: (type: ViewerType) => void;
   toggleViewerType: () => void;
   toggleColorMode: () => void;
@@ -35,7 +34,6 @@ const ViewerContext = createContext<ViewerContextValue>({
   viewerType: 'recruiter',
   accent: RECRUITER_ACCENT,
   colorMode: 'dark',
-  ready: false,
   setViewerType: () => {},
   toggleViewerType: () => {},
   toggleColorMode: () => {},
@@ -55,7 +53,6 @@ function applyColorMode(mode: ColorMode) {
 export const ViewerProvider = ({ children }: { children: React.ReactNode }) => {
   const [viewerType, setViewerTypeState] = useState<ViewerType>('recruiter');
   const [colorMode, setColorModeState]   = useState<ColorMode>('dark');
-  const [ready, setReady]                = useState(false);
 
   // Read persisted state from URL + localStorage on mount
   useEffect(() => {
@@ -74,8 +71,6 @@ export const ViewerProvider = ({ children }: { children: React.ReactNode }) => {
         document.documentElement.setAttribute('data-theme', saved);
       }
     } catch { /* ignore */ }
-
-    setReady(true);
   }, []);
 
   const setViewerType = useCallback((type: ViewerType) => {
@@ -103,7 +98,7 @@ export const ViewerProvider = ({ children }: { children: React.ReactNode }) => {
 
   return (
     <ViewerContext.Provider value={{
-      viewerType, accent, colorMode, ready,
+      viewerType, accent, colorMode,
       setViewerType, toggleViewerType, toggleColorMode,
     }}>
       {children}

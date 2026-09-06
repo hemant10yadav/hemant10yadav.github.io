@@ -12,11 +12,7 @@ import EasterEgg from './components/EasterEgg';
 import LabTeaser from './components/LabTeaser';
 
 function PortfolioApp() {
-  const { viewerType, ready } = useViewer();
-
-  if (!ready) {
-    return <div className="min-h-screen" style={{ background: 'var(--bg)' }} />;
-  }
+  const { viewerType } = useViewer();
 
   return (
     <>
