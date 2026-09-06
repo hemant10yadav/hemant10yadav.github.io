@@ -1,12 +1,20 @@
 import type { Metadata } from 'next';
 import { Inter, JetBrains_Mono, Outfit } from 'next/font/google';
 import './globals.css';
-import { FULL_NAME, TITLE, SITE_URL } from './constants';
+import {
+  FULL_NAME,
+  TITLE,
+  SITE_URL,
+  PROFILE_PIC_URL,
+  GITHUB_URL,
+  LINKEDIN_URL,
+  SO_URL,
+  DIMAGI,
+} from './constants';
 import { ViewerProvider } from './context/ViewerContext';
 import { NavBar } from './components/Navbar';
 import GitHubActivity from './components/GitHubActivity';
 import VisitorCounter from './components/VisitorCounter';
-import WeatherAmbient from './components/WeatherAmbient';
 
 const inter = Inter({
   variable: '--font-inter',
@@ -67,6 +75,21 @@ export const metadata: Metadata = {
   },
 };
 
+const PERSON_JSON_LD = {
+  '@context': 'https://schema.org',
+  '@type': 'Person',
+  name: FULL_NAME,
+  jobTitle: TITLE,
+  url: SITE_URL,
+  image: PROFILE_PIC_URL,
+  worksFor: {
+    '@type': 'Organization',
+    name: DIMAGI.name,
+    url: DIMAGI.url,
+  },
+  sameAs: [GITHUB_URL, LINKEDIN_URL, SO_URL],
+};
+
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -77,10 +100,13 @@ export default function RootLayout({
       <head>
         {/* Prevent flash of wrong theme — runs before React hydrates */}
         <script dangerouslySetInnerHTML={{ __html: `(function(){try{var m=localStorage.getItem('hy_color_mode')||'dark';document.documentElement.setAttribute('data-theme',m);}catch(e){}})();` }} />
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(PERSON_JSON_LD) }}
+        />
       </head>
       <body className={`${inter.variable} ${jetbrainsMono.variable} ${outfit.variable} antialiased`}>
         <ViewerProvider>
-          <WeatherAmbient devMode={process.env.DEV === 'true'} />
           <NavBar />
           {children}
           <GitHubActivity />

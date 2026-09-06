@@ -7,6 +7,7 @@ import { usePathname } from 'next/navigation';
 import { Moon, Sun } from 'lucide-react';
 import { event } from 'nextjs-google-analytics';
 import { useViewer } from '../context/ViewerContext';
+import { FULL_NAME } from '../constants';
 
 export const NavBar = () => {
   const { viewerType, accent, colorMode, toggleViewerType, toggleColorMode } = useViewer();
@@ -49,6 +50,7 @@ export const NavBar = () => {
 
   const navLinkColor = 'var(--fg-3)';
   const navLinkHover = 'var(--fg-2)';
+  const initials = FULL_NAME.split(' ').map((w) => w[0]).join('');
 
   return (
     <motion.nav
@@ -69,8 +71,20 @@ export const NavBar = () => {
 
       <div style={{ maxWidth: '72rem', margin: '0 auto', padding: '0 1.5rem' }}>
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', height: '4rem' }}>
-          <Link href="/" passHref>
-            <motion.div whileHover={{ scale: 1.04 }} style={{ cursor: 'pointer' }} />
+          <Link href="/" aria-label="Home" style={{ textDecoration: 'none' }}>
+            <motion.div
+              whileHover={{ scale: 1.04 }}
+              style={{
+                cursor: 'pointer',
+                fontFamily: 'var(--font-jetbrains-mono), monospace',
+                fontSize: '0.9rem',
+                fontWeight: 700,
+                letterSpacing: '0.04em',
+                color: accent,
+              }}
+            >
+              {initials}
+            </motion.div>
           </Link>
 
           <div style={{ display: 'flex', gap: '0.15rem', alignItems: 'center', overflowX: 'auto', WebkitOverflowScrolling: 'touch' }}>

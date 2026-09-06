@@ -66,12 +66,11 @@ export default function EasterEgg() {
       <div className="flex justify-center pb-16 pt-8">
         <motion.button
           onClick={handleOpen}
-          initial={{ opacity: 0.2 }}
-          whileHover={{ opacity: 1 }}
+          whileHover={{ color: 'var(--fg)' }}
           style={{
             background: 'none',
             border: 'none',
-            color: '#64748b',
+            color: 'var(--fg-2)',
             cursor: 'pointer',
             fontFamily: 'var(--font-jetbrains-mono), monospace',
             fontSize: '0.75rem',
