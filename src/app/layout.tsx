@@ -5,6 +5,7 @@ import { FULL_NAME, TITLE, SITE_URL } from './constants';
 import { ViewerProvider } from './context/ViewerContext';
 import { NavBar } from './components/Navbar';
 import GitHubActivity from './components/GitHubActivity';
+import VisitorCounter from './components/VisitorCounter';
 import WeatherAmbient from './components/WeatherAmbient';
 
 const inter = Inter({
@@ -83,6 +84,7 @@ export default function RootLayout({
           <NavBar />
           {children}
           <GitHubActivity />
+          <VisitorCounter />
         </ViewerProvider>
       </body>
     </html>

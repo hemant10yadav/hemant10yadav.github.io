@@ -35,6 +35,9 @@ jobs:
     runs-on: ubuntu-latest
     env:
       NEXT_PUBLIC_GA_MEASUREMENT_ID: ${{ secrets.NEXT_PUBLIC_GA_MEASUREMENT_ID }}
+      NEXT_PUBLIC_UPSTASH_REDIS_REST_URL: ${{ secrets.NEXT_PUBLIC_UPSTASH_REDIS_REST_URL }}
+      NEXT_PUBLIC_UPSTASH_REDIS_REST_TOKEN: ${{ secrets.NEXT_PUBLIC_UPSTASH_REDIS_REST_TOKEN }}
+      NEXT_PUBLIC_ME_PASSWORD: ${{ secrets.NEXT_PUBLIC_ME_PASSWORD }}
     steps:
       - name: Checkout
         uses: actions/checkout@v7
