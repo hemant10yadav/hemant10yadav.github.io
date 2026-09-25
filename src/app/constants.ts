@@ -8,6 +8,22 @@ export const FULL_NAME         = 'Hemant Singh Yadav';
 export const TITLE             = 'Software Engineer';
 export const CAREER_START      = new Date('2021-12-01');
 
+// Rounded to the nearest half year, e.g. "4.5 years". Used by the hero, meta description, and terminal.
+export const getExperienceLabel = (): string => {
+  const now = new Date();
+  let years = now.getFullYear() - CAREER_START.getFullYear();
+  let months = now.getMonth() - CAREER_START.getMonth();
+  if (months < 0) {
+    years--;
+    months += 12;
+  }
+  return months >= 6 ? `${years}.5 years` : `${years} years`;
+};
+export const EXPERIENCE_LABEL  = getExperienceLabel();
+
+// Reach of the systems I work on at Dimagi. One place so the hero and experience sections agree.
+export const COUNTRIES_SERVED  = '130+';
+
 // ── contact ───────────────────────────────────────────────────────────────────
 export const EMAIL             = 'hemant.10.yadav@gmail.com';
 export const GITHUB_USERNAME   = 'hemant10yadav';

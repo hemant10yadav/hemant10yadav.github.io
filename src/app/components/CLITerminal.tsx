@@ -10,6 +10,7 @@ import {
   RESUME_PDF_URL, RESUME_VIEW_URL,
   DIMAGI, XCALIBER,
   PROJECT_ECOMMERCE, PROJECT_ESTORE, PROJECT_BOOKSTORE,
+  EXPERIENCE_LABEL, COUNTRIES_SERVED,
 } from '../constants';
 
 // ── types ─────────────────────────────────────────────────────────────────────
@@ -80,9 +81,9 @@ const FS_NODES: Record<string, FSNode> = {
   ]},
   '/home/visitor/about.txt':             { type: 'file', content: [
     { text: FULL_NAME, color: 'accent' },
-    { text: 'Software Engineer · 4+ years', color: 'normal' },
+    { text: `Software Engineer · ${EXPERIENCE_LABEL}`, color: 'normal' },
     { text: '' },
-    { text: 'Spent 4 years closing the gap between', color: 'muted' },
+    { text: `Spent ${EXPERIENCE_LABEL} closing the gap between`, color: 'muted' },
     { text: '"works on my machine" and "works for 10,000 users."', color: 'accent' },
     { text: '' },
     { text: 'I like systems that are boring to operate.', color: 'dim' },
@@ -111,7 +112,7 @@ const FS_NODES: Record<string, FSNode> = {
     { text: `${DIMAGI.period} · ${DIMAGI.location}`, color: 'muted' },
     { text: 'Role: Software Engineer', color: 'normal' },
     { text: '' },
-    { text: '  ▸ Maintained systems serving NGOs across 130+ countries', color: 'normal' },
+    { text: `  ▸ Maintained systems serving NGOs across ${COUNTRIES_SERVED} countries`, color: 'normal' },
     { text: '  ▸ Containerised Django workloads with Docker on AWS', color: 'normal' },
     { text: '  ▸ Shipped production features across a decade-old codebase', color: 'normal' },
     { text: '  ▸ Owned backend features end-to-end — design, code, deploy', color: 'normal' },
@@ -819,7 +820,7 @@ export default function CLITerminal() {
           { text: `        ██████             Stack: Python · Django · React`, color: 'normal' },
           { text: `      ██      ██           Theme: dark (obviously)`, color: 'normal' },
           { text: `    ████████████████       Memory: full of coffee`, color: 'normal' },
-          { text: `                           Uptime: 4 years`, color: 'muted' },
+          { text: `                           Uptime: ${EXPERIENCE_LABEL}`, color: 'muted' },
           { text: `                           CWD: ${formatCwd(cwd)}`, color: 'dim' },
         ],
         'git log': [
@@ -844,7 +845,7 @@ export default function CLITerminal() {
         'npm install talent': [
           { text: 'npm warn deprecated shortcuts@1.0.0', color: 'orange' },
           { text: '' },
-          { text: 'added 1 package in 4 years', color: 'green' },
+          { text: `added 1 package in ${EXPERIENCE_LABEL}`, color: 'green' },
           { text: '1 package is looking for funding — run `npm fund`', color: 'dim' },
         ],
       };

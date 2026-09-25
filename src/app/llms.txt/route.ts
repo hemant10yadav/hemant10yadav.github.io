@@ -1,6 +1,7 @@
 import {
   FULL_NAME, TITLE, SITE_URL, EMAIL, GITHUB_URL, LINKEDIN_URL, SO_URL,
   DIMAGI, XCALIBER, PROJECT_ECOMMERCE, PROJECT_ESTORE, PROJECT_BOOKSTORE,
+  EXPERIENCE_LABEL, COUNTRIES_SERVED,
 } from '../constants';
 
 export const dynamic = 'force-static';
@@ -12,7 +13,7 @@ export async function GET() {
 
 ## About
 
-${FULL_NAME} is a ${TITLE} with experience in Python, Java, and full-stack development, focused on scalable system architecture.
+${FULL_NAME} is a ${TITLE} with ${EXPERIENCE_LABEL} of experience in Python, Django, and full-stack development. Currently at ${DIMAGI.name}, working on backend systems used by frontline health workers across ${COUNTRIES_SERVED} countries. Previously at ${XCALIBER.name}, building Spring Boot APIs that served web, Android, and iOS clients.
 
 ## Experience
 

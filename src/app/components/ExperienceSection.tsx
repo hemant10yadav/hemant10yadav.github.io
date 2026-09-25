@@ -4,7 +4,7 @@ import { motion } from 'framer-motion';
 import { ExternalLink, MapPin } from 'lucide-react';
 import { event } from 'nextjs-google-analytics';
 import { ViewerType, useViewer } from '../context/ViewerContext';
-import { FULL_NAME, DIMAGI, XCALIBER } from '../constants';
+import { FULL_NAME, DIMAGI, XCALIBER, COUNTRIES_SERVED } from '../constants';
 
 interface ExperienceSectionProps {
   viewerType: NonNullable<ViewerType>;
@@ -23,7 +23,7 @@ const EXPERIENCES = [
     skills: ["Python", "Django", "Docker", "AWS", "PostgreSQL"],
     // recruiter view
     impact: [
-      "Maintained systems serving NGOs across 130+ countries",
+      `Maintained systems serving NGOs across ${COUNTRIES_SERVED} countries`,
       "Containerised Django workloads with Docker, deployed on AWS",
       "Shipped production features across a decade-old Python codebase",
       "Owned backend features end-to-end — design, code, deploy, monitor",
@@ -32,7 +32,7 @@ const EXPERIENCES = [
     commitMsg: "feat: joined Dimagi Inc.",
     logLines: [
       "// first real encounter with CommCare — a codebase that",
-      "//   spans a decade and runs in 130+ countries.",
+      `//   spans a decade and runs in ${COUNTRIES_SERVED} countries.`,
       "//   humbling to read before you write.",
       "",
       "// docker in prod for the first time.",

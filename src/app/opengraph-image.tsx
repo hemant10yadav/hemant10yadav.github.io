@@ -5,7 +5,7 @@ import { FULL_NAME, TITLE, GITHUB_USERNAME, PROFILE_PIC_URL } from './constants'
 // 'use client' and can't be imported into this Node-runtime image generator.
 const ACCENT = '#f2c078';
 
-const STACK = ['Python', 'Java', 'JavaScript', 'React', 'Node.js', 'AWS'];
+const STACK = ['Python', 'Django', 'PostgreSQL', 'Docker', 'AWS', 'React'];
 
 export const alt = `${FULL_NAME} — ${TITLE}`;
 export const size = { width: 1200, height: 630 };

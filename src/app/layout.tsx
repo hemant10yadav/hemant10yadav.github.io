@@ -10,6 +10,8 @@ import {
   LINKEDIN_URL,
   SO_URL,
   DIMAGI,
+  EXPERIENCE_LABEL,
+  COUNTRIES_SERVED,
 } from './constants';
 import { ViewerProvider } from './context/ViewerContext';
 import { NavBar } from './components/Navbar';
@@ -33,26 +35,31 @@ const outfit = Outfit({
 });
 
 const PAGE_TITLE = `${FULL_NAME} - ${TITLE}`;
+const PAGE_DESCRIPTION =
+  `Software Engineer with ${EXPERIENCE_LABEL} of experience in Python, Django, and full-stack development. ` +
+  `Building backend systems at Dimagi used by frontline health workers across ${COUNTRIES_SERVED} countries.`;
+const SHORT_DESCRIPTION = `Software Engineer with ${EXPERIENCE_LABEL} of experience building scalable Python and Django systems.`;
 
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
   title: PAGE_TITLE,
-  description:
-    'Software Engineer with 4 years of experience specializing in Python, Java, and full-stack development. View my projects and experience in scalable system architecture.',
+  description: PAGE_DESCRIPTION,
   keywords: [
     'Software Engineer',
+    'Backend Developer',
     'Full Stack Developer',
     'Python',
-    'Java',
-    'JavaScript',
-    'React',
-    'Node.js',
+    'Django',
+    'PostgreSQL',
+    'Docker',
     'AWS',
-    'Angular',
+    'Java',
+    'React',
+    'TypeScript',
   ],
   openGraph: {
     title: PAGE_TITLE,
-    description: 'Software Engineer with 4 years of experience building scalable systems.',
+    description: SHORT_DESCRIPTION,
     url: SITE_URL,
     type: 'website',
     locale: 'en_US',
@@ -61,7 +68,7 @@ export const metadata: Metadata = {
   twitter: {
     card: 'summary_large_image',
     title: PAGE_TITLE,
-    description: 'Software Engineer with 4 years of experience building scalable systems.',
+    description: SHORT_DESCRIPTION,
   },
   verification: {
     google: '2NWImAWGUUGBF1n43abjdyS6cskF6yjKXIBjYnkU17k',

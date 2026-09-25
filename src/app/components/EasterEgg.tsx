@@ -3,13 +3,14 @@
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useViewer, RECRUITER_ACCENT, DEVELOPER_ACCENT } from '../context/ViewerContext';
+import { EXPERIENCE_LABEL, COUNTRIES_SERVED } from '../constants';
 
 // Condensed content snippets for each side of the split screen
 const RECRUITER_SNIPPET = {
   headline: 'I ship things that scale.',
-  sub: '4 years · 2 companies · 0 production fires I didn\'t put out.',
+  sub: `${EXPERIENCE_LABEL} · 2 companies · 0 production fires I didn't put out.`,
   points: [
-    'Python, Django — systems serving NGOs across 130+ countries',
+    `Python, Django — systems serving NGOs across ${COUNTRIES_SERVED} countries`,
     'Spring Boot APIs handling enterprise-level traffic',
     'AWS, Docker, PostgreSQL — infrastructure that holds',
   ],

@@ -16,7 +16,7 @@ const RECRUITER_GROUPS = [
     label: 'Backend Systems',
     skills: [
       { name: 'Python', icon: '/assets/python.png' },
-      { name: 'Django', icon: '/assets/python.png' },
+      { name: 'Django', icon: '/assets/django.png' },
       { name: 'Java', icon: '/assets/java.png' },
       { name: 'Spring Boot', icon: '/assets/spring.png' },
     ],
@@ -34,7 +34,7 @@ const RECRUITER_GROUPS = [
     label: 'Infrastructure',
     skills: [
       { name: 'AWS', icon: '/assets/aws.png' },
-      { name: 'Docker', icon: '/assets/git.png' },
+      { name: 'Docker', icon: '/assets/docker.png' },
       { name: 'PostgreSQL', icon: '/assets/postgres.png' },
       { name: 'MongoDB', icon: '/assets/mongo.png' },
     ],
@@ -48,7 +48,7 @@ const DEVELOPER_SKILLS: Array<{
   icon: string;
   note: string;
 }> = [
-  { name: 'Django', icon: '/assets/python.png', note: 'Where I live. 2 years deep.' },
+  { name: 'Django', icon: '/assets/django.png', note: 'Where I live. 2 years deep.' },
   { name: 'Python', icon: '/assets/python.png', note: 'First language I actually liked.' },
   { name: 'Spring Boot', icon: '/assets/spring.png', note: 'Enterprise APIs. Hibernate made me cry once.' },
   { name: 'React', icon: '/assets/react.png', note: 'I understand hooks now. Took a while.' },
@@ -56,7 +56,7 @@ const DEVELOPER_SKILLS: Array<{
   { name: 'TypeScript', icon: '/assets/typescript.png', note: 'Once you go typed, you never go back.' },
   { name: 'PostgreSQL', icon: '/assets/postgres.png', note: 'Indexes are magic. Write the query plan.' },
   { name: 'AWS', icon: '/assets/aws.png', note: 'S3, EC2. Still afraid of billing alerts.' },
-  { name: 'Docker', icon: '/assets/python.png', note: '"Works on my machine" — now ships everywhere.' },
+  { name: 'Docker', icon: '/assets/docker.png', note: '"Works on my machine" — now ships everywhere.' },
   { name: 'MongoDB', icon: '/assets/mongo.png', note: 'Schema-less, until you wish you had one.' },
   { name: 'Git', icon: '/assets/git.png', note: 'git blame → git shame → git fix.' },
   { name: 'Node.js', icon: '/assets/node.png', note: 'Async all the way down.' },

@@ -9,7 +9,7 @@ import { MessageModal } from './MessageModal';
 import { ViewerType, useViewer } from '../context/ViewerContext';
 import {
   FULL_NAME, GITHUB_URL, LINKEDIN_URL, SO_URL, MAILTO,
-  PROFILE_PIC_URL, RESUME_PDF_URL, RESUME_EMBED_URL, CAREER_START,
+  PROFILE_PIC_URL, RESUME_PDF_URL, RESUME_EMBED_URL, EXPERIENCE_LABEL, COUNTRIES_SERVED,
 } from '../constants';
 
 export type SocialLink = {
@@ -22,18 +22,6 @@ interface HeroSectionProps {
   viewerType: NonNullable<ViewerType>;
 }
 
-const getRoundedExperience = (): string => {
-  const start = CAREER_START;
-  const now = new Date();
-  let years = now.getFullYear() - start.getFullYear();
-  let months = now.getMonth() - start.getMonth();
-  if (months < 0) {
-    years--;
-    months += 12;
-  }
-  return months >= 6 ? `${years}.5 years` : `${years} years`;
-};
-
 export const HeroSection = ({ viewerType }: HeroSectionProps) => {
   const { accent } = useViewer();
   const [openIframe, setOpenIframe] = useState(false);
@@ -41,7 +29,7 @@ export const HeroSection = ({ viewerType }: HeroSectionProps) => {
   const [isMobile, setIsMobile] = useState(false);
 
   const isRecruiter = viewerType === 'recruiter';
-  const experience = getRoundedExperience();
+  const experience = EXPERIENCE_LABEL;
 
   useEffect(() => {
     if (openIframe) {
@@ -94,7 +82,7 @@ export const HeroSection = ({ viewerType }: HeroSectionProps) => {
         headlineSub: "Here's proof.",
         subline: `${experience} · 2 companies · I've seen what breaks at scale. I build around it.`,
         about:
-          `At Dimagi, I maintain systems used by frontline health workers across 130 countries. At Xcaliber, ` +
+          `At Dimagi, I maintain systems used by frontline health workers across ${COUNTRIES_SERVED} countries. At Xcaliber, ` +
           `I built one Spring Boot backend that powered web, Android, and iOS simultaneously. ` +
           `I build things that work, and more importantly, keep working after I stop looking at them.`,
         ctaLabel: "Let's talk about what I can build for your team →",
@@ -168,31 +156,39 @@ export const HeroSection = ({ viewerType }: HeroSectionProps) => {
                     color: 'var(--fg)',
                   }}
                 >
-                  {content.headline.split(' ').map((word, i) => (
-                    <motion.span
-                      key={i}
-                      initial={{ opacity: 0, y: 28 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      transition={{ delay: 0.1 + i * 0.055, duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
-                      style={{ display: 'inline-block', marginRight: '0.28em' }}
-                    >
-                      {word}
-                    </motion.span>
-                  ))}
-                  {content.headlineSub && (
-                    <motion.span
-                      initial={{ opacity: 0, y: 28 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      transition={{
-                        delay: 0.1 + content.headline.split(' ').length * 0.055,
-                        duration: 0.5,
-                        ease: [0.22, 1, 0.36, 1],
-                      }}
-                      style={{ display: 'inline-block', color: accent, marginLeft: '0.15em' }}
-                    >
-                      {content.headlineSub}
-                    </motion.span>
-                  )}
+                  {/* Plain sentence for crawlers and screen readers; the animated
+                      per-word spans below are inline-block, so they read as one
+                      run-on word without this. */}
+                  <span className="sr-only">
+                    {content.headlineSub ? `${content.headline} ${content.headlineSub}` : content.headline}
+                  </span>
+                  <span aria-hidden="true">
+                    {content.headline.split(' ').map((word, i) => (
+                      <motion.span
+                        key={i}
+                        initial={{ opacity: 0, y: 28 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ delay: 0.1 + i * 0.055, duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
+                        style={{ display: 'inline-block', marginRight: '0.28em' }}
+                      >
+                        {word}
+                      </motion.span>
+                    ))}
+                    {content.headlineSub && (
+                      <motion.span
+                        initial={{ opacity: 0, y: 28 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{
+                          delay: 0.1 + content.headline.split(' ').length * 0.055,
+                          duration: 0.5,
+                          ease: [0.22, 1, 0.36, 1],
+                        }}
+                        style={{ display: 'inline-block', color: accent, marginLeft: '0.15em' }}
+                      >
+                        {content.headlineSub}
+                      </motion.span>
+                    )}
+                  </span>
                 </h1>
 
                 {/* Sub-line */}
