@@ -108,6 +108,15 @@ export const CONNECT_HIGHLIGHT_PRS = [
 ] as const;
 
 // ── projects ──────────────────────────────────────────────────────────────────
+export const PROJECT_KICKTRACK = {
+  title:      'KickTrack',
+  githubUrl:  `${GITHUB_URL}/KickTrack`,
+  repoPublic: true,
+  // Every .mp4 in demos/ on the gh-pages branch is shown, with a same-named .jpg as its poster
+  demosApiUrl: `https://api.github.com/repos/${GITHUB_USERNAME}/KickTrack/contents/demos?ref=gh-pages`,
+  demosBaseUrl: `${SITE_URL}/KickTrack/demos`,
+} as const;
+
 export const PROJECT_ECOMMERCE = {
   title:     'E-Commerce Platform',
   githubUrl: `${GITHUB_URL}/E-Commerce-website`,
