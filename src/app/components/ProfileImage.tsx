@@ -71,51 +71,6 @@ export const ProfileImage: React.FC<ProfileImageProps> = ({
           }}
         />
       </div>
-
-      {/* Status badge */}
-      <motion.div
-        initial={{ opacity: 0, y: 8 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.5, duration: 0.4 }}
-        style={{
-          position: 'absolute',
-          bottom: '8%',
-          left: '50%',
-          transform: 'translateX(-50%)',
-          display: 'flex',
-          alignItems: 'center',
-          gap: '0.35rem',
-          padding: '0.25rem 0.7rem',
-          borderRadius: '999px',
-          background: 'var(--bg-overlay)',
-          border: `1px solid ${accent}35`,
-          backdropFilter: 'blur(8px)',
-          whiteSpace: 'nowrap',
-        }}
-      >
-        <span
-          style={{
-            width: '0.4rem',
-            height: '0.4rem',
-            borderRadius: '50%',
-            background: accent,
-            display: 'block',
-            boxShadow: `0 0 6px ${accent}`,
-            animation: 'pulse 2s infinite',
-          }}
-        />
-        <span
-          style={{
-            fontFamily: 'var(--font-jetbrains-mono), monospace',
-            color: accent,
-            fontSize: '0.6rem',
-            letterSpacing: '0.06em',
-            textTransform: 'uppercase',
-          }}
-        >
-          Available
-        </span>
-      </motion.div>
     </motion.div>
   );
 };
