@@ -52,15 +52,21 @@ export const CONTACT_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbw8CD
 export const DIMAGI = {
   name:     'Dimagi Inc.',
   url:      'https://dimagi.com/',
-  period:   'Dec 2023 — Present',
+  period:   'Jun 2024 — Present',
   location: 'Delhi, India',
   current:  true,
+} as const;
+
+// Where I started; acquired by Xcaliber Infotech
+export const SARAL = {
+  name: 'Saral Technologies',
+  url:  'https://saral.io/',
 } as const;
 
 export const XCALIBER = {
   name:     'Xcaliber Infotech Pvt. Ltd.',
   url:      'https://xcaliberinfotech.com/',
-  period:   'Dec 2021 — Dec 2023',
+  period:   'Dec 2021 — Jun 2024',
   location: 'Pune, India',
   current:  false,
 } as const;
@@ -69,8 +75,14 @@ export const XCALIBER = {
 export const COMMCARE_CONNECT = {
   name:    'CommCare Connect',
   repoUrl: 'https://github.com/dimagi/commcare-connect',
-  siteUrl: 'https://connect.dimagi.com',
 } as const;
+
+// Dimagi repos I contribute to, shown on hover over the Dimagi experience card.
+export const DIMAGI_REPOS = [
+  { name: 'CommCare Connect', url: COMMCARE_CONNECT.repoUrl },
+  { name: 'ConnectID',        url: 'https://github.com/dimagi/connect-id' },
+  { name: 'CommCare HQ',      url: 'https://github.com/dimagi/commcare-hq' },
+] as const;
 
 // Merged PRs on commcare-connect. The live count is fetched on page load by
 // useMergedPrCount; this is shown until it arrives or if GitHub is unreachable.

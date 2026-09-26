@@ -1,14 +1,14 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, type ReactNode } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ExternalLink, MapPin } from 'lucide-react';
+import { ExternalLink, Github, Info, MapPin } from 'lucide-react';
 import { event } from 'nextjs-google-analytics';
 import { ViewerType, useViewer } from '../context/ViewerContext';
 import { useMergedPrCount } from '../hooks/useMergedPrCount';
 import {
-  FULL_NAME, DIMAGI, XCALIBER, COUNTRIES_SERVED,
-  COMMCARE_CONNECT, CONNECT_MERGED_PRS_URL, CONNECT_HIGHLIGHT_PRS,
+  FULL_NAME, DIMAGI, XCALIBER, SARAL, COUNTRIES_SERVED,
+  COMMCARE_CONNECT, CONNECT_MERGED_PRS_URL, DIMAGI_REPOS, CONNECT_HIGHLIGHT_PRS,
 } from '../constants';
 
 interface ExperienceSectionProps {
@@ -29,12 +29,13 @@ type Experience = {
   skills: string[];
   impact: string[];
   moreImpact?: string[];
-  note?: string;
+  note?: ReactNode;
+  repos?: readonly { name: string; url: string }[];
   commitMsg: string;
   logLines: string[];
   hash: string;
   branch: string;
-  product?: { name: string; repoUrl: string; siteUrl: string; mergedPrsUrl: string; mergedPrs: string };
+  product?: { name: string; repoUrl: string; mergedPrsUrl: string; mergedPrs: string };
   prs?: readonly HighlightPR[];
 };
 
@@ -50,6 +51,7 @@ const getExperiences = (mergedPrs: string): Experience[] => [
     skills: ["Python", "Django", "PostgreSQL", "PostGIS", "Celery", "Docker", "AWS"],
     product: { ...COMMCARE_CONNECT, mergedPrsUrl: CONNECT_MERGED_PRS_URL, mergedPrs },
     prs: CONNECT_HIGHLIGHT_PRS,
+    repos: DIMAGI_REPOS,
     // recruiter view
     impact: [
       `Built the microplanning module end to end: enabled PostGIS on a live database, designed the work-area models, and shipped a CSV import that handles 1 million rows with low memory use, plus map-based assignment and bulk write APIs`,
@@ -103,7 +105,21 @@ const getExperiences = (mergedPrs: string): Experience[] => [
       "Built data dashboards with Chart.js for reporting and analysis",
       "Helped move the UI from Bootstrap 3 to Bootstrap 5 for a consistent look across the app",
     ],
-    note: "Client work under NDA, so there's no public code to link here.",
+    note: (
+      <>
+        Started at{' '}
+        <a
+          href={SARAL.url}
+          target="_blank"
+          rel="noopener noreferrer"
+          onClick={() => event('external_links', { category: 'Portfolio', label: `${SARAL.name} visits`, value: 1 })}
+          style={{ color: 'var(--fg-2)', textDecoration: 'underline', textUnderlineOffset: '2px' }}
+        >
+          {SARAL.name}
+        </a>
+        , which was later acquired by {XCALIBER.name}.
+      </>
+    ),
     commitMsg: "feat: joined Xcaliber Infotech",
     logLines: [
       "// spring boot. first week: confident.",
@@ -378,6 +394,7 @@ function RecruiterTimeline({
 
             {/* Card */}
             <div
+              className="group"
               style={{
                 background: 'var(--bg-card)',
                 border: `1px solid ${exp.current ? `${accent}30` : 'var(--border-2)'}`,
@@ -448,58 +465,94 @@ function RecruiterTimeline({
                     </a>
                   </h3>
                   <div className="flex flex-wrap gap-4" style={{ color: 'var(--fg-3)', fontSize: '0.85rem' }}>
-                    <span>
-                      {exp.role}
-                      {exp.product && (
-                        <>
-                          {' · '}
-                          <a
-                            href={exp.product.siteUrl}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            onClick={() => onLink(`${exp.product!.name} site`)}
-                            style={{
-                              display: 'inline-flex',
-                              alignItems: 'center',
-                              gap: '0.25rem',
-                              color: accent,
-                              textDecoration: 'none',
-                            }}
-                          >
-                            {exp.product.name} <ExternalLink size={11} />
-                          </a>
-                        </>
-                      )}
-                    </span>
+                    <span>{exp.role}</span>
                     <span style={{ display: 'flex', alignItems: 'center', gap: '0.3rem' }}>
                       <MapPin size={13} /> {exp.location}
                     </span>
                   </div>
                 </div>
 
-                <span
-                  style={{
-                    fontFamily: 'var(--font-jetbrains-mono), monospace',
-                    fontSize: '0.78rem',
-                    color: accent,
-                    opacity: 0.8,
-                    whiteSpace: 'nowrap',
-                    paddingTop: '0.15rem',
-                  }}
-                >
-                  {exp.period}
-                </span>
+                <div className="flex flex-col items-start md:items-end gap-2">
+                  <span
+                    style={{
+                      fontFamily: 'var(--font-jetbrains-mono), monospace',
+                      fontSize: '0.78rem',
+                      color: accent,
+                      opacity: 0.8,
+                      whiteSpace: 'nowrap',
+                      paddingTop: '0.15rem',
+                    }}
+                  >
+                    {exp.period}
+                  </span>
+
+                  {/* Repos: revealed on card hover/focus on desktop, always shown on touch-sized screens */}
+                  {exp.repos && (
+                    <div className="flex flex-wrap md:justify-end gap-1.5 transition-opacity duration-300 md:opacity-0 md:group-hover:opacity-100 md:group-focus-within:opacity-100">
+                      {exp.repos.map((repo) => (
+                        <a
+                          key={repo.url}
+                          href={repo.url}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          onClick={() => onLink(`${repo.name} repo`)}
+                          title={repo.url.replace('https://', '')}
+                          style={{
+                            display: 'inline-flex',
+                            alignItems: 'center',
+                            gap: '0.3rem',
+                            padding: '0.2rem 0.55rem',
+                            borderRadius: '999px',
+                            border: `1px solid ${accent}40`,
+                            background: `${accent}10`,
+                            color: 'var(--fg-2)',
+                            fontSize: '0.7rem',
+                            fontFamily: 'var(--font-jetbrains-mono), monospace',
+                            textDecoration: 'none',
+                            whiteSpace: 'nowrap',
+                            transition: 'color 0.2s, border-color 0.2s',
+                          }}
+                          onMouseEnter={(e) => {
+                            e.currentTarget.style.color = accent;
+                            e.currentTarget.style.borderColor = accent;
+                          }}
+                          onMouseLeave={(e) => {
+                            e.currentTarget.style.color = 'var(--fg-2)';
+                            e.currentTarget.style.borderColor = `${accent}40`;
+                          }}
+                        >
+                          <Github size={11} /> {repo.name}
+                        </a>
+                      ))}
+                    </div>
+                  )}
+                </div>
               </div>
 
               <ImpactList impact={exp.impact} moreImpact={exp.moreImpact} accent={accent} />
 
               {exp.note && (
-                <p className="mb-5" style={{ color: 'var(--fg-4)', fontSize: '0.8rem', fontStyle: 'italic' }}>
+                <p
+                  className="mb-5"
+                  style={{
+                    display: 'flex',
+                    alignItems: 'flex-start',
+                    gap: '0.5rem',
+                    padding: '0.55rem 0.75rem',
+                    borderRadius: '8px',
+                    background: 'var(--bg-input)',
+                    border: '1px solid var(--border-2)',
+                    color: 'var(--fg-3)',
+                    fontSize: '0.8rem',
+                    lineHeight: 1.5,
+                  }}
+                >
+                  <Info size={14} style={{ color: accent, flexShrink: 0, marginTop: '0.15rem' }} />
                   {exp.note}
                 </p>
               )}
 
-              {/* Selected merged PRs — the work is open source, so link the proof */}
+              {/* Selected merged PRs, linking the real diffs */}
               {exp.product && exp.prs && (
                 <div className="mb-5">
                   <p
@@ -512,16 +565,7 @@ function RecruiterTimeline({
                       marginBottom: '0.6rem',
                     }}
                   >
-                    Selected merged PRs ·{' '}
-                    <a
-                      href={exp.product.repoUrl}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      onClick={() => onLink(exp.product!.name)}
-                      style={{ color: accent, textDecoration: 'none', textTransform: 'none', letterSpacing: 0 }}
-                    >
-                      {exp.product.repoUrl.replace('https://', '')}
-                    </a>
+                    Work you can verify
                   </p>
                   <ul className="space-y-2">
                     {exp.prs.map((pr) => (
