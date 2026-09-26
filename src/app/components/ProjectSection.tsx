@@ -1,7 +1,7 @@
 'use client';
 
 import { motion } from 'framer-motion';
-import { ExternalLink } from 'lucide-react';
+import { ExternalLink, Github, Maximize2, Minimize2, Pause, Play } from 'lucide-react';
 import Image from 'next/image';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { event } from 'nextjs-google-analytics';
@@ -14,11 +14,16 @@ interface ProjectSectionProps {
 
 // ── project data for both views ──────────────────────────────────────────────
 
-const FEATURED_STACK = 'Python · YOLO26 · BoT-SORT · OpenCV · CoreML · FastAPI';
+const FEATURED_STACK = ['Python', 'YOLO26', 'BoT-SORT', 'OpenCV', 'CoreML', 'FastAPI'];
 
 const FEATURED_RECRUITER = {
   title: PROJECT_KICKTRACK.title,
-  tagline: 'Computer-vision player tracking for football match footage',
+  tagline: 'Football analytics from match video: tracks every player live, turning their movement into data.',
+  metrics: [
+    { value: 'Live', label: 'follows every player as the match plays' },
+    { value: '2× faster', label: 'each video frame is analysed in half the time' },
+    { value: 'Half the lag', label: 'skipped frames cut from 64% to 33% on the toughest clip' },
+  ],
   sections: [
     {
       label: 'Problem',
@@ -30,7 +35,7 @@ const FEATURED_RECRUITER = {
     },
     {
       label: 'Impact',
-      text: 'Tracks every player on 4K, 50fps footage with live markers. Cut inference from ~70ms to ~30ms per frame and frame drops on the hardest clip from 64% to 33%, without losing a single real detection. Backed by a replay test suite.',
+      text: 'Tracks every player on 50fps footage with live markers. Cut inference from ~70ms to ~30ms per frame and frame drops on the hardest clip from 64% to 33%, without losing a single real detection. Backed by a replay test suite.',
     },
   ],
 };
@@ -38,6 +43,11 @@ const FEATURED_RECRUITER = {
 const FEATURED_DEVELOPER = {
   title: PROJECT_KICKTRACK.title,
   tagline: 'the one that actually fought back',
+  metrics: [
+    { value: '50fps', label: 'tracked in real time' },
+    { value: '70 → 30ms', label: 'inference per frame' },
+    { value: '64% → 33%', label: 'frame drops, hardest clip' },
+  ],
   sections: [
     {
       label: 'What I tried',
@@ -276,6 +286,15 @@ async function fetchDemoVideos(): Promise<DemoVideo[]> {
   return videos;
 }
 
+function formatTime(seconds: number) {
+  if (!Number.isFinite(seconds)) return '0:00';
+  return `${Math.floor(seconds / 60)}:${String(Math.floor(seconds % 60)).padStart(2, '0')}`;
+}
+
+// Overlays sit on dark match footage, so they stay dark in both colour modes (like the terminal)
+const OVERLAY_TEXT = 'rgba(255,255,255,0.92)';
+const OVERLAY_BG = 'rgba(0,0,0,0.55)';
+
 function DemoPlayer({
   title,
   accent,
@@ -285,13 +304,20 @@ function DemoPlayer({
   accent: string;
   onAllFailed: () => void;
 }) {
+  const stageRef = useRef<HTMLDivElement>(null);
   const videoRef = useRef<HTMLVideoElement>(null);
   const [demos, setDemos] = useState<DemoVideo[] | null>(null);
   const [active, setActive] = useState(0);
-  const [isFullscreen, setIsFullscreen] = useState(false);
   const [failed, setFailed] = useState<Set<number>>(new Set());
+  const [inView, setInView] = useState(false);
+  const [playing, setPlaying] = useState(false);
+  const [userPaused, setUserPaused] = useState(false);
+  const [time, setTime] = useState({ current: 0, duration: 0 });
+  const [isFullscreen, setIsFullscreen] = useState(false);
+  const playable = demos?.map((_, i) => i).filter((i) => !failed.has(i)) ?? [];
   const current = demos?.[active];
   const label = `Video ${active + 1}`;
+  const progress = time.duration ? (time.current / time.duration) * 100 : 0;
 
   useEffect(() => {
     fetchDemoVideos()
@@ -300,86 +326,242 @@ function DemoPlayer({
   }, [onAllFailed]);
 
   useEffect(() => {
-    const onChange = () => {
-      const entered = document.fullscreenElement === videoRef.current;
-      setIsFullscreen(entered);
-      if (entered) event('demo_fullscreen', { category: 'Portfolio', label });
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) setUserPaused(true);
+    const observer = new IntersectionObserver(([entry]) => setInView(entry.isIntersecting), {
+      threshold: 0.4,
+    });
+    if (stageRef.current) observer.observe(stageRef.current);
+    const onFullscreenChange = () => setIsFullscreen(document.fullscreenElement === stageRef.current);
+    document.addEventListener('fullscreenchange', onFullscreenChange);
+    return () => {
+      observer.disconnect();
+      document.removeEventListener('fullscreenchange', onFullscreenChange);
     };
-    document.addEventListener('fullscreenchange', onChange);
-    return () => document.removeEventListener('fullscreenchange', onChange);
-  }, [label]);
+  }, []);
 
-  if (!demos || !current) {
-    // Reserve the space while the clip list loads so the card doesn't jump
-    return (
-      <div
-        style={{
-          borderRadius: '10px',
-          border: '1px solid var(--border-2)',
-          background: 'var(--bg-surface)',
-          aspectRatio: '16 / 9',
-        }}
-      />
-    );
-  }
+  // Play only while on screen, unless the visitor paused it themselves
+  useEffect(() => {
+    const video = videoRef.current;
+    if (!video) return;
+    if (inView && !userPaused) video.play().catch(() => {});
+    else video.pause();
+  }, [inView, userPaused, current]);
+
+  const selectClip = (i: number) => {
+    setActive(i);
+    setTime({ current: 0, duration: 0 });
+    setUserPaused(false);
+    event('demo_clip_selected', { category: 'Portfolio', label: `Video ${i + 1}` });
+  };
+
+  const togglePlay = () => {
+    const video = videoRef.current;
+    if (!video) return;
+    if (video.paused) {
+      setUserPaused(false);
+      video.play().catch(() => {});
+    } else {
+      setUserPaused(true);
+    }
+  };
+
+  const toggleFullscreen = () => {
+    if (document.fullscreenElement) {
+      document.exitFullscreen();
+      return;
+    }
+    event('demo_fullscreen', { category: 'Portfolio', label });
+    const video = videoRef.current as (HTMLVideoElement & { webkitEnterFullscreen?: () => void }) | null;
+    // iOS Safari can only put the <video> itself into fullscreen
+    if (stageRef.current?.requestFullscreen) stageRef.current.requestFullscreen();
+    else video?.webkitEnterFullscreen?.();
+  };
+
+  const handleEnded = () => {
+    const next = playable[(playable.indexOf(active) + 1) % playable.length];
+    setActive(next);
+    setTime({ current: 0, duration: 0 });
+  };
 
   const handleError = () => {
     const next = new Set(failed).add(active);
     setFailed(next);
-    const fallback = demos.findIndex((_, i) => !next.has(i));
+    const fallback = demos?.findIndex((_, i) => !next.has(i)) ?? -1;
     if (fallback === -1) onAllFailed();
     else setActive(fallback);
   };
 
+  const iconButton = {
+    width: '2rem',
+    height: '2rem',
+    color: OVERLAY_TEXT,
+    borderRadius: '6px',
+  };
+
   return (
-    <div>
+    <div className="min-w-0">
       <div
+        ref={stageRef}
+        className="group relative overflow-hidden"
         style={{
-          borderRadius: '10px',
-          overflow: 'hidden',
-          border: '1px solid var(--border-2)',
-          background: 'var(--bg-surface)',
+          borderRadius: isFullscreen ? 0 : '12px',
+          border: isFullscreen ? 'none' : '1px solid var(--border-2)',
+          background: isFullscreen ? 'black' : 'var(--bg-surface)',
           aspectRatio: '16 / 9',
         }}
       >
-        <video
-          ref={videoRef}
-          key={current.src}
-          src={current.src}
-          poster={current.poster}
-          autoPlay
-          muted
-          loop
-          playsInline
-          controls
-          preload="metadata"
-          onError={handleError}
-          aria-label={`${title} demo: ${label}, live player tracking on match footage`}
-          style={{ width: '100%', height: '100%', objectFit: isFullscreen ? 'contain' : 'cover', display: 'block' }}
-        />
+        {current ? (
+          <video
+            ref={videoRef}
+            key={current.src}
+            src={current.src}
+            poster={current.poster}
+            muted
+            playsInline
+            loop={playable.length === 1}
+            preload={inView ? 'auto' : 'none'}
+            onClick={togglePlay}
+            onDoubleClick={toggleFullscreen}
+            onPlay={() => setPlaying(true)}
+            onPause={() => setPlaying(false)}
+            onLoadedMetadata={(e) => setTime({ current: 0, duration: e.currentTarget.duration })}
+            onTimeUpdate={(e) =>
+              setTime({ current: e.currentTarget.currentTime, duration: e.currentTarget.duration })
+            }
+            onEnded={handleEnded}
+            onError={handleError}
+            aria-label={`${title} demo: ${label}, live player tracking on match footage`}
+            className="h-full w-full cursor-pointer"
+            style={{ objectFit: isFullscreen ? 'contain' : 'cover', display: 'block' }}
+          />
+        ) : (
+          <div className="absolute inset-0 animate-pulse" style={{ background: 'var(--bg-input)' }} />
+        )}
+
+        {current && (
+          <>
+            {!playing && (
+              <button
+                onClick={togglePlay}
+                aria-label="Play demo"
+                className="absolute left-1/2 top-1/2 flex -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-full transition-transform hover:scale-105"
+                style={{
+                  width: '3.5rem',
+                  height: '3.5rem',
+                  background: OVERLAY_BG,
+                  backdropFilter: 'blur(6px)',
+                  border: `1px solid ${accent}`,
+                  color: accent,
+                }}
+              >
+                <Play size={22} fill="currentColor" style={{ marginLeft: '3px' }} />
+              </button>
+            )}
+
+            <div
+              className={`absolute inset-x-0 bottom-0 flex items-center gap-2 px-3 pb-2 pt-8 transition-opacity duration-200 focus-within:opacity-100 group-hover:opacity-100 [@media(hover:none)]:opacity-100 ${
+                playing ? 'opacity-0' : 'opacity-100'
+              }`}
+              style={{ background: 'linear-gradient(to top, rgba(0,0,0,0.75), transparent)' }}
+            >
+              <button
+                onClick={togglePlay}
+                aria-label={playing ? 'Pause demo' : 'Play demo'}
+                className="flex shrink-0 items-center justify-center hover:bg-white/10"
+                style={iconButton}
+              >
+                {playing ? <Pause size={16} fill="currentColor" /> : <Play size={16} fill="currentColor" />}
+              </button>
+              <input
+                type="range"
+                min={0}
+                max={time.duration || 0}
+                step={0.1}
+                value={time.current}
+                onChange={(e) => {
+                  const t = Number(e.target.value);
+                  if (videoRef.current) videoRef.current.currentTime = t;
+                  setTime((prev) => ({ ...prev, current: t }));
+                }}
+                aria-label="Seek"
+                className="h-1 min-w-0 flex-1 cursor-pointer"
+                style={{ accentColor: accent }}
+              />
+              <span
+                className="shrink-0 tabular-nums"
+                style={{
+                  fontFamily: 'var(--font-jetbrains-mono), monospace',
+                  fontSize: '0.7rem',
+                  color: OVERLAY_TEXT,
+                }}
+              >
+                {formatTime(time.current)} / {formatTime(time.duration)}
+              </span>
+              <button
+                onClick={toggleFullscreen}
+                aria-label={isFullscreen ? 'Exit fullscreen' : 'View fullscreen'}
+                className="flex shrink-0 items-center justify-center hover:bg-white/10"
+                style={iconButton}
+              >
+                {isFullscreen ? <Minimize2 size={16} /> : <Maximize2 size={16} />}
+              </button>
+            </div>
+          </>
+        )}
       </div>
 
-      {demos.length - failed.size > 1 && (
-        <div className="flex flex-wrap gap-2 mt-3" role="tablist" aria-label="Demo clips">
+      {demos && playable.length > 1 && (
+        <div className="mt-3 flex gap-3 overflow-x-auto pb-1" role="tablist" aria-label="Demo clips">
           {demos.map((video, i) =>
             failed.has(i) ? null : (
               <button
                 key={video.src}
                 role="tab"
                 aria-selected={i === active}
-                onClick={() => setActive(i)}
+                aria-label={`Play video ${i + 1}`}
+                onClick={() => selectClip(i)}
+                className={`relative shrink-0 overflow-hidden transition-opacity ${
+                  i === active ? 'opacity-100' : 'opacity-60 hover:opacity-90'
+                }`}
                 style={{
-                  fontFamily: 'var(--font-jetbrains-mono), monospace',
-                  fontSize: '0.72rem',
-                  padding: '0.3rem 0.7rem',
-                  borderRadius: '6px',
-                  border: `1px solid ${i === active ? accent : 'var(--border-2)'}`,
-                  background: i === active ? `${accent}1a` : 'transparent',
-                  color: i === active ? accent : 'var(--fg-3)',
-                  transition: 'all 0.2s',
+                  width: '8.5rem',
+                  aspectRatio: '16 / 9',
+                  borderRadius: '8px',
+                  border: `2px solid ${i === active ? accent : 'var(--border-2)'}`,
+                  background: 'var(--bg-surface)',
                 }}
               >
-                Video {i + 1}
+                {video.poster && (
+                  // eslint-disable-next-line @next/next/no-img-element
+                  <img src={video.poster} alt="" loading="lazy" className="h-full w-full object-cover" />
+                )}
+                <span
+                  className="absolute bottom-1.5 left-1.5 flex items-center gap-1.5"
+                  style={{
+                    fontFamily: 'var(--font-jetbrains-mono), monospace',
+                    fontSize: '0.62rem',
+                    color: OVERLAY_TEXT,
+                    background: OVERLAY_BG,
+                    padding: '0.1rem 0.4rem',
+                    borderRadius: '4px',
+                  }}
+                >
+                  {i === active && playing && (
+                    <span className="h-1.5 w-1.5 animate-pulse rounded-full" style={{ background: accent }} />
+                  )}
+                  Video {i + 1}
+                </span>
+                {i === active && (
+                  <span
+                    className="absolute bottom-0 left-0"
+                    style={{
+                      height: '3px',
+                      width: `${progress}%`,
+                      background: accent,
+                      transition: 'width 0.25s linear',
+                    }}
+                  />
+                )}
               </button>
             ),
           )}
@@ -406,6 +588,7 @@ function FeaturedCard({
   const labelColors = isRecruiter
     ? [accent, accent, 'var(--color-success)']
     : [accent, 'var(--color-danger)', 'var(--color-success)'];
+  const mono = 'var(--font-jetbrains-mono), monospace';
 
   return (
     <motion.div
@@ -413,7 +596,6 @@ function FeaturedCard({
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true }}
       transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
-      className={`grid gap-8 items-center ${videoFailed ? '' : 'lg:grid-cols-[1.15fr_1fr]'}`}
       style={{
         background: 'var(--bg-card)',
         border: `1px solid ${accent}33`,
@@ -421,90 +603,133 @@ function FeaturedCard({
         padding: 'clamp(1.25rem, 4vw, 2rem)',
       }}
     >
-      {!videoFailed && (
-        <DemoPlayer title={project.title} accent={accent} onAllFailed={hideVideo} />
-      )}
+      <div className={`grid gap-8 ${videoFailed ? '' : 'lg:grid-cols-[1.65fr_1fr]'}`}>
+        {!videoFailed && <DemoPlayer title={project.title} accent={accent} onAllFailed={hideVideo} />}
 
-      <div>
-        <span
-          style={{
-            fontFamily: 'var(--font-jetbrains-mono), monospace',
-            color: accent,
-            fontSize: '0.7rem',
-            letterSpacing: '0.12em',
-            textTransform: 'uppercase',
-          }}
-        >
-          {isRecruiter ? '★ Featured · in progress' : '// featured --wip'}
-        </span>
-        <h3
-          style={{
-            fontFamily: 'var(--font-outfit), var(--font-inter), sans-serif',
-            color: 'var(--fg)',
-            fontSize: 'clamp(1.5rem, 3vw, 2rem)',
-            fontWeight: 800,
-            letterSpacing: '-0.02em',
-            marginTop: '0.35rem',
-          }}
-        >
-          {project.title}
-        </h3>
-        <p style={{ color: 'var(--fg-3)', fontSize: '0.9rem', marginBottom: '1.25rem' }}>
-          {project.tagline}
-        </p>
+        <div className="flex flex-col">
+          <span
+            style={{
+              fontFamily: mono,
+              color: accent,
+              fontSize: '0.7rem',
+              letterSpacing: '0.12em',
+              textTransform: 'uppercase',
+            }}
+          >
+            {isRecruiter ? '★ Featured · in progress' : '// featured --wip'}
+          </span>
+          <h3
+            style={{
+              fontFamily: 'var(--font-outfit), var(--font-inter), sans-serif',
+              color: 'var(--fg)',
+              fontSize: 'clamp(1.75rem, 3.5vw, 2.4rem)',
+              fontWeight: 800,
+              letterSpacing: '-0.02em',
+              lineHeight: 1.1,
+              marginTop: '0.4rem',
+            }}
+          >
+            {project.title}
+          </h3>
+          <p style={{ color: 'var(--fg-3)', fontSize: '0.95rem', marginTop: '0.4rem' }}>
+            {project.tagline}
+          </p>
 
+          <dl className="my-6 grid grid-cols-1 gap-3 sm:grid-cols-3 lg:grid-cols-1">
+            {project.metrics.map(({ value, label }) => (
+              <div
+                key={label}
+                className="flex flex-col-reverse"
+                style={{
+                  background: 'var(--bg-input)',
+                  border: '1px solid var(--border-2)',
+                  borderLeft: `3px solid ${accent}`,
+                  borderRadius: '8px',
+                  padding: '0.6rem 0.85rem',
+                }}
+              >
+                <dt style={{ color: 'var(--fg-4)', fontSize: '0.75rem' }}>{label}</dt>
+                <dd
+                  style={{
+                    fontFamily: 'var(--font-outfit), var(--font-inter), sans-serif',
+                    color: 'var(--fg)',
+                    fontSize: '1.2rem',
+                    fontWeight: 700,
+                    letterSpacing: '-0.01em',
+                  }}
+                >
+                  {value}
+                </dd>
+              </div>
+            ))}
+          </dl>
+
+          <div className="mb-6 flex flex-wrap gap-1.5">
+            {FEATURED_STACK.map((tech) => (
+              <span
+                key={tech}
+                style={{
+                  fontFamily: mono,
+                  fontSize: '0.7rem',
+                  color: 'var(--fg-3)',
+                  border: '1px solid var(--border-2)',
+                  borderRadius: '999px',
+                  padding: '0.2rem 0.65rem',
+                }}
+              >
+                {tech}
+              </span>
+            ))}
+          </div>
+
+          <div className="mt-auto">
+            {PROJECT_KICKTRACK.repoPublic ? (
+              <motion.a
+                href={PROJECT_KICKTRACK.githubUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                onClick={onCodeView}
+                className="inline-flex items-center gap-2"
+                style={{
+                  color: accent,
+                  background: `${accent}14`,
+                  border: `1px solid ${accent}55`,
+                  borderRadius: '8px',
+                  padding: '0.55rem 1rem',
+                  fontSize: '0.875rem',
+                  fontWeight: 600,
+                  textDecoration: 'none',
+                }}
+                whileHover={{ y: -2 }}
+              >
+                <Github size={16} /> View code on GitHub <ExternalLink size={14} />
+              </motion.a>
+            ) : (
+              <span style={{ color: 'var(--fg-4)', fontSize: '0.875rem' }}>Code going public soon</span>
+            )}
+          </div>
+        </div>
+      </div>
+
+      <div className="mt-8 grid gap-6 pt-6 md:grid-cols-3" style={{ borderTop: '1px solid var(--border-2)' }}>
         {project.sections.map(({ label, text }, i) => (
-          <div key={label} className="mb-3">
+          <div key={label}>
             <span
               style={{
-                fontFamily: 'var(--font-jetbrains-mono), monospace',
+                fontFamily: mono,
                 color: labelColors[i],
                 fontSize: '0.7rem',
                 letterSpacing: '0.1em',
                 textTransform: 'uppercase',
                 display: 'block',
-                marginBottom: '0.25rem',
+                marginBottom: '0.4rem',
               }}
             >
               {label}
             </span>
-            <p style={{ color: 'var(--fg-2)', fontSize: '0.875rem', lineHeight: 1.65 }}>{text}</p>
+            <p style={{ color: 'var(--fg-2)', fontSize: '0.875rem', lineHeight: 1.7 }}>{text}</p>
           </div>
         ))}
-
-        <div className="flex items-center gap-3 mt-4 mb-4">
-          <Image
-            src="/assets/python.png"
-            alt="python"
-            width={28}
-            height={28}
-            className="object-contain"
-            loading="lazy"
-            draggable={false}
-          />
-          <span
-            style={{
-              fontFamily: 'var(--font-jetbrains-mono), monospace',
-              color: 'var(--fg-4)',
-              fontSize: '0.75rem',
-            }}
-          >
-            {FEATURED_STACK}
-          </span>
-        </div>
-
-        {PROJECT_KICKTRACK.repoPublic ? (
-          <ProjectLinks
-            githubLink={PROJECT_KICKTRACK.githubUrl}
-            accent={accent}
-            onCodeView={onCodeView}
-            onDemoClick={() => {}}
-          />
-        ) : (
-          <span style={{ color: 'var(--fg-4)', fontSize: '0.875rem' }}>
-            Code going public soon
-          </span>
-        )}
       </div>
     </motion.div>
   );
