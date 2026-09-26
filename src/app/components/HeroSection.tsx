@@ -9,7 +9,7 @@ import { MessageModal } from './MessageModal';
 import { ViewerType, useViewer } from '../context/ViewerContext';
 import {
   FULL_NAME, GITHUB_URL, LINKEDIN_URL, SO_URL, MAILTO,
-  PROFILE_PIC_URL, RESUME_PDF_URL, RESUME_EMBED_URL, EXPERIENCE_LABEL, COUNTRIES_SERVED,
+  PROFILE_PIC_URL, RESUME_PDF_URL, RESUME_EMBED_URL, EXPERIENCE_LABEL, COUNTRIES_SERVED, COMMCARE_CONNECT,
 } from '../constants';
 
 export type SocialLink = {
@@ -82,7 +82,8 @@ export const HeroSection = ({ viewerType }: HeroSectionProps) => {
         headlineSub: "Here's proof.",
         subline: `${experience} · 2 companies · I've seen what breaks at scale. I build around it.`,
         about:
-          `At Dimagi, I maintain systems used by frontline health workers across ${COUNTRIES_SERVED} countries. At Xcaliber, ` +
+          `At Dimagi, I build ${COMMCARE_CONNECT.name}, an open-source Django platform for frontline health worker programs, ` +
+          `part of a product family used across ${COUNTRIES_SERVED} countries. At Xcaliber, ` +
           `I built one Spring Boot backend that powered web, Android, and iOS simultaneously. ` +
           `I build things that work, and more importantly, keep working after I stop looking at them.`,
         ctaLabel: "Let's talk about what I can build for your team →",

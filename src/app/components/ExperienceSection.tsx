@@ -1,18 +1,45 @@
 'use client';
 
-import { motion } from 'framer-motion';
+import { useState } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
 import { ExternalLink, MapPin } from 'lucide-react';
 import { event } from 'nextjs-google-analytics';
 import { ViewerType, useViewer } from '../context/ViewerContext';
-import { FULL_NAME, DIMAGI, XCALIBER, COUNTRIES_SERVED } from '../constants';
+import { useMergedPrCount } from '../hooks/useMergedPrCount';
+import {
+  FULL_NAME, DIMAGI, XCALIBER, COUNTRIES_SERVED,
+  COMMCARE_CONNECT, CONNECT_MERGED_PRS_URL, CONNECT_HIGHLIGHT_PRS,
+} from '../constants';
 
 interface ExperienceSectionProps {
   viewerType: NonNullable<ViewerType>;
 }
 
+type HighlightPR = (typeof CONNECT_HIGHLIGHT_PRS)[number];
+
 // ── shared data ───────────────────────────────────────────────────────────────
 
-const EXPERIENCES = [
+type Experience = {
+  role: string;
+  company: string;
+  url: string;
+  location: string;
+  period: string;
+  current: boolean;
+  skills: string[];
+  impact: string[];
+  moreImpact?: string[];
+  note?: string;
+  commitMsg: string;
+  logLines: string[];
+  hash: string;
+  branch: string;
+  product?: { name: string; repoUrl: string; siteUrl: string; mergedPrsUrl: string; mergedPrs: string };
+  prs?: readonly HighlightPR[];
+};
+
+// A function rather than a constant so the live merged-PR count can be threaded in.
+const getExperiences = (mergedPrs: string): Experience[] => [
   {
     role: "Software Engineer",
     company: DIMAGI.name,
@@ -20,26 +47,40 @@ const EXPERIENCES = [
     location: DIMAGI.location,
     period: DIMAGI.period,
     current: DIMAGI.current,
-    skills: ["Python", "Django", "Docker", "AWS", "PostgreSQL"],
+    skills: ["Python", "Django", "PostgreSQL", "PostGIS", "Celery", "Docker", "AWS"],
+    product: { ...COMMCARE_CONNECT, mergedPrsUrl: CONNECT_MERGED_PRS_URL, mergedPrs },
+    prs: CONNECT_HIGHLIGHT_PRS,
     // recruiter view
     impact: [
-      `Maintained systems serving NGOs across ${COUNTRIES_SERVED} countries`,
-      "Containerised Django workloads with Docker, deployed on AWS",
-      "Shipped production features across a decade-old Python codebase",
-      "Owned backend features end-to-end — design, code, deploy, monitor",
+      `Built the microplanning module end to end: enabled PostGIS on a live database, designed the work-area models, and shipped a CSV import that handles 1 million rows with low memory use, plus map-based assignment and bulk write APIs`,
+      `Debugged live production issues to the root cause: a database deadlock in bulk payment updates, background jobs that ran before their data was saved, and a caching bug that let suspended users back in`,
+      `${mergedPrs} merged PRs on ${COMMCARE_CONNECT.name}, an open-source Django platform for frontline health worker programs, spanning payments, invoicing, permissions, and reporting`,
+    ],
+    // recruiter view, behind "show more": each line is backed by merged PRs
+    moreImpact: [
+      `Guarded the money paths: blocked duplicate payment uploads, fixed rounding errors in payment math, and widened budget fields before large programs could overflow them`,
+      `Upgraded two production services (${COMMCARE_CONNECT.name} and ConnectID) to Django 5.2 LTS, along with the OAuth library behind sign-in`,
+      `Audited 4.45M OAuth tokens in prod before automating cleanup: 99% were already expired with no live refresh tokens, so the purge was safe to schedule`,
+      `Designed role-based access: viewer and program-manager permissions, plus a token-based invite flow with revoke and pending-invite tracking`,
+      `Fixed bad production data with reviewed, repeatable scripts (duplicate visits, missing payment dates, lost attachments) and automated routine cleanup like archiving stale test programs`,
+      `Fed the analytics warehouse: replicated payment, credential, and microplanning tables to Superset, and built invoice, delivery, and funnel reports for program managers`,
+      `Made failures visible and survivable: cut noisy Sentry alerts, logged auth failures, and kept data sync running when an upstream API errors`,
     ],
     // developer view – git log style
-    commitMsg: "feat: joined Dimagi Inc.",
+    commitMsg: `feat: joined Dimagi Inc. — ${COMMCARE_CONNECT.name}`,
     logLines: [
-      "// first real encounter with CommCare — a codebase that",
-      `//   spans a decade and runs in ${COUNTRIES_SERVED} countries.`,
-      "//   humbling to read before you write.",
+      `// first real encounter with CommCare — a product family that`,
+      `//   runs in ${COUNTRIES_SERVED} countries. humbling to read before you write.`,
       "",
-      "// docker in prod for the first time.",
-      '//   turns out "works on my machine" can be a container.',
+      "// a report tab timed out. EXPLAIN ANALYZE: 380M rows scanned",
+      "//   to produce 80k. one join was multiplying everything.",
+      "//   correlated subqueries. 36.8s → 88ms. same rows, zero mismatches.",
       "",
-      "// lesson: understand the system before changing it.",
-      "//   still learning that one.",
+      "// enabled PostGIS on a live db and built microplanning on top.",
+      "//   celery + cache lock, because two uploads at once is a bad day.",
+      "//   benchmarked the import at 1M rows: 174s, 373 MB peak. no row cap needed.",
+      "",
+      "// lesson: read the query plan before you blame the database.",
     ],
     hash: "a3f2b1c",
     branch: "HEAD -> main",
@@ -51,13 +92,18 @@ const EXPERIENCES = [
     location: XCALIBER.location,
     period: XCALIBER.period,
     current: XCALIBER.current,
-    skills: ["Spring Boot", "Angular", "Hibernate", "REST APIs", "Amazon S3"],
+    skills: ["Java", "Spring Boot", "Hibernate", "Angular", "SQL", "AWS"],
     impact: [
-      "Delivered Spring Boot REST APIs for enterprise clients",
-      "Built Angular frontends consuming complex data models",
-      "Integrated Amazon S3 for scalable file storage",
-      "Worked full-stack across Java + TypeScript every day",
+      "Migrated the backend from Spring MVC to Spring Boot, then built REST APIs on it serving web, Android, and iOS clients, including Amazon S3 file uploads and Google Sign-In",
+      "Ran production on AWS (EC2, S3, Route 53, CloudFront) and maintained the CI/CD pipelines, cutting deployment time by 20%",
+      "Cut page load times by 15% by tuning backend APIs and SQL queries",
     ],
+    moreImpact: [
+      "Built shared Angular components and services that the rest of the team reused across features",
+      "Built data dashboards with Chart.js for reporting and analysis",
+      "Helped move the UI from Bootstrap 3 to Bootstrap 5 for a consistent look across the app",
+    ],
+    note: "Client work under NDA, so there's no public code to link here.",
     commitMsg: "feat: joined Xcaliber Infotech",
     logLines: [
       "// spring boot. first week: confident.",
@@ -80,6 +126,7 @@ const EXPERIENCES = [
 export default function ExperienceSection({ viewerType }: ExperienceSectionProps) {
   const { accent } = useViewer();
   const isRecruiter = viewerType === 'recruiter';
+  const experiences = getExperiences(useMergedPrCount());
 
   const handleLink = (company: string) => {
     event('external_links', { category: 'Portfolio', label: `${company} visits`, value: 1 });
@@ -188,12 +235,86 @@ export default function ExperienceSection({ viewerType }: ExperienceSectionProps
 
         {/* ── Content ──────────────────────────────────────────────────────────── */}
         {isRecruiter ? (
-          <RecruiterTimeline experiences={EXPERIENCES} accent={accent} onLink={handleLink} />
+          <RecruiterTimeline experiences={experiences} accent={accent} onLink={handleLink} />
         ) : (
-          <DeveloperGitLog experiences={EXPERIENCES} accent={accent} onLink={handleLink} />
+          <DeveloperGitLog experiences={experiences} accent={accent} onLink={handleLink} />
         )}
       </div>
     </section>
+  );
+}
+
+// ── Recruiter: impact bullets with an optional "show more" ─────────────────────
+
+function ImpactPoint({ point, accent }: { point: string; accent: string }) {
+  return (
+    <li
+      style={{
+        display: 'flex',
+        alignItems: 'flex-start',
+        gap: '0.6rem',
+        color: 'var(--fg-2)',
+        fontSize: '0.875rem',
+        lineHeight: 1.6,
+      }}
+    >
+      <span style={{ color: accent, marginTop: '0.35rem', flexShrink: 0 }}>▸</span>
+      {point}
+    </li>
+  );
+}
+
+function ImpactList({ impact, moreImpact, accent }: {
+  impact: string[];
+  moreImpact?: string[];
+  accent: string;
+}) {
+  const [expanded, setExpanded] = useState(false);
+
+  return (
+    <div className="mb-5">
+      <ul className="space-y-2">
+        {impact.map((point) => <ImpactPoint key={point} point={point} accent={accent} />)}
+      </ul>
+
+      <AnimatePresence initial={false}>
+        {expanded && moreImpact && (
+          <motion.ul
+            className="space-y-2 overflow-hidden"
+            initial={{ height: 0, opacity: 0 }}
+            animate={{ height: 'auto', opacity: 1 }}
+            exit={{ height: 0, opacity: 0 }}
+            transition={{ duration: 0.3, ease: 'easeOut' }}
+            style={{ paddingTop: '0.5rem' }}
+          >
+            {moreImpact.map((point) => <ImpactPoint key={point} point={point} accent={accent} />)}
+          </motion.ul>
+        )}
+      </AnimatePresence>
+
+      {moreImpact && (
+        <button
+          type="button"
+          onClick={() => {
+            if (!expanded) event('experience_show_more', { category: 'Portfolio', label: 'impact' });
+            setExpanded(!expanded);
+          }}
+          aria-expanded={expanded}
+          style={{
+            marginTop: '0.6rem',
+            marginLeft: '1.2rem',
+            fontSize: '0.8rem',
+            color: accent,
+            background: 'none',
+            border: 'none',
+            padding: 0,
+            cursor: 'pointer',
+          }}
+        >
+          {expanded ? 'Show less ↑' : `Show ${moreImpact.length} more ↓`}
+        </button>
+      )}
+    </div>
   );
 }
 
@@ -204,7 +325,7 @@ function RecruiterTimeline({
   accent,
   onLink,
 }: {
-  experiences: typeof EXPERIENCES;
+  experiences: Experience[];
   accent: string;
   onLink: (c: string) => void;
 }) {
@@ -327,7 +448,29 @@ function RecruiterTimeline({
                     </a>
                   </h3>
                   <div className="flex flex-wrap gap-4" style={{ color: 'var(--fg-3)', fontSize: '0.85rem' }}>
-                    <span>{exp.role}</span>
+                    <span>
+                      {exp.role}
+                      {exp.product && (
+                        <>
+                          {' · '}
+                          <a
+                            href={exp.product.siteUrl}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            onClick={() => onLink(`${exp.product!.name} site`)}
+                            style={{
+                              display: 'inline-flex',
+                              alignItems: 'center',
+                              gap: '0.25rem',
+                              color: accent,
+                              textDecoration: 'none',
+                            }}
+                          >
+                            {exp.product.name} <ExternalLink size={11} />
+                          </a>
+                        </>
+                      )}
+                    </span>
                     <span style={{ display: 'flex', alignItems: 'center', gap: '0.3rem' }}>
                       <MapPin size={13} /> {exp.location}
                     </span>
@@ -348,25 +491,97 @@ function RecruiterTimeline({
                 </span>
               </div>
 
-              {/* Impact bullets */}
-              <ul className="space-y-2 mb-5">
-                {exp.impact.map((point, pi) => (
-                  <li
-                    key={pi}
+              <ImpactList impact={exp.impact} moreImpact={exp.moreImpact} accent={accent} />
+
+              {exp.note && (
+                <p className="mb-5" style={{ color: 'var(--fg-4)', fontSize: '0.8rem', fontStyle: 'italic' }}>
+                  {exp.note}
+                </p>
+              )}
+
+              {/* Selected merged PRs — the work is open source, so link the proof */}
+              {exp.product && exp.prs && (
+                <div className="mb-5">
+                  <p
                     style={{
-                      display: 'flex',
-                      alignItems: 'flex-start',
-                      gap: '0.6rem',
-                      color: 'var(--fg-2)',
-                      fontSize: '0.875rem',
-                      lineHeight: 1.6,
+                      fontFamily: 'var(--font-jetbrains-mono), monospace',
+                      fontSize: '0.68rem',
+                      letterSpacing: '0.1em',
+                      textTransform: 'uppercase',
+                      color: 'var(--fg-4)',
+                      marginBottom: '0.6rem',
                     }}
                   >
-                    <span style={{ color: accent, marginTop: '0.35rem', flexShrink: 0 }}>▸</span>
-                    {point}
-                  </li>
-                ))}
-              </ul>
+                    Selected merged PRs ·{' '}
+                    <a
+                      href={exp.product.repoUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      onClick={() => onLink(exp.product!.name)}
+                      style={{ color: accent, textDecoration: 'none', textTransform: 'none', letterSpacing: 0 }}
+                    >
+                      {exp.product.repoUrl.replace('https://', '')}
+                    </a>
+                  </p>
+                  <ul className="space-y-2">
+                    {exp.prs.map((pr) => (
+                      <li
+                        key={pr.number}
+                        style={{
+                          borderLeft: `2px solid ${accent}35`,
+                          paddingLeft: '0.75rem',
+                          fontSize: '0.83rem',
+                          lineHeight: 1.55,
+                        }}
+                      >
+                        <a
+                          href={pr.url}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          onClick={() => onLink(`PR #${pr.number}`)}
+                          style={{
+                            color: 'var(--fg)',
+                            fontWeight: 600,
+                            textDecoration: 'none',
+                            display: 'inline-flex',
+                            alignItems: 'center',
+                            gap: '0.35rem',
+                          }}
+                          onMouseEnter={(e) =>
+                            ((e.currentTarget as HTMLAnchorElement).style.color = accent)
+                          }
+                          onMouseLeave={(e) =>
+                            ((e.currentTarget as HTMLAnchorElement).style.color = 'var(--fg)')
+                          }
+                        >
+                          <span style={{ color: accent, fontFamily: 'var(--font-jetbrains-mono), monospace', fontSize: '0.75rem' }}>
+                            #{pr.number}
+                          </span>
+                          {pr.headline} <ExternalLink size={12} />
+                        </a>
+                        <p style={{ color: 'var(--fg-3)', marginTop: '0.15rem' }}>{pr.problem}</p>
+                      </li>
+                    ))}
+                  </ul>
+                  <a
+                    href={exp.product.mergedPrsUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    onClick={() => onLink('All merged PRs')}
+                    style={{
+                      display: 'inline-flex',
+                      alignItems: 'center',
+                      gap: '0.35rem',
+                      marginTop: '0.6rem',
+                      fontSize: '0.8rem',
+                      color: accent,
+                      textDecoration: 'none',
+                    }}
+                  >
+                    See the rest of my work <ExternalLink size={12} />
+                  </a>
+                </div>
+              )}
 
               {/* Skill tags */}
               <div className="flex flex-wrap gap-2">
@@ -402,7 +617,7 @@ function DeveloperGitLog({
   accent,
   onLink,
 }: {
-  experiences: typeof EXPERIENCES;
+  experiences: Experience[];
   accent: string;
   onLink: (c: string) => void;
 }) {
@@ -520,6 +735,49 @@ function DeveloperGitLog({
                 </p>
               ))}
             </div>
+
+            {/* Linked PRs, git-notes style */}
+            {exp.product && exp.prs && (
+              <div style={{ marginLeft: '1rem', marginTop: '0.85rem', fontSize: '0.8rem', lineHeight: 1.7 }}>
+                <p style={{ color: 'var(--fg-4)' }}>
+                  Notes (refs/notes/prs) ·{' '}
+                  <a
+                    href={exp.product.repoUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    onClick={() => onLink(exp.product!.name)}
+                    style={{ color: accent, textDecoration: 'none' }}
+                  >
+                    {exp.product.repoUrl.replace('https://github.com/', '')}
+                  </a>
+                </p>
+                {exp.prs.map((pr) => (
+                  <p key={pr.number} style={{ color: 'var(--fg-3)', paddingLeft: '1rem' }}>
+                    <span style={{ color: '#f97316' }}>#{pr.number}</span>{' '}
+                    <a
+                      href={pr.url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      onClick={() => onLink(`PR #${pr.number}`)}
+                      style={{ color: 'var(--fg-2)', textDecoration: 'underline', textDecorationColor: `${accent}50` }}
+                    >
+                      {pr.title}
+                    </a>
+                  </p>
+                ))}
+                <p style={{ paddingLeft: '1rem' }}>
+                  <a
+                    href={exp.product.mergedPrsUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    onClick={() => onLink('All merged PRs')}
+                    style={{ color: accent, textDecoration: 'none' }}
+                  >
+                    … see all {exp.product.mergedPrs} merged →
+                  </a>
+                </p>
+              </div>
+            )}
 
             {/* Skills as diff +++ markers */}
             <div

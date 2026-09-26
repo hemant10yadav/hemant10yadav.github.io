@@ -3,15 +3,15 @@
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useViewer, RECRUITER_ACCENT, DEVELOPER_ACCENT } from '../context/ViewerContext';
-import { EXPERIENCE_LABEL, COUNTRIES_SERVED } from '../constants';
+import { EXPERIENCE_LABEL, COMMCARE_CONNECT } from '../constants';
+import { useMergedPrCount } from '../hooks/useMergedPrCount';
 
 // Condensed content snippets for each side of the split screen
 const RECRUITER_SNIPPET = {
   headline: 'I ship things that scale.',
   sub: `${EXPERIENCE_LABEL} · 2 companies · 0 production fires I didn't put out.`,
   points: [
-    `Python, Django — systems serving NGOs across ${COUNTRIES_SERVED} countries`,
-    'Spring Boot APIs handling enterprise-level traffic',
+    `Cut a prod report query from 36.8s to 88ms; built microplanning on PostGIS`,
     'AWS, Docker, PostgreSQL — infrastructure that holds',
   ],
   cta: 'Let\'s talk about what I can build →',
@@ -32,6 +32,14 @@ const DEVELOPER_SNIPPET = {
 
 export default function EasterEgg() {
   const { viewerType } = useViewer();
+  const mergedPrs = useMergedPrCount();
+  const recruiterSnippet = {
+    ...RECRUITER_SNIPPET,
+    points: [
+      `Python, Django — ${mergedPrs} merged PRs on ${COMMCARE_CONNECT.name} (open source)`,
+      ...RECRUITER_SNIPPET.points,
+    ],
+  };
   const [isOpen, setIsOpen] = useState(false);
   const [activeToggle, setActiveToggle] = useState<'recruiter' | 'developer'>('recruiter');
   const [isMobile, setIsMobile] = useState(false);
@@ -100,7 +108,7 @@ export default function EasterEgg() {
                 {/* Toggle tabs */}
                 <div className="flex border-b border-white/10">
                   {(['recruiter', 'developer'] as const).map((side) => {
-                    const data = side === 'recruiter' ? RECRUITER_SNIPPET : DEVELOPER_SNIPPET;
+                    const data = side === 'recruiter' ? recruiterSnippet : DEVELOPER_SNIPPET;
                     return (
                       <button
                         key={side}
@@ -129,7 +137,7 @@ export default function EasterEgg() {
                   <AnimatePresence mode="wait">
                     <MobileSideContent
                       key={activeToggle}
-                      data={activeToggle === 'recruiter' ? RECRUITER_SNIPPET : DEVELOPER_SNIPPET}
+                      data={activeToggle === 'recruiter' ? recruiterSnippet : DEVELOPER_SNIPPET}
                     />
                   </AnimatePresence>
                 </div>
@@ -186,7 +194,7 @@ export default function EasterEgg() {
                     borderRight: '1px solid rgba(110,231,183,0.15)',
                   }}
                 >
-                  <SideContent data={RECRUITER_SNIPPET} label="Recruiter View" />
+                  <SideContent data={recruiterSnippet} label="Recruiter View" />
                 </motion.div>
 
                 {/* Right – Developer */}

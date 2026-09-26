@@ -4,13 +4,15 @@ import { useEffect, useRef, useState, useCallback } from 'react';
 import { motion } from 'framer-motion';
 import { event } from 'nextjs-google-analytics';
 import { useViewer } from '../context/ViewerContext';
+import { useMergedPrCount } from '../hooks/useMergedPrCount';
 import {
   FULL_NAME, EMAIL, MAILTO, GITHUB_URL, GITHUB_USERNAME,
   LINKEDIN_URL, LINKEDIN_HANDLE, SO_URL,
   RESUME_PDF_URL, RESUME_VIEW_URL,
   DIMAGI, XCALIBER,
   PROJECT_ECOMMERCE, PROJECT_ESTORE, PROJECT_BOOKSTORE,
-  EXPERIENCE_LABEL, COUNTRIES_SERVED,
+  EXPERIENCE_LABEL,
+  COMMCARE_CONNECT, CONNECT_MERGED_PRS_FALLBACK, CONNECT_HIGHLIGHT_PRS,
 } from '../constants';
 
 // ── types ─────────────────────────────────────────────────────────────────────
@@ -38,6 +40,34 @@ const HOME = '/home/visitor';
 interface FSFile { type: 'file'; content: Line[]; hidden?: boolean }
 interface FSDir  { type: 'dir';  hidden?: boolean }
 type FSNode = FSFile | FSDir;
+
+const DIMAGI_TXT = '/home/visitor/experience/dimagi.txt';
+
+// Built on demand so the live merged-PR count can be dropped in (see resolveNode).
+const dimagiFile = (mergedPrs: string): FSFile => ({ type: 'file', content: [
+  { text: `${DIMAGI.name}`, color: 'accent' },
+  { text: `${DIMAGI.period} · ${DIMAGI.location}`, color: 'muted' },
+  { text: 'Role: Software Engineer', color: 'normal' },
+  { text: '' },
+  { text: `Product: ${COMMCARE_CONNECT.name} (open source)`, color: 'normal', href: COMMCARE_CONNECT.repoUrl },
+  { text: '' },
+  { text: '  ▸ Cut a report query from 36.8s to 88ms (~420x) — one join was', color: 'normal' },
+  { text: '    multiplying rows; swapped for correlated subqueries', color: 'normal' },
+  { text: '  ▸ Built microplanning end to end: PostGIS, work-area models,', color: 'normal' },
+  { text: '    async CSV import, map assignment, bulk write APIs', color: 'normal' },
+  { text: `  ▸ ${mergedPrs} merged PRs across payments, invoicing, permissions,`, color: 'normal' },
+  { text: '    and a Django 5.2 LTS upgrade', color: 'normal' },
+  { text: '  ▸ Audited 4.45M prod OAuth tokens before automating cleanup (99% expired)', color: 'normal' },
+  { text: '' },
+  { text: '  Selected PRs:', color: 'dim' },
+  ...CONNECT_HIGHLIGHT_PRS.map((pr) => ({
+    text: `    #${pr.number}  ${pr.title}`,
+    color: 'blue' as const,
+    href: pr.url,
+  })),
+  { text: '' },
+  { text: '  Stack: Python · Django · PostgreSQL · PostGIS · Celery · Docker · AWS', color: 'dim' },
+]});
 
 // Flat map of absolute path → node metadata
 const FS_NODES: Record<string, FSNode> = {
@@ -107,29 +137,21 @@ const FS_NODES: Record<string, FSNode> = {
     { text: `  PDF    ${RESUME_PDF_URL.replace('https://', '')}`, color: 'blue', href: RESUME_PDF_URL },
   ]},
   '/home/visitor/experience':            { type: 'dir' },
-  '/home/visitor/experience/dimagi.txt': { type: 'file', content: [
-    { text: `${DIMAGI.name}`, color: 'accent' },
-    { text: `${DIMAGI.period} · ${DIMAGI.location}`, color: 'muted' },
-    { text: 'Role: Software Engineer', color: 'normal' },
-    { text: '' },
-    { text: `  ▸ Maintained systems serving NGOs across ${COUNTRIES_SERVED} countries`, color: 'normal' },
-    { text: '  ▸ Containerised Django workloads with Docker on AWS', color: 'normal' },
-    { text: '  ▸ Shipped production features across a decade-old codebase', color: 'normal' },
-    { text: '  ▸ Owned backend features end-to-end — design, code, deploy', color: 'normal' },
-    { text: '' },
-    { text: '  Stack: Python · Django · Docker · AWS · PostgreSQL', color: 'dim' },
-  ]},
+  [DIMAGI_TXT]: dimagiFile(CONNECT_MERGED_PRS_FALLBACK),
   '/home/visitor/experience/xcaliber.txt': { type: 'file', content: [
     { text: `${XCALIBER.name}`, color: 'accent' },
     { text: `${XCALIBER.period} · ${XCALIBER.location}`, color: 'muted' },
     { text: 'Role: Software Engineer', color: 'normal' },
     { text: '' },
-    { text: '  ▸ Delivered Spring Boot REST APIs for enterprise clients', color: 'normal' },
-    { text: '  ▸ Built Angular frontends consuming complex data models', color: 'normal' },
-    { text: '  ▸ Integrated Amazon S3 for scalable file storage', color: 'normal' },
-    { text: '  ▸ Full-stack across Java + TypeScript every day', color: 'normal' },
+    { text: '  ▸ Migrated the backend from Spring MVC to Spring Boot', color: 'normal' },
+    { text: '  ▸ Spring Boot + Hibernate APIs serving web, Android, and iOS clients', color: 'normal' },
+    { text: '    (S3 uploads, Google Sign-In)', color: 'normal' },
+    { text: '  ▸ Ran prod on AWS (EC2, S3, Route 53, CloudFront); CI/CD cut deploys by 20%', color: 'normal' },
+    { text: '  ▸ Tuned APIs and SQL: page loads 15% faster', color: 'normal' },
+    { text: '  ▸ Shared Angular components, Chart.js dashboards, Bootstrap 3 → 5', color: 'normal' },
     { text: '' },
-    { text: '  Stack: Spring Boot · Angular · Hibernate · Amazon S3', color: 'dim' },
+    { text: '  Client work under NDA: no public code.', color: 'dim' },
+    { text: '  Stack: Java · Spring Boot · Hibernate · Angular · SQL · AWS', color: 'dim' },
   ]},
   '/home/visitor/projects':               { type: 'dir' },
   '/home/visitor/projects/ecommerce.txt': { type: 'file', content: [
@@ -458,6 +480,7 @@ export default function CLITerminal() {
 
   // mutable fs overlay (mkdir/touch create nodes here)
   const [userNodes, setUserNodes]     = useState<Record<string, FSNode>>({});
+  const mergedPrs = useMergedPrCount();
   const [userChildren, setUserChildren] = useState<Record<string, string[]>>({});
 
   // Ctrl+R
@@ -486,8 +509,9 @@ export default function CLITerminal() {
 
   // Resolve a node from both static and user-created overlay
   const resolveNode = useCallback((path: string): FSNode | undefined => {
+    if (!userNodes[path] && path === DIMAGI_TXT) return dimagiFile(mergedPrs);
     return userNodes[path] ?? FS_NODES[path];
-  }, [userNodes]);
+  }, [userNodes, mergedPrs]);
 
   const resolveChildren = useCallback((path: string): string[] | undefined => {
     const userKids = userChildren[path];
