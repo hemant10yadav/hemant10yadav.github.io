@@ -394,7 +394,6 @@ function RecruiterTimeline({
 
             {/* Card */}
             <div
-              className="group"
               style={{
                 background: 'var(--bg-card)',
                 border: `1px solid ${exp.current ? `${accent}30` : 'var(--border-2)'}`,
@@ -486,9 +485,9 @@ function RecruiterTimeline({
                     {exp.period}
                   </span>
 
-                  {/* Repos: revealed on card hover/focus on desktop, always shown on touch-sized screens */}
+                  {/* Repos I contribute to */}
                   {exp.repos && (
-                    <div className="flex flex-wrap md:justify-end gap-1.5 transition-opacity duration-300 md:opacity-0 md:group-hover:opacity-100 md:group-focus-within:opacity-100">
+                    <div className="flex flex-wrap md:justify-end gap-1.5">
                       {exp.repos.map((repo) => (
                         <a
                           key={repo.url}

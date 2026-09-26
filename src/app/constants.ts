@@ -77,7 +77,7 @@ export const COMMCARE_CONNECT = {
   repoUrl: 'https://github.com/dimagi/commcare-connect',
 } as const;
 
-// Dimagi repos I contribute to, shown on hover over the Dimagi experience card.
+// Dimagi repos I contribute to, shown on the Dimagi experience card.
 export const DIMAGI_REPOS = [
   { name: 'CommCare Connect', url: COMMCARE_CONNECT.repoUrl },
   { name: 'ConnectID',        url: 'https://github.com/dimagi/connect-id' },
