@@ -54,9 +54,9 @@ const getExperiences = (mergedPrs: string): Experience[] => [
     repos: DIMAGI_REPOS,
     // recruiter view
     impact: [
-      `Built the microplanning module end to end: enabled PostGIS on a live database, designed the work-area models, and shipped a CSV import that handles 1 million rows with low memory use, plus map-based assignment and bulk write APIs`,
-      `Debugged live production issues to the root cause: a database deadlock in bulk payment updates, background jobs that ran before their data was saved, and a caching bug that let suspended users back in`,
-      `${mergedPrs} merged PRs on ${COMMCARE_CONNECT.name}, an open-source Django platform for frontline health worker programs, spanning payments, invoicing, permissions, and reporting`,
+      `Built the microplanning module end to end on PostGIS, including a CSV import that handles 1M rows`,
+      `Traced production bugs to the root cause, from a payment deadlock to a cache bug that let suspended users back in`,
+      `${mergedPrs} merged PRs on ${COMMCARE_CONNECT.name}, an open-source Django platform for frontline health programs`,
     ],
     // recruiter view, behind "show more": each line is backed by merged PRs
     moreImpact: [
@@ -602,7 +602,6 @@ function RecruiterTimeline({
                           </span>
                           {pr.headline} <ExternalLink size={12} />
                         </a>
-                        <p style={{ color: 'var(--fg-3)', marginTop: '0.15rem' }}>{pr.problem}</p>
                       </li>
                     ))}
                   </ul>

@@ -96,14 +96,12 @@ export const CONNECT_HIGHLIGHT_PRS = [
     title:    'Fix slow query powering the Work Area Assignments tab',
     headline: 'Made a page that kept timing out 420x faster: 36.8s → 0.09s',
     url:      `${COMMCARE_CONNECT.repoUrl}/pull/1536`,
-    problem:  'The page timed out for large programs because the database counted each worker once per work area they covered. Rewrote the lookup to count each worker once, and checked the results matched production exactly.',
   },
   {
     number:   1515,
     title:    'Fix query fan-out in active_flags_for_user',
     headline: 'Cut the database work behind a common check from 501,300 rows to 6',
     url:      `${COMMCARE_CONNECT.repoUrl}/pull/1515`,
-    problem:  'The check that decides which features a user sees was comparing every combination across three tables. Rewrote it to fetch only the rows that match, then confirmed the fix on production data.',
   },
 ] as const;
 

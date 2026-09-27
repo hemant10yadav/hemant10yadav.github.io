@@ -931,7 +931,7 @@ function TrackedList({
 
   return (
     <ul
-      className="relative flex flex-col gap-2"
+      className="relative grid items-start gap-2 md:grid-cols-3"
       onPointerLeave={(e) => e.pointerType === 'mouse' && setActive(null)}
     >
       <motion.div
@@ -1012,62 +1012,36 @@ function ArchiveRow({
       transition={{ delay: index * 0.08, duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
       className="group relative px-4 py-5 sm:px-5"
     >
-      <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between sm:gap-8">
-        <div className="min-w-0 flex-1">
-          <h3
-            style={{
-              fontFamily: 'var(--font-outfit), var(--font-inter), sans-serif',
-              color: 'var(--fg)',
-              fontSize: '1.05rem',
-              fontWeight: 700,
-              letterSpacing: '-0.01em',
-            }}
+      <div className="flex items-start justify-between gap-3">
+        <h3
+          className="min-w-0"
+          style={{
+            fontFamily: 'var(--font-outfit), var(--font-inter), sans-serif',
+            color: 'var(--fg)',
+            fontSize: '1.05rem',
+            fontWeight: 700,
+            letterSpacing: '-0.01em',
+          }}
+        >
+          <a
+            href={primary.href}
+            target="_blank"
+            rel="noopener noreferrer"
+            onClick={primary.onClick}
+            aria-label={`${project.title}: open ${primary.label}`}
+            className="inline-flex items-center gap-1.5 outline-none after:absolute after:inset-0 after:rounded-md after:content-[''] focus-visible:after:outline-dashed focus-visible:after:outline-1"
+            style={{ color: 'inherit', textDecoration: 'none' }}
           >
-            <a
-              href={primary.href}
-              target="_blank"
-              rel="noopener noreferrer"
-              onClick={primary.onClick}
-              aria-label={`${project.title}: open ${primary.label}`}
-              className="inline-flex items-center gap-1.5 outline-none after:absolute after:inset-0 after:rounded-md after:content-[''] focus-visible:after:outline-dashed focus-visible:after:outline-1"
-              style={{ color: 'inherit', textDecoration: 'none' }}
-            >
-              {project.title}
-              <ArrowUpRight
-                size={16}
-                className="opacity-0 transition-opacity group-hover:opacity-100"
-                style={{ color: accent }}
-              />
-            </a>
-          </h3>
-          <p style={{ color: 'var(--fg-3)', fontSize: '0.875rem', lineHeight: 1.6, marginTop: '0.2rem' }}>
-            {isRecruiter ? project.summary : project.learned}
-          </p>
-          <div className="mt-2.5 flex flex-wrap items-center gap-x-3 gap-y-1">
-            {project.stack.map((tech) => (
-              <span key={tech} style={{ fontFamily: mono, fontSize: '0.7rem', color: 'var(--fg-4)' }}>
-                {tech}
-              </span>
-            ))}
-          </div>
-        </div>
+            {project.title}
+            <ArrowUpRight
+              size={16}
+              className="opacity-0 transition-opacity group-hover:opacity-100"
+              style={{ color: accent }}
+            />
+          </a>
+        </h3>
 
-        <div className="relative z-10 flex shrink-0 items-center gap-4" style={{ fontSize: '0.8rem' }}>
-          {!isRecruiter && (
-            <button
-              onClick={() => setOpen((v) => !v)}
-              aria-expanded={open}
-              aria-controls={detailsId}
-              className="inline-flex items-center gap-1"
-              style={{ fontFamily: mono, color: 'var(--fg-3)' }}
-            >
-              {open ? 'less' : 'what happened'}
-              <ChevronDown
-                size={14}
-                style={{ transform: open ? 'rotate(180deg)' : 'none', transition: 'transform 0.2s' }}
-              />
-            </button>
-          )}
+        <div className="relative z-10 flex shrink-0 items-center gap-3 pt-0.5" style={{ fontSize: '0.8rem' }}>
           {project.demoUrl && (
             <a
               href={project.demoUrl}
@@ -1093,6 +1067,33 @@ function ArchiveRow({
         </div>
       </div>
 
+      <p style={{ color: 'var(--fg-3)', fontSize: '0.875rem', lineHeight: 1.6, marginTop: '0.2rem' }}>
+        {isRecruiter ? project.summary : project.learned}
+      </p>
+      <div className="mt-2.5 flex flex-wrap items-center gap-x-3 gap-y-1">
+        {project.stack.map((tech) => (
+          <span key={tech} style={{ fontFamily: mono, fontSize: '0.7rem', color: 'var(--fg-4)' }}>
+            {tech}
+          </span>
+        ))}
+      </div>
+
+      {!isRecruiter && (
+        <button
+          onClick={() => setOpen((v) => !v)}
+          aria-expanded={open}
+          aria-controls={detailsId}
+          className="relative z-10 mt-3 inline-flex items-center gap-1"
+          style={{ fontFamily: mono, fontSize: '0.8rem', color: 'var(--fg-3)' }}
+        >
+          {open ? 'less' : 'what happened'}
+          <ChevronDown
+            size={14}
+            style={{ transform: open ? 'rotate(180deg)' : 'none', transition: 'transform 0.2s' }}
+          />
+        </button>
+      )}
+
       <AnimatePresence initial={false}>
         {open && (
           <motion.div
@@ -1103,7 +1104,7 @@ function ArchiveRow({
             transition={{ duration: 0.25, ease: [0.22, 1, 0.36, 1] }}
             className="relative z-10 overflow-hidden"
           >
-            <div className="mt-4 grid gap-4 sm:grid-cols-2">
+            <div className="mt-4 grid gap-4">
               {[
                 { label: 'What I tried', text: project.tried, color: accent },
                 { label: 'What broke', text: project.broke, color: 'var(--color-danger)' },

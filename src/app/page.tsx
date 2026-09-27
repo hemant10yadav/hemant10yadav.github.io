@@ -27,11 +27,11 @@ function PortfolioApp() {
         <main className="pt-20">
           <HeroSection viewerType={viewerType} />
           <ExperienceSection viewerType={viewerType} />
+          <section id="projects" className="pt-12">
+            <ProjectSection viewerType={viewerType} />
+          </section>
           <section id="skills">
             <SkillSection viewerType={viewerType} />
-          </section>
-          <section id="projects" className="pb-24">
-            <ProjectSection viewerType={viewerType} />
           </section>
           <LabTeaser />
         </main>

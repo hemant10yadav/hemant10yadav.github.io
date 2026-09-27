@@ -27,7 +27,7 @@ export const NavBar = () => {
 
   useEffect(() => {
     if (isLab) return;
-    const sections = ['about', 'skills', 'projects'];
+    const sections = ['about', 'projects', 'skills'];
     const observers: IntersectionObserver[] = [];
     sections.forEach((id) => {
       const el = document.getElementById(id);
@@ -44,8 +44,8 @@ export const NavBar = () => {
 
   const hashLinks = [
     { id: 'about',    label: 'About' },
-    { id: 'skills',   label: 'Skills' },
     { id: 'projects', label: 'Projects' },
+    { id: 'skills',   label: 'Skills' },
   ];
 
   const navLinkColor = 'var(--fg-3)';
