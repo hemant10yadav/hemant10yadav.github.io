@@ -7,12 +7,6 @@ import { useViewer } from '../context/ViewerContext';
 
 const CARDS = [
   {
-    icon: '🔥',
-    id: 'pulse',
-    title: 'Pulse',
-    desc: 'Live tech briefing — HN, GitHub trending, npm spikes, tech temperature.',
-  },
-  {
     icon: '>_',
     id: 'terminal',
     title: 'Terminal',
@@ -82,10 +76,9 @@ export default function LabTeaser() {
         <div
           style={{
             display: 'grid',
-            gridTemplateColumns: 'repeat(auto-fit, minmax(min(240px, 100%), 1fr))',
             gap: '1rem',
             width: '100%',
-            maxWidth: '560px',
+            maxWidth: '420px',
           }}
         >
           {CARDS.map((card, i) => (

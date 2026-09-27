@@ -4,7 +4,6 @@ import { motion } from 'framer-motion';
 import Link from 'next/link';
 import { GoogleAnalytics } from 'nextjs-google-analytics';
 import { useViewer } from '../context/ViewerContext';
-import Pulse from '../components/Pulse';
 import CLITerminal from '../components/CLITerminal';
 
 export default function LabPage() {
@@ -139,7 +138,6 @@ export default function LabPage() {
             />
           </div>
           <CLITerminal />
-          <Pulse />
           {/* Bottom padding */}
           <div style={{ height: "4rem" }} />
         </main>

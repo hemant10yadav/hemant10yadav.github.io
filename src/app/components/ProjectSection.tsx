@@ -1,9 +1,8 @@
 'use client';
 
-import { motion } from 'framer-motion';
-import { ArrowRight, ExternalLink, Github, Maximize2, Minimize2, Pause, Play } from 'lucide-react';
-import Image from 'next/image';
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { AnimatePresence, motion } from 'framer-motion';
+import { ArrowRight, ArrowUpRight, ChevronDown, ExternalLink, Github, Maximize2, Minimize2, Pause, Play } from 'lucide-react';
+import { CSSProperties, useCallback, useEffect, useRef, useState } from 'react';
 import { event } from 'nextjs-google-analytics';
 import { ViewerType, useViewer } from '../context/ViewerContext';
 import { PROJECT_KICKTRACK, PROJECT_ECOMMERCE, PROJECT_ESTORE, PROJECT_BOOKSTORE } from '../constants';
@@ -64,59 +63,53 @@ const FEATURED_DEVELOPER = {
   ],
 };
 
-const RECRUITER_PROJECTS = [
-  {
-    title: PROJECT_ECOMMERCE.title,
-    problem: 'Personal project to explore full-stack architecture — from auth to checkout — using a Java + Angular stack.',
-    solution: 'Spring Boot REST API, Angular SPA, PostgreSQL with clean schema design, JWT auth with layered service/repository separation.',
-    impact: 'Demonstrates system design thinking: bounded contexts, DTO patterns, and an architecture structured to scale.',
-    githubLink: PROJECT_ECOMMERCE.githubUrl,
-    tech: ['java.png', 'spring.png', 'angular.png', 'typescript.png', 'postgres.png'],
-  },
-  {
-    title: PROJECT_ESTORE.title,
-    problem: 'Side project to learn the MERN stack end-to-end — from React component design to MongoDB document modelling.',
-    solution: 'React frontend, Node/Express REST APIs, MongoDB with Mongoose, auth and session handling.',
-    impact: 'Shows ability to pick up a new stack independently and deliver a complete, working full-stack application.',
-    githubLink: PROJECT_ESTORE.githubUrl,
-    tech: ['typescript.png', 'react.png', 'node.png', 'express.png', 'mongo.png'],
-  },
-  {
-    title: PROJECT_BOOKSTORE.title,
-    problem: 'Side project to practice Angular\'s component model and API integration — no backend required.',
-    solution: 'Angular SPA consuming the Google Books API, search by title/author/keyword, rich detail views, deployed on GitHub Pages.',
-    impact: 'Live demo available. Shows frontend-first thinking: fast load, responsive UI, zero infrastructure overhead.',
-    githubLink: PROJECT_BOOKSTORE.githubUrl,
-    demoUrl: PROJECT_BOOKSTORE.demoUrl,
-    tech: ['bootstrap.png', 'angular.png', 'typescript.png'],
-  },
-];
+interface EarlierProject {
+  title: string;
+  slug: string;
+  confidence: number;
+  summary: string;
+  tried: string;
+  broke: string;
+  learned: string;
+  githubLink: string;
+  demoUrl?: string;
+  stack: string[];
+}
 
-const DEVELOPER_PROJECTS = [
-  {
-    title: PROJECT_ECOMMERCE.title,
-    tried: 'Started with a custom auth system with refresh token rotation and per-device sessions. Very elegant. Very overengineered.',
-    broke: 'Broke in staging when two concurrent requests hit the token refresh endpoint. Race condition.',
-    learned: 'Boring code is good code. Simplified to standard JWT + stateless. Shipped. Never thought about it again.',
-    githubLink: PROJECT_ECOMMERCE.githubUrl,
-    tech: ['java.png', 'spring.png', 'angular.png', 'typescript.png', 'postgres.png'],
-  },
-  {
-    title: PROJECT_ESTORE.title,
-    tried: 'MongoDB because "schemaless = flexible." Designed the product documents to hold everything: reviews, variants, stock.',
-    broke: 'Querying nested arrays for specific review authors became an aggregation pipeline nightmare.',
-    learned: 'Schema-less doesn\'t mean schema-free. Design your documents for how you read, not how you write.',
-    githubLink: PROJECT_ESTORE.githubUrl,
-    tech: ['typescript.png', 'react.png', 'node.png', 'express.png', 'mongo.png'],
-  },
+const EARLIER_PROJECTS: EarlierProject[] = [
   {
     title: PROJECT_BOOKSTORE.title,
+    slug: 'bookstore',
+    confidence: 0.88,
+    summary: 'Angular search UI over the Google Books API: search by title, author or keyword, with detail views. No backend.',
     tried: 'Wanted infinite scroll, offline caching, and a custom debounce hook — for a book search page.',
     broke: 'Nothing broke, but I spent 3 days on things no user would notice.',
     learned: 'Sometimes a simple input + button is the product. Shipped a fast, usable app. Live demo still runs.',
     githubLink: PROJECT_BOOKSTORE.githubUrl,
     demoUrl: PROJECT_BOOKSTORE.demoUrl,
-    tech: ['bootstrap.png', 'angular.png', 'typescript.png'],
+    stack: ['Angular', 'TypeScript', 'Bootstrap'],
+  },
+  {
+    title: PROJECT_ECOMMERCE.title,
+    slug: 'ecommerce',
+    confidence: 0.94,
+    summary: 'Full-stack shop: Spring Boot REST API, Angular SPA and PostgreSQL, with JWT auth and a layered service/repository design.',
+    tried: 'Started with a custom auth system with refresh token rotation and per-device sessions. Very elegant. Very overengineered.',
+    broke: 'Broke in staging when two concurrent requests hit the token refresh endpoint. Race condition.',
+    learned: 'Boring code is good code. Simplified to standard JWT + stateless. Shipped. Never thought about it again.',
+    githubLink: PROJECT_ECOMMERCE.githubUrl,
+    stack: ['Java', 'Spring Boot', 'Angular', 'PostgreSQL'],
+  },
+  {
+    title: PROJECT_ESTORE.title,
+    slug: 'estore',
+    confidence: 0.91,
+    summary: 'MERN app built to learn the stack end to end: React UI, Node/Express APIs, MongoDB with Mongoose, auth and sessions.',
+    tried: 'MongoDB because "schemaless = flexible." Designed the product documents to hold everything: reviews, variants, stock.',
+    broke: 'Querying nested arrays for specific review authors became an aggregation pipeline nightmare.',
+    learned: 'Schema-less doesn\'t mean schema-free. Design your documents for how you read, not how you write.',
+    githubLink: PROJECT_ESTORE.githubUrl,
+    stack: ['React', 'Node', 'Express', 'MongoDB'],
   },
 ];
 
@@ -128,9 +121,8 @@ export const ProjectSection = ({ viewerType }: ProjectSectionProps) => {
     event('Code views', { category: 'Portfolio', label: projectName, value: 1 });
   };
 
-  const handleDemoClick = (url: string, title: string) => {
+  const handleDemoClick = (title: string) => {
     event('demo_viewed', { category: 'Portfolio', label: title, value: 1 });
-    window.open(url, '_blank', 'noopener,noreferrer');
   };
 
   return (
@@ -210,39 +202,24 @@ export const ProjectSection = ({ viewerType }: ProjectSectionProps) => {
             fontSize: '0.75rem',
             letterSpacing: '0.1em',
             textTransform: 'uppercase',
-            marginTop: '3.5rem',
-            marginBottom: '1.25rem',
           }}
+          className="mb-8 mt-16 flex flex-wrap items-center justify-between gap-2"
         >
-          {isRecruiter ? 'Earlier projects' : '// earlier, simpler times'}
+          <span>{isRecruiter ? 'Earlier projects · learning builds' : '// earlier, simpler times'}</span>
+          <span className="inline-flex items-center gap-1.5 normal-case tracking-normal">
+            <span className="h-1.5 w-1.5 animate-pulse rounded-full" style={{ background: accent }} />
+            tracking {EARLIER_PROJECTS.length} objects
+          </span>
         </p>
 
-        <div
-          className="grid gap-6"
-          style={{ gridTemplateColumns: 'repeat(auto-fit, minmax(min(300px, 100%), 1fr))' }}
-        >
-          {isRecruiter
-            ? (RECRUITER_PROJECTS as typeof RECRUITER_PROJECTS).map((project, i) => (
-                <RecruiterCard
-                  key={project.title}
-                  project={project}
-                  index={i}
-                  accent={accent}
-                  onCodeView={() => handleCodeView(project.title)}
-                  onDemoClick={() => project.demoUrl && handleDemoClick(project.demoUrl, project.title)}
-                />
-              ))
-            : (DEVELOPER_PROJECTS as typeof DEVELOPER_PROJECTS).map((project, i) => (
-                <DeveloperCard
-                  key={project.title}
-                  project={project}
-                  index={i}
-                  accent={accent}
-                  onCodeView={() => handleCodeView(project.title)}
-                  onDemoClick={() => project.demoUrl && handleDemoClick(project.demoUrl, project.title)}
-                />
-              ))}
-        </div>
+        <TrackedList
+          key={`list-${viewerType}`}
+          projects={EARLIER_PROJECTS}
+          isRecruiter={isRecruiter}
+          accent={accent}
+          onCodeView={handleCodeView}
+          onDemoClick={handleDemoClick}
+        />
       </div>
 
     </>
@@ -577,13 +554,14 @@ function FeaturedCard({
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true }}
       transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
+      className="relative"
       style={{
         background: 'var(--bg-card)',
-        border: `1px solid ${accent}33`,
         borderRadius: '16px',
         padding: 'clamp(1.25rem, 4vw, 2rem)',
       }}
     >
+      <BoundingBox accent={accent} label="#04 kicktrack 0.99" radius={16} />
       <div className={`grid gap-8 ${videoFailed ? '' : 'lg:grid-cols-[1.65fr_1fr]'}`}>
         {!videoFailed && <DemoPlayer title={project.title} accent={accent} onAllFailed={hideVideo} />}
 
@@ -735,237 +713,303 @@ function FeaturedCard({
   );
 }
 
-interface RecruiterProject {
-  title: string;
-  problem: string;
-  solution: string;
-  impact: string;
-  githubLink: string;
-  demoUrl?: string;
-  tech: string[];
+// Computer-vision style bounding box, echoing KickTrack's player-tracking overlay
+function BoundingBox({ accent, label, radius = 6 }: { accent: string; label: string; radius?: number }) {
+  const edge = `2px solid ${accent}`;
+  const corners: CSSProperties[] = [
+    { top: -1, left: -1, borderTop: edge, borderLeft: edge, borderTopLeftRadius: radius },
+    { top: -1, right: -1, borderTop: edge, borderRight: edge, borderTopRightRadius: radius },
+    { bottom: -1, left: -1, borderBottom: edge, borderLeft: edge, borderBottomLeftRadius: radius },
+    { bottom: -1, right: -1, borderBottom: edge, borderRight: edge, borderBottomRightRadius: radius },
+  ];
+
+  return (
+    <div
+      aria-hidden
+      className="pointer-events-none absolute inset-0"
+      style={{ border: `1px solid ${accent}33`, borderRadius: radius }}
+    >
+      {corners.map((style, i) => (
+        <span key={i} className="absolute" style={{ width: 16, height: 16, ...style }} />
+      ))}
+      <span
+        className="absolute whitespace-nowrap tabular-nums"
+        style={{
+          bottom: '100%',
+          left: radius > 8 ? radius : -1,
+          background: accent,
+          color: 'var(--bg)',
+          fontFamily: 'var(--font-jetbrains-mono), monospace',
+          fontSize: '0.65rem',
+          fontWeight: 600,
+          padding: '0.1rem 0.45rem',
+          borderRadius: '4px 4px 0 0',
+        }}
+      >
+        {label}
+      </span>
+    </div>
+  );
 }
 
-interface DeveloperProject {
-  title: string;
-  tried: string;
-  broke: string;
-  learned: string;
-  githubLink: string;
-  demoUrl?: string;
-  tech: string[];
-}
+const jitterPx = () => (Math.random() - 0.5) * 3;
 
-function RecruiterCard({
-  project,
-  index,
+function TrackedList({
+  projects,
+  isRecruiter,
   accent,
   onCodeView,
   onDemoClick,
 }: {
-  project: RecruiterProject;
-  index: number;
+  projects: EarlierProject[];
+  isRecruiter: boolean;
   accent: string;
-  onCodeView: () => void;
-  onDemoClick: () => void;
+  onCodeView: (title: string) => void;
+  onDemoClick: (title: string) => void;
 }) {
+  const rows = useRef<(HTMLLIElement | null)[]>([]);
+  const [active, setActive] = useState<number | null>(null);
+  const [rect, setRect] = useState({ top: 0, left: 0, width: 0, height: 0 });
+  const [jitter, setJitter] = useState({ x: 0, y: 0, conf: 0 });
+  const target = active === null ? null : projects[active];
+
+  // Follow the active row, re-measuring when it resizes (developer rows expand)
+  useEffect(() => {
+    const row = rows.current[active ?? 0];
+    if (!row) return;
+    const measure = () =>
+      setRect({ top: row.offsetTop, left: row.offsetLeft, width: row.offsetWidth, height: row.offsetHeight });
+    measure();
+    const observer = new ResizeObserver(measure);
+    observer.observe(row);
+    return () => observer.disconnect();
+  }, [active]);
+
+  // No hover on touch screens: track whichever row is in the middle of the viewport
+  useEffect(() => {
+    if (!window.matchMedia('(hover: none)').matches) return;
+    const observer = new IntersectionObserver(
+      (entries) =>
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) setActive(Number((entry.target as HTMLElement).dataset.index));
+        }),
+      { rootMargin: '-45% 0px -45% 0px' },
+    );
+    rows.current.forEach((row) => row && observer.observe(row));
+    return () => observer.disconnect();
+  }, []);
+
+  // Live-inference feel: the box wobbles and the confidence flickers
+  useEffect(() => {
+    if (active === null || window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    const id = setInterval(
+      () => setJitter({ x: jitterPx(), y: jitterPx(), conf: Math.round(Math.random() * 2 - 1) / 100 }),
+      180,
+    );
+    return () => clearInterval(id);
+  }, [active]);
+
   return (
-    <motion.div
-      initial={{ opacity: 0, y: 20 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true }}
-      transition={{ delay: index * 0.1, duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
-      whileHover={{ y: -6, transition: { duration: 0.2, ease: [0.22, 1, 0.36, 1] } }}
-      style={{
-        background: 'var(--bg-card)',
-        border: '1px solid rgba(110,231,183,0.12)',
-        borderRadius: '12px',
-        padding: 'clamp(1.25rem, 4vw, 1.75rem)',
-      }}
+    <ul
+      className="relative flex flex-col gap-2"
+      onPointerLeave={(e) => e.pointerType === 'mouse' && setActive(null)}
     >
-      <h3
-        style={{
-          fontFamily: 'var(--font-jetbrains-mono), monospace',
-          color: 'var(--fg)',
-          fontSize: '1.1rem',
-          fontWeight: 700,
-          marginBottom: '1.25rem',
+      <motion.div
+        className="pointer-events-none absolute"
+        initial={false}
+        animate={{
+          top: rect.top + jitter.y,
+          left: rect.left + jitter.x,
+          width: rect.width,
+          height: rect.height,
+          opacity: target ? 1 : 0,
         }}
+        transition={{ type: 'spring', stiffness: 420, damping: 32, opacity: { duration: 0.2 } }}
       >
-        {project.title}
-      </h3>
+        {target && (
+          <BoundingBox
+            accent={accent}
+            label={`#${String(active! + 1).padStart(2, '0')} ${target.slug} ${(target.confidence + jitter.conf).toFixed(2)}`}
+          />
+        )}
+      </motion.div>
 
-      {[
-        { label: 'Problem',  text: project.problem,  color: accent },
-        { label: 'Solution', text: project.solution, color: accent },
-        { label: 'Impact',   text: project.impact,   color: 'var(--color-success)' },
-      ].map(({ label, text, color }) => (
-        <div key={label} className="mb-3">
-          <span
-            style={{
-              fontFamily: 'var(--font-jetbrains-mono), monospace',
-              color,
-              fontSize: '0.7rem',
-              letterSpacing: '0.1em',
-              textTransform: 'uppercase',
-              display: 'block',
-              marginBottom: '0.25rem',
-            }}
-          >
-            {label}
-          </span>
-          <p style={{ color: 'var(--fg-2)', fontSize: '0.875rem', lineHeight: 1.65 }}>{text}</p>
-        </div>
-      ))}
-
-      <TechRow icons={project.tech} />
-      <ProjectLinks
-        githubLink={project.githubLink}
-        demoUrl={project.demoUrl}
-        accent={accent}
-        onCodeView={onCodeView}
-        onDemoClick={onDemoClick}
-      />
-    </motion.div>
-  );
-}
-
-function DeveloperCard({
-  project,
-  index,
-  accent,
-  onCodeView,
-  onDemoClick,
-}: {
-  project: DeveloperProject;
-  index: number;
-  accent: string;
-  onCodeView: () => void;
-  onDemoClick: () => void;
-}) {
-  return (
-    <motion.div
-      initial={{ opacity: 0, y: 20 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true }}
-      transition={{ delay: index * 0.1, duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
-      whileHover={{ y: -6, transition: { duration: 0.2, ease: [0.22, 1, 0.36, 1] } }}
-      style={{
-        background: 'var(--bg-card)',
-        border: '1px solid rgba(34,211,238,0.12)',
-        borderRadius: '12px',
-        padding: 'clamp(1.25rem, 4vw, 1.75rem)',
-      }}
-    >
-      <h3
-        style={{
-          fontFamily: 'var(--font-jetbrains-mono), monospace',
-          color: 'var(--fg)',
-          fontSize: '1.1rem',
-          fontWeight: 700,
-          marginBottom: '1.25rem',
-        }}
-      >
-        {project.title}
-      </h3>
-
-      {[
-        { label: 'What I tried', text: project.tried, color: accent },
-        { label: 'What broke',   text: project.broke,   color: 'var(--color-danger)' },
-        { label: 'What I learned', text: project.learned, color: 'var(--color-success)' },
-      ].map(({ label, text, color }) => (
-        <div key={label} className="mb-3">
-          <span
-            style={{
-              fontFamily: 'var(--font-jetbrains-mono), monospace',
-              color,
-              fontSize: '0.7rem',
-              letterSpacing: '0.1em',
-              textTransform: 'uppercase',
-              display: 'block',
-              marginBottom: '0.25rem',
-            }}
-          >
-            {label}
-          </span>
-          <p style={{ color: 'var(--fg-2)', fontSize: '0.875rem', lineHeight: 1.65 }}>{text}</p>
-        </div>
-      ))}
-
-      <TechRow icons={project.tech} />
-      <ProjectLinks
-        githubLink={project.githubLink}
-        demoUrl={project.demoUrl}
-        accent={accent}
-        onCodeView={onCodeView}
-        onDemoClick={onDemoClick}
-      />
-    </motion.div>
-  );
-}
-
-function TechRow({ icons }: { icons: string[] }) {
-  return (
-    <div className="flex gap-3 mt-4 mb-4">
-      {icons.map((icon, i) => (
-        <Image
-          key={i}
-          src={`/assets/${icon}`}
-          alt={icon}
-          width={28}
-          height={28}
-          className="object-contain"
-          loading="lazy"
-          draggable={false}
+      {projects.map((project, i) => (
+        <ArchiveRow
+          key={project.title}
+          project={project}
+          index={i}
+          isRecruiter={isRecruiter}
+          accent={accent}
+          rowRef={(el) => {
+            rows.current[i] = el;
+          }}
+          onPointerEnter={() => setActive(i)}
+          onCodeView={() => onCodeView(project.title)}
+          onDemoClick={() => onDemoClick(project.title)}
         />
       ))}
-    </div>
+    </ul>
   );
 }
 
-function ProjectLinks({
-  githubLink,
-  demoUrl,
+function ArchiveRow({
+  project,
+  index,
+  isRecruiter,
   accent,
+  rowRef,
+  onPointerEnter,
   onCodeView,
   onDemoClick,
 }: {
-  githubLink: string;
-  demoUrl?: string;
+  project: EarlierProject;
+  index: number;
+  rowRef: (el: HTMLLIElement | null) => void;
+  onPointerEnter: () => void;
+  isRecruiter: boolean;
   accent: string;
   onCodeView: () => void;
   onDemoClick: () => void;
 }) {
+  const [open, setOpen] = useState(false);
+  const mono = 'var(--font-jetbrains-mono), monospace';
+  const detailsId = `project-details-${index}`;
+  // The whole row opens the live demo when there is one, otherwise the code
+  const primary = project.demoUrl
+    ? { href: project.demoUrl, onClick: onDemoClick, label: 'live demo' }
+    : { href: project.githubLink, onClick: onCodeView, label: 'code on GitHub' };
+
   return (
-    <div className="flex gap-4 mt-1">
-      <motion.a
-        href={githubLink}
-        target="_blank"
-        rel="noopener noreferrer"
-        onClick={onCodeView}
-        className="inline-flex items-center gap-1.5"
-        style={{ color: accent, fontSize: '0.875rem', textDecoration: 'none' }}
-        whileHover={{ x: 4 }}
-      >
-        View Code <ExternalLink size={14} />
-      </motion.a>
-      {demoUrl && (
-        <motion.button
-          onClick={onDemoClick}
-          className="inline-flex items-center gap-1.5"
-          style={{
-            background: 'none',
-            border: 'none',
-            color: 'var(--fg-3)',
-            fontSize: '0.875rem',
-            cursor: 'pointer',
-            padding: 0,
-          }}
-          whileHover={{ x: 4, color: 'var(--fg-2)' }}
-        >
-          Live Demo
-        </motion.button>
-      )}
-    </div>
+    <motion.li
+      ref={rowRef}
+      data-index={index}
+      onPointerEnter={onPointerEnter}
+      onFocus={onPointerEnter}
+      initial={{ opacity: 0, y: 12 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true }}
+      transition={{ delay: index * 0.08, duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
+      className="group relative px-4 py-5 sm:px-5"
+    >
+      <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between sm:gap-8">
+        <div className="min-w-0 flex-1">
+          <h3
+            style={{
+              fontFamily: 'var(--font-outfit), var(--font-inter), sans-serif',
+              color: 'var(--fg)',
+              fontSize: '1.05rem',
+              fontWeight: 700,
+              letterSpacing: '-0.01em',
+            }}
+          >
+            <a
+              href={primary.href}
+              target="_blank"
+              rel="noopener noreferrer"
+              onClick={primary.onClick}
+              aria-label={`${project.title}: open ${primary.label}`}
+              className="inline-flex items-center gap-1.5 outline-none after:absolute after:inset-0 after:rounded-md after:content-[''] focus-visible:after:outline-dashed focus-visible:after:outline-1"
+              style={{ color: 'inherit', textDecoration: 'none' }}
+            >
+              {project.title}
+              <ArrowUpRight
+                size={16}
+                className="opacity-0 transition-opacity group-hover:opacity-100"
+                style={{ color: accent }}
+              />
+            </a>
+          </h3>
+          <p style={{ color: 'var(--fg-3)', fontSize: '0.875rem', lineHeight: 1.6, marginTop: '0.2rem' }}>
+            {isRecruiter ? project.summary : project.learned}
+          </p>
+          <div className="mt-2.5 flex flex-wrap items-center gap-x-3 gap-y-1">
+            {project.stack.map((tech) => (
+              <span key={tech} style={{ fontFamily: mono, fontSize: '0.7rem', color: 'var(--fg-4)' }}>
+                {tech}
+              </span>
+            ))}
+          </div>
+        </div>
+
+        <div className="relative z-10 flex shrink-0 items-center gap-4" style={{ fontSize: '0.8rem' }}>
+          {!isRecruiter && (
+            <button
+              onClick={() => setOpen((v) => !v)}
+              aria-expanded={open}
+              aria-controls={detailsId}
+              className="inline-flex items-center gap-1"
+              style={{ fontFamily: mono, color: 'var(--fg-3)' }}
+            >
+              {open ? 'less' : 'what happened'}
+              <ChevronDown
+                size={14}
+                style={{ transform: open ? 'rotate(180deg)' : 'none', transition: 'transform 0.2s' }}
+              />
+            </button>
+          )}
+          {project.demoUrl && (
+            <a
+              href={project.demoUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              onClick={onDemoClick}
+              className="inline-flex items-center gap-1 transition-colors hover:text-[var(--fg)]"
+              style={{ color: 'var(--fg-3)', textDecoration: 'none' }}
+            >
+              Demo <ExternalLink size={12} />
+            </a>
+          )}
+          <a
+            href={project.githubLink}
+            target="_blank"
+            rel="noopener noreferrer"
+            onClick={onCodeView}
+            className="inline-flex items-center gap-1 hover:underline"
+            style={{ color: accent, textDecoration: 'none' }}
+          >
+            Code <ExternalLink size={12} />
+          </a>
+        </div>
+      </div>
+
+      <AnimatePresence initial={false}>
+        {open && (
+          <motion.div
+            id={detailsId}
+            initial={{ height: 0, opacity: 0 }}
+            animate={{ height: 'auto', opacity: 1 }}
+            exit={{ height: 0, opacity: 0 }}
+            transition={{ duration: 0.25, ease: [0.22, 1, 0.36, 1] }}
+            className="relative z-10 overflow-hidden"
+          >
+            <div className="mt-4 grid gap-4 sm:grid-cols-2">
+              {[
+                { label: 'What I tried', text: project.tried, color: accent },
+                { label: 'What broke', text: project.broke, color: 'var(--color-danger)' },
+              ].map(({ label, text, color }) => (
+                <div key={label} style={{ borderLeft: `2px solid ${color}`, paddingLeft: '0.75rem' }}>
+                  <span
+                    style={{
+                      fontFamily: mono,
+                      color,
+                      fontSize: '0.65rem',
+                      letterSpacing: '0.1em',
+                      textTransform: 'uppercase',
+                      display: 'block',
+                      marginBottom: '0.2rem',
+                    }}
+                  >
+                    {label}
+                  </span>
+                  <p style={{ color: 'var(--fg-2)', fontSize: '0.85rem', lineHeight: 1.6 }}>{text}</p>
+                </div>
+              ))}
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </motion.li>
   );
 }
 
