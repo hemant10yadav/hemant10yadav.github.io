@@ -111,9 +111,9 @@ export const CONNECT_HIGHLIGHT_PRS = [
 export const PROJECT_KICKTRACK = {
   title:      'KickTrack',
   githubUrl:  `${GITHUB_URL}/KickTrack`,
+  writeupUrl: `${SITE_URL}/KickTrack/`,
   repoPublic: true,
-  // Every .mp4 in demos/ on the gh-pages branch is shown, with a same-named .jpg as its poster
-  demosApiUrl: `https://api.github.com/repos/${GITHUB_USERNAME}/KickTrack/contents/demos?ref=gh-pages`,
+  // demos/list.json lists each clip as { name, title }; name.mp4 plays with name.jpg as its poster
   demosBaseUrl: `${SITE_URL}/KickTrack/demos`,
 } as const;
 

@@ -1,7 +1,7 @@
 'use client';
 
 import { motion } from 'framer-motion';
-import { ExternalLink, Github, Maximize2, Minimize2, Pause, Play } from 'lucide-react';
+import { ArrowRight, ExternalLink, Github, Maximize2, Minimize2, Pause, Play } from 'lucide-react';
 import Image from 'next/image';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { event } from 'nextjs-google-analytics';
@@ -14,28 +14,28 @@ interface ProjectSectionProps {
 
 // ── project data for both views ──────────────────────────────────────────────
 
-const FEATURED_STACK = ['Python', 'YOLO26', 'BoT-SORT', 'OpenCV', 'CoreML', 'FastAPI'];
+const FEATURED_STACK = ['Python', 'YOLO26s', 'BoT-SORT', 'OpenCV', 'CoreML', 'PnLCalib'];
 
 const FEATURED_RECRUITER = {
   title: PROJECT_KICKTRACK.title,
-  tagline: 'Football analytics from match video: tracks every player live, turning their movement into data.',
+  tagline: 'Football analytics from match video: tracks every player in real time and measures their distance, speed and passes in metres.',
   metrics: [
-    { value: 'Live', label: 'follows every player as the match plays' },
-    { value: '2× faster', label: 'each video frame is analysed in half the time' },
-    { value: 'Half the lag', label: 'skipped frames cut from 64% to 33% on the toughest clip' },
+    { value: '64% → 1%', label: 'frames skipped on 50fps footage, down to almost none' },
+    { value: '19 / 19', label: 'frames two overlapping players keep their IDs (was 3)' },
+    { value: '8 of 9', label: 'hand-labelled passes found, none invented' },
   ],
   sections: [
     {
       label: 'Problem',
-      text: 'Match footage is full of performance data (distance, speed, positioning, team shape), but getting at it means tracking every player in every frame, in real time.',
+      text: 'Match footage is full of performance data (distance, speed, positioning, passes), but getting at it means tracking every player in every frame, in real time.',
     },
     {
       label: 'Solution',
-      text: 'YOLO detection running on Apple\'s Neural Engine via CoreML, BoT-SORT tracking with camera-motion compensation, an identity layer anchored to jersey colour, and an async inference thread so playback never stutters.',
+      text: 'YOLO26s detection on Apple\'s Neural Engine via CoreML, BoT-SORT tracking that corrects for camera pans, identities anchored to jersey colour, and pitch calibration that turns pixels into metres. The model runs on its own thread, so playback never stutters.',
     },
     {
       label: 'Impact',
-      text: 'Tracks every player on 50fps footage with live markers. Cut inference from ~70ms to ~30ms per frame and frame drops on the hardest clip from 64% to 33%, without losing a single real detection. Backed by a replay test suite.',
+      text: 'Runs in real time on 50fps broadcast footage on a MacBook. Skipped frames fell from 64% to about 1%, overlapping players keep their IDs, and pass detection found 8 of 9 hand-labelled passes without inventing any.',
     },
   ],
 };
@@ -44,14 +44,14 @@ const FEATURED_DEVELOPER = {
   title: PROJECT_KICKTRACK.title,
   tagline: 'the one that actually fought back',
   metrics: [
-    { value: '50fps', label: 'tracked in real time' },
-    { value: '70 → 30ms', label: 'inference per frame' },
-    { value: '64% → 33%', label: 'frame drops, hardest clip' },
+    { value: '64% → 1%', label: 'frames skipped at 50fps' },
+    { value: '3 → 19/19', label: 'overlap frames, IDs held' },
+    { value: '8/9, 0 fake', label: 'passes, hand-labelled clip' },
   ],
   sections: [
     {
       label: 'What I tried',
-      text: 'ByteTrack, because it\'s fast and simple. The aerial footage pans slightly, and IoU-only matching handed out a new player ID almost every frame. Moved to BoT-SORT for camera-motion compensation.',
+      text: 'ByteTrack, because it\'s fast and simple. The broadcast footage pans and zooms a little, and IoU-only matching handed out a new player ID almost every frame. Moved to BoT-SORT for camera-motion compensation.',
     },
     {
       label: 'What broke',
@@ -59,7 +59,7 @@ const FEATURED_DEVELOPER = {
     },
     {
       label: 'What I learned',
-      text: 'Verify visually, not just by counters. Every smaller, faster model "passed" the benchmarks while missing real players. The fix was anchoring identity to jersey colour and an NMS-free YOLO26 head, checked frame by frame.',
+      text: 'Verify visually, not just by counters. Every smaller, faster model "passed" the benchmarks while missing real players. The fix was keeping full resolution on the Neural Engine, anchoring identity to jersey colour and switching to YOLO26s, checked frame by frame.',
     },
   ],
 };
@@ -251,39 +251,22 @@ export const ProjectSection = ({ viewerType }: ProjectSectionProps) => {
 
 // ── sub-components ────────────────────────────────────────────────────────────
 
-const DEMOS_CACHE_KEY = 'hy_kicktrack_demos';
-const DEMOS_CACHE_TTL = 60 * 60 * 1000; // 1 hr — the GitHub API allows 60 unauthenticated requests/hr
-
 interface DemoVideo {
   src: string;
-  poster?: string;
+  poster: string;
+  title: string;
 }
 
 async function fetchDemoVideos(): Promise<DemoVideo[]> {
-  try {
-    const cached = JSON.parse(sessionStorage.getItem(DEMOS_CACHE_KEY) ?? 'null');
-    if (cached && Date.now() - cached.fetchedAt < DEMOS_CACHE_TTL) return cached.videos;
-  } catch { /* ignore */ }
-
-  const res = await fetch(PROJECT_KICKTRACK.demosApiUrl);
-  if (!res.ok) throw new Error(`GitHub API ${res.status}`);
-  const names = new Set(((await res.json()) as { name: string }[]).map((f) => f.name));
-
-  const videos = [...names]
-    .filter((name) => name.toLowerCase().endsWith('.mp4'))
-    .sort((a, b) => a.localeCompare(b, undefined, { numeric: true }))
-    .map((name) => {
-      const poster = name.replace(/\.mp4$/i, '.jpg');
-      return {
-        src: `${PROJECT_KICKTRACK.demosBaseUrl}/${name}`,
-        poster: names.has(poster) ? `${PROJECT_KICKTRACK.demosBaseUrl}/${poster}` : undefined,
-      };
-    });
-
-  try {
-    sessionStorage.setItem(DEMOS_CACHE_KEY, JSON.stringify({ videos, fetchedAt: Date.now() }));
-  } catch { /* ignore */ }
-  return videos;
+  const base = PROJECT_KICKTRACK.demosBaseUrl;
+  const res = await fetch(`${base}/list.json`);
+  if (!res.ok) throw new Error(`demos list ${res.status}`);
+  const list = (await res.json()) as { name: string; title: string }[];
+  return list.map(({ name, title }) => ({
+    src: `${base}/${name}.mp4`,
+    poster: `${base}/${name}.jpg`,
+    title,
+  }));
 }
 
 function formatTime(seconds: number) {
@@ -316,7 +299,7 @@ function DemoPlayer({
   const [isFullscreen, setIsFullscreen] = useState(false);
   const playable = demos?.map((_, i) => i).filter((i) => !failed.has(i)) ?? [];
   const current = demos?.[active];
-  const label = `Video ${active + 1}`;
+  const label = current?.title ?? '';
   const progress = time.duration ? (time.current / time.duration) * 100 : 0;
 
   useEffect(() => {
@@ -351,7 +334,7 @@ function DemoPlayer({
     setActive(i);
     setTime({ current: 0, duration: 0 });
     setUserPaused(false);
-    event('demo_clip_selected', { category: 'Portfolio', label: `Video ${i + 1}` });
+    event('demo_clip_selected', { category: 'Portfolio', label: demos?.[i].title });
   };
 
   const togglePlay = () => {
@@ -430,7 +413,7 @@ function DemoPlayer({
             }
             onEnded={handleEnded}
             onError={handleError}
-            aria-label={`${title} demo: ${label}, live player tracking on match footage`}
+            aria-label={`${title} demo: live player tracking on ${label} match footage`}
             className="h-full w-full cursor-pointer"
             style={{ objectFit: isFullscreen ? 'contain' : 'cover', display: 'block' }}
           />
@@ -518,7 +501,7 @@ function DemoPlayer({
                 key={video.src}
                 role="tab"
                 aria-selected={i === active}
-                aria-label={`Play video ${i + 1}`}
+                aria-label={`Play ${video.title} clip`}
                 onClick={() => selectClip(i)}
                 className={`relative shrink-0 overflow-hidden transition-opacity ${
                   i === active ? 'opacity-100' : 'opacity-60 hover:opacity-90'
@@ -531,10 +514,8 @@ function DemoPlayer({
                   background: 'var(--bg-surface)',
                 }}
               >
-                {video.poster && (
-                  // eslint-disable-next-line @next/next/no-img-element
-                  <img src={video.poster} alt="" loading="lazy" className="h-full w-full object-cover" />
-                )}
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img src={video.poster} alt="" loading="lazy" className="h-full w-full object-cover" />
                 <span
                   className="absolute bottom-1.5 left-1.5 flex items-center gap-1.5"
                   style={{
@@ -549,7 +530,7 @@ function DemoPlayer({
                   {i === active && playing && (
                     <span className="h-1.5 w-1.5 animate-pulse rounded-full" style={{ background: accent }} />
                   )}
-                  Video {i + 1}
+                  {video.title}
                 </span>
                 {i === active && (
                   <span
@@ -682,7 +663,27 @@ function FeaturedCard({
             ))}
           </div>
 
-          <div className="mt-auto">
+          <div className="mt-auto flex flex-wrap gap-2">
+            <motion.a
+              href={PROJECT_KICKTRACK.writeupUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              onClick={() => event('writeup_view', { category: 'Portfolio', label: project.title })}
+              className="inline-flex items-center gap-2"
+              style={{
+                color: 'var(--bg)',
+                background: accent,
+                border: `1px solid ${accent}`,
+                borderRadius: '8px',
+                padding: '0.55rem 1rem',
+                fontSize: '0.875rem',
+                fontWeight: 600,
+                textDecoration: 'none',
+              }}
+              whileHover={{ y: -2 }}
+            >
+              Read how it works <ArrowRight size={14} />
+            </motion.a>
             {PROJECT_KICKTRACK.repoPublic ? (
               <motion.a
                 href={PROJECT_KICKTRACK.githubUrl}
@@ -692,7 +693,6 @@ function FeaturedCard({
                 className="inline-flex items-center gap-2"
                 style={{
                   color: accent,
-                  background: `${accent}14`,
                   border: `1px solid ${accent}55`,
                   borderRadius: '8px',
                   padding: '0.55rem 1rem',
@@ -702,10 +702,10 @@ function FeaturedCard({
                 }}
                 whileHover={{ y: -2 }}
               >
-                <Github size={16} /> View code on GitHub <ExternalLink size={14} />
+                <Github size={16} /> Code <ExternalLink size={14} />
               </motion.a>
             ) : (
-              <span style={{ color: 'var(--fg-4)', fontSize: '0.875rem' }}>Code going public soon</span>
+              <span style={{ color: 'var(--fg-4)', fontSize: '0.875rem', alignSelf: 'center' }}>Code going public soon</span>
             )}
           </div>
         </div>
