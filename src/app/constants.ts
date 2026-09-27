@@ -27,7 +27,7 @@ export const COUNTRIES_SERVED  = '130+';
 // ── contact ───────────────────────────────────────────────────────────────────
 export const EMAIL             = 'hemant.10.yadav@gmail.com';
 export const GITHUB_USERNAME   = 'hemant10yadav';
-export const LINKEDIN_HANDLE   = 'hemantyad';
+export const LINKEDIN_HANDLE   = 'hemantyadv';
 export const SO_USER_ID        = '20470646';
 
 // ── derived URLs ──────────────────────────────────────────────────────────────
