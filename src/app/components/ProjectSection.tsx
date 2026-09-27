@@ -2,10 +2,10 @@
 
 import { AnimatePresence, motion } from 'framer-motion';
 import { ArrowRight, ArrowUpRight, ChevronDown, ExternalLink, Github, Maximize2, Minimize2, Pause, Play } from 'lucide-react';
-import { CSSProperties, useCallback, useEffect, useRef, useState } from 'react';
+import { CSSProperties, ReactNode, useCallback, useEffect, useRef, useState } from 'react';
 import { event } from 'nextjs-google-analytics';
 import { ViewerType, useViewer } from '../context/ViewerContext';
-import { PROJECT_KICKTRACK, PROJECT_ECOMMERCE, PROJECT_ESTORE, PROJECT_BOOKSTORE } from '../constants';
+import { PROJECT_KICKTRACK, PROJECT_SYNCSIM, PROJECT_ECOMMERCE, PROJECT_ESTORE, PROJECT_BOOKSTORE } from '../constants';
 
 interface ProjectSectionProps {
   viewerType: NonNullable<ViewerType>;
@@ -13,54 +13,131 @@ interface ProjectSectionProps {
 
 // ── project data for both views ──────────────────────────────────────────────
 
-const FEATURED_STACK = ['Python', 'YOLO26s', 'BoT-SORT', 'OpenCV', 'CoreML', 'PnLCalib'];
+interface FeaturedContent {
+  tagline: string;
+  metrics: { value: string; label: string }[];
+  sections: { label: string; text: string }[];
+}
 
-const FEATURED_RECRUITER = {
+interface FeaturedProject {
+  title: string;
+  trackLabel: string;
+  badge: Record<NonNullable<ViewerType>, string>;
+  stack: string[];
+  // The first link is the primary call to action
+  links: { href: string; label: string; event: string }[];
+  codeUrl: string | null;
+  recruiter: FeaturedContent;
+  developer: FeaturedContent;
+}
+
+const KICKTRACK: FeaturedProject = {
   title: PROJECT_KICKTRACK.title,
-  tagline: 'Football analytics from match video: tracks every player in real time and measures their distance, speed and passes in metres.',
-  metrics: [
-    { value: '64% → 1%', label: 'frames skipped on 50fps footage, down to almost none' },
-    { value: '19 / 19', label: 'frames two overlapping players keep their IDs (was 3)' },
-    { value: '8 of 9', label: 'hand-labelled passes found, none invented' },
-  ],
-  sections: [
-    {
-      label: 'Problem',
-      text: 'Match footage is full of performance data (distance, speed, positioning, passes), but getting at it means tracking every player in every frame, in real time.',
-    },
-    {
-      label: 'Solution',
-      text: 'YOLO26s detection on Apple\'s Neural Engine via CoreML, BoT-SORT tracking that corrects for camera pans, identities anchored to jersey colour, and pitch calibration that turns pixels into metres. The model runs on its own thread, so playback never stutters.',
-    },
-    {
-      label: 'Impact',
-      text: 'Runs in real time on 50fps broadcast footage on a MacBook. Skipped frames fell from 64% to about 1%, overlapping players keep their IDs, and pass detection found 8 of 9 hand-labelled passes without inventing any.',
-    },
-  ],
+  trackLabel: '#04 kicktrack 0.99',
+  badge: { recruiter: '★ Featured · in progress', developer: '// featured --wip' },
+  stack: ['Python', 'YOLO26s', 'BoT-SORT', 'OpenCV', 'CoreML', 'PnLCalib'],
+  links: [{ href: PROJECT_KICKTRACK.writeupUrl, label: 'Read how it works', event: 'writeup_view' }],
+  codeUrl: PROJECT_KICKTRACK.repoPublic ? PROJECT_KICKTRACK.githubUrl : null,
+  recruiter: {
+    tagline: 'Football analytics from match video: tracks every player in real time and measures their distance, speed and passes in metres.',
+    metrics: [
+      { value: '64% → 1%', label: 'frames skipped on 50fps footage, down to almost none' },
+      { value: '19 / 19', label: 'frames two overlapping players keep their IDs (was 3)' },
+      { value: '8 of 9', label: 'hand-labelled passes found, none invented' },
+    ],
+    sections: [
+      {
+        label: 'Problem',
+        text: 'Match footage is full of performance data (distance, speed, positioning, passes), but getting at it means tracking every player in every frame, in real time.',
+      },
+      {
+        label: 'Solution',
+        text: 'YOLO26s detection on Apple\'s Neural Engine via CoreML, BoT-SORT tracking that corrects for camera pans, identities anchored to jersey colour, and pitch calibration that turns pixels into metres. The model runs on its own thread, so playback never stutters.',
+      },
+      {
+        label: 'Impact',
+        text: 'Runs in real time on 50fps broadcast footage on a MacBook. Skipped frames fell from 64% to about 1%, overlapping players keep their IDs, and pass detection found 8 of 9 hand-labelled passes without inventing any.',
+      },
+    ],
+  },
+  developer: {
+    tagline: 'the one that actually fought back',
+    metrics: [
+      { value: '64% → 1%', label: 'frames skipped at 50fps' },
+      { value: '3 → 19/19', label: 'overlap frames, IDs held' },
+      { value: '8/9, 0 fake', label: 'passes, hand-labelled clip' },
+    ],
+    sections: [
+      {
+        label: 'What I tried',
+        text: 'ByteTrack, because it\'s fast and simple. The broadcast footage pans and zooms a little, and IoU-only matching handed out a new player ID almost every frame. Moved to BoT-SORT for camera-motion compensation.',
+      },
+      {
+        label: 'What broke',
+        text: 'IDs still swapped with no lost track: the detector returned one box over two overlapping players, and when it shrank back the ID landed on the wrong body. A goalkeeper\'s ID walked off with a defender.',
+      },
+      {
+        label: 'What I learned',
+        text: 'Verify visually, not just by counters. Every smaller, faster model "passed" the benchmarks while missing real players. The fix was keeping full resolution on the Neural Engine, anchoring identity to jersey colour and switching to YOLO26s, checked frame by frame.',
+      },
+    ],
+  },
 };
 
-const FEATURED_DEVELOPER = {
-  title: PROJECT_KICKTRACK.title,
-  tagline: 'the one that actually fought back',
-  metrics: [
-    { value: '64% → 1%', label: 'frames skipped at 50fps' },
-    { value: '3 → 19/19', label: 'overlap frames, IDs held' },
-    { value: '8/9, 0 fake', label: 'passes, hand-labelled clip' },
+const SYNCSIM: FeaturedProject = {
+  title: PROJECT_SYNCSIM.title,
+  trackLabel: '#05 syncsim 0.97',
+  badge: { recruiter: '★ Featured · live demo', developer: '// featured --live' },
+  stack: ['TypeScript', 'React', 'Vitest', 'fast-check', 'Playwright', 'BroadcastChannel'],
+  links: [
+    { href: PROJECT_SYNCSIM.demoUrl, label: 'Try it live', event: 'demo_viewed' },
+    { href: PROJECT_SYNCSIM.approachUrl, label: 'Read the approach', event: 'writeup_view' },
   ],
-  sections: [
-    {
-      label: 'What I tried',
-      text: 'ByteTrack, because it\'s fast and simple. The broadcast footage pans and zooms a little, and IoU-only matching handed out a new player ID almost every frame. Moved to BoT-SORT for camera-motion compensation.',
-    },
-    {
-      label: 'What broke',
-      text: 'IDs still swapped with no lost track: the detector returned one box over two overlapping players, and when it shrank back the ID landed on the wrong body. A goalkeeper\'s ID walked off with a defender.',
-    },
-    {
-      label: 'What I learned',
-      text: 'Verify visually, not just by counters. Every smaller, faster model "passed" the benchmarks while missing real players. The fix was keeping full resolution on the Neural Engine, anchoring identity to jersey colour and switching to YOLO26s, checked frame by frame.',
-    },
-  ],
+  codeUrl: PROJECT_SYNCSIM.githubUrl,
+  recruiter: {
+    tagline: 'Several phones edit the same record offline. syncsim merges their changes when they reconnect, so nobody\'s work silently disappears, and lets you watch every step.',
+    metrics: [
+      { value: '700', label: 'random offline histories replayed on every test run' },
+      { value: '5 / 5', label: 'deliberately planted bugs caught by the tests' },
+      { value: '3 + 2', label: 'merge strategies and CRDTs, compared on the same edits' },
+    ],
+    sections: [
+      {
+        label: 'Problem',
+        text: 'Phones that edit offline must agree once they reconnect. A naive merge keeps one edit and silently drops the other, and a phone whose clock runs fast wins every conflict.',
+      },
+      {
+        label: 'Solution',
+        text: 'A sync engine written from scratch in TypeScript: hybrid logical clocks, an operation log with version vectors, three merge strategies and two CRDTs. A seeded network simulator drops, delays, duplicates and reorders messages.',
+      },
+      {
+        label: 'Impact',
+        text: 'Every test run replays 700 random histories with clocks up to an hour wrong and up to 30% message loss, and every phone must end up identical. The design doc spells out where it would break in production.',
+      },
+    ],
+  },
+  developer: {
+    tagline: 'the one where the tests had to prove they could fail',
+    metrics: [
+      { value: '700 runs', label: 'random histories, 30% loss' },
+      { value: '5/5', label: 'planted bugs caught' },
+      { value: '0 libs', label: 'merge logic by hand' },
+    ],
+    sections: [
+      {
+        label: 'What I tried',
+        text: 'Stamp each write with the writer\'s version vector, treat it as replaced once a later vector covers it, and keep only the current winners as ops arrive.',
+      },
+      {
+        label: 'What broke',
+        text: 'On paper, before any code. Version vectors only cover the unbroken run of ops, so values seen past a gap showed up as false conflicts. And dropping losers on arrival made the result depend on arrival order.',
+      },
+      {
+        label: 'What I learned',
+        text: 'Record exactly what each write replaced and derive state from the full set of ops, so order can\'t matter. And make every test prove it can fail: a planted "latest arrival wins" bug was caught in 24 runs.',
+      },
+    ],
+  },
 };
 
 interface EarlierProject {
@@ -187,13 +264,39 @@ export const ProjectSection = ({ viewerType }: ProjectSectionProps) => {
           </motion.p>
         </motion.div>
 
-        <FeaturedCard
-          key={`featured-${viewerType}`}
-          project={isRecruiter ? FEATURED_RECRUITER : FEATURED_DEVELOPER}
-          isRecruiter={isRecruiter}
-          accent={accent}
-          onCodeView={() => handleCodeView(PROJECT_KICKTRACK.title)}
-        />
+        <div className="flex flex-col gap-14">
+          <FeaturedCard
+            key={`kicktrack-${viewerType}`}
+            project={KICKTRACK}
+            isRecruiter={isRecruiter}
+            accent={accent}
+            onCodeView={() => handleCodeView(KICKTRACK.title)}
+            media={(onFail) => (
+              <DemoPlayer
+                title={KICKTRACK.title}
+                demosBaseUrl={PROJECT_KICKTRACK.demosBaseUrl}
+                accent={accent}
+                onAllFailed={onFail}
+              />
+            )}
+          />
+          <FeaturedCard
+            key={`syncsim-${viewerType}`}
+            project={SYNCSIM}
+            isRecruiter={isRecruiter}
+            accent={accent}
+            onCodeView={() => handleCodeView(SYNCSIM.title)}
+            media={(onFail) => (
+              <DemoPlayer
+                title={SYNCSIM.title}
+                demosBaseUrl={PROJECT_SYNCSIM.demosBaseUrl}
+                accent={accent}
+                onAllFailed={onFail}
+              />
+            )}
+            reverse
+          />
+        </div>
 
         <p
           style={{
@@ -234,8 +337,7 @@ interface DemoVideo {
   title: string;
 }
 
-async function fetchDemoVideos(): Promise<DemoVideo[]> {
-  const base = PROJECT_KICKTRACK.demosBaseUrl;
+async function fetchDemoVideos(base: string): Promise<DemoVideo[]> {
   const res = await fetch(`${base}/list.json`);
   if (!res.ok) throw new Error(`demos list ${res.status}`);
   const list = (await res.json()) as { name: string; title: string }[];
@@ -257,10 +359,12 @@ const OVERLAY_BG = 'rgba(0,0,0,0.55)';
 
 function DemoPlayer({
   title,
+  demosBaseUrl,
   accent,
   onAllFailed,
 }: {
   title: string;
+  demosBaseUrl: string;
   accent: string;
   onAllFailed: () => void;
 }) {
@@ -280,10 +384,10 @@ function DemoPlayer({
   const progress = time.duration ? (time.current / time.duration) * 100 : 0;
 
   useEffect(() => {
-    fetchDemoVideos()
+    fetchDemoVideos(demosBaseUrl)
       .then((videos) => (videos.length ? setDemos(videos) : onAllFailed()))
       .catch(onAllFailed);
-  }, [onAllFailed]);
+  }, [demosBaseUrl, onAllFailed]);
 
   useEffect(() => {
     if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) setUserPaused(true);
@@ -390,7 +494,7 @@ function DemoPlayer({
             }
             onEnded={handleEnded}
             onError={handleError}
-            aria-label={`${title} demo: live player tracking on ${label} match footage`}
+            aria-label={`${title} demo: ${label}`}
             className="h-full w-full cursor-pointer"
             style={{ objectFit: isFullscreen ? 'contain' : 'cover', display: 'block' }}
           />
@@ -534,15 +638,30 @@ function FeaturedCard({
   isRecruiter,
   accent,
   onCodeView,
+  media,
+  reverse = false,
 }: {
-  project: typeof FEATURED_RECRUITER;
+  project: FeaturedProject;
   isRecruiter: boolean;
   accent: string;
   onCodeView: () => void;
+  media: (onFail: () => void) => ReactNode;
+  // Text on the left, media on the right
+  reverse?: boolean;
 }) {
   // Hide the media pane if the demo video is missing, instead of showing a broken player
   const [videoFailed, setVideoFailed] = useState(false);
   const hideVideo = useCallback(() => setVideoFailed(true), []);
+  const content = isRecruiter ? project.recruiter : project.developer;
+  const [primary, ...secondary] = project.links;
+  const trackLink = (name: string) => () => event(name, { category: 'Portfolio', label: project.title });
+  const buttonStyle: CSSProperties = {
+    borderRadius: '8px',
+    padding: '0.55rem 1rem',
+    fontSize: '0.875rem',
+    fontWeight: 600,
+    textDecoration: 'none',
+  };
   const labelColors = isRecruiter
     ? [accent, accent, 'var(--color-success)']
     : [accent, 'var(--color-danger)', 'var(--color-success)'];
@@ -561,9 +680,13 @@ function FeaturedCard({
         padding: 'clamp(1.25rem, 4vw, 2rem)',
       }}
     >
-      <BoundingBox accent={accent} label="#04 kicktrack 0.99" radius={16} />
-      <div className={`grid gap-8 ${videoFailed ? '' : 'lg:grid-cols-[1.65fr_1fr]'}`}>
-        {!videoFailed && <DemoPlayer title={project.title} accent={accent} onAllFailed={hideVideo} />}
+      <BoundingBox accent={accent} label={project.trackLabel} radius={16} />
+      <div
+        className={`grid gap-8 ${
+          videoFailed ? '' : reverse ? 'lg:grid-cols-[1fr_1.45fr]' : 'lg:grid-cols-[1.65fr_1fr]'
+        }`}
+      >
+        {!videoFailed && <div className={`min-w-0 ${reverse ? 'lg:order-last' : ''}`}>{media(hideVideo)}</div>}
 
         <div className="flex flex-col">
           <span
@@ -575,7 +698,7 @@ function FeaturedCard({
               textTransform: 'uppercase',
             }}
           >
-            {isRecruiter ? '★ Featured · in progress' : '// featured --wip'}
+            {project.badge[isRecruiter ? 'recruiter' : 'developer']}
           </span>
           <h3
             style={{
@@ -591,11 +714,11 @@ function FeaturedCard({
             {project.title}
           </h3>
           <p style={{ color: 'var(--fg-3)', fontSize: '0.95rem', marginTop: '0.4rem' }}>
-            {project.tagline}
+            {content.tagline}
           </p>
 
           <dl className="my-6 grid grid-cols-1 gap-3 sm:grid-cols-3 lg:grid-cols-1">
-            {project.metrics.map(({ value, label }) => (
+            {content.metrics.map(({ value, label }) => (
               <div
                 key={label}
                 className="flex flex-col-reverse"
@@ -624,7 +747,7 @@ function FeaturedCard({
           </dl>
 
           <div className="mb-6 flex flex-wrap gap-1.5">
-            {FEATURED_STACK.map((tech) => (
+            {project.stack.map((tech) => (
               <span
                 key={tech}
                 style={{
@@ -641,43 +764,40 @@ function FeaturedCard({
             ))}
           </div>
 
-          <div className="mt-auto flex flex-wrap gap-2">
+          <div className="flex flex-wrap gap-2">
             <motion.a
-              href={PROJECT_KICKTRACK.writeupUrl}
+              href={primary.href}
               target="_blank"
               rel="noopener noreferrer"
-              onClick={() => event('writeup_view', { category: 'Portfolio', label: project.title })}
+              onClick={trackLink(primary.event)}
               className="inline-flex items-center gap-2"
-              style={{
-                color: 'var(--bg)',
-                background: accent,
-                border: `1px solid ${accent}`,
-                borderRadius: '8px',
-                padding: '0.55rem 1rem',
-                fontSize: '0.875rem',
-                fontWeight: 600,
-                textDecoration: 'none',
-              }}
+              style={{ ...buttonStyle, color: 'var(--bg)', background: accent, border: `1px solid ${accent}` }}
               whileHover={{ y: -2 }}
             >
-              Read how it works <ArrowRight size={14} />
+              {primary.label} <ArrowRight size={14} />
             </motion.a>
-            {PROJECT_KICKTRACK.repoPublic ? (
+            {secondary.map((link) => (
               <motion.a
-                href={PROJECT_KICKTRACK.githubUrl}
+                key={link.href}
+                href={link.href}
+                target="_blank"
+                rel="noopener noreferrer"
+                onClick={trackLink(link.event)}
+                className="inline-flex items-center gap-2"
+                style={{ ...buttonStyle, color: accent, border: `1px solid ${accent}55` }}
+                whileHover={{ y: -2 }}
+              >
+                {link.label}
+              </motion.a>
+            ))}
+            {project.codeUrl ? (
+              <motion.a
+                href={project.codeUrl}
                 target="_blank"
                 rel="noopener noreferrer"
                 onClick={onCodeView}
                 className="inline-flex items-center gap-2"
-                style={{
-                  color: accent,
-                  border: `1px solid ${accent}55`,
-                  borderRadius: '8px',
-                  padding: '0.55rem 1rem',
-                  fontSize: '0.875rem',
-                  fontWeight: 600,
-                  textDecoration: 'none',
-                }}
+                style={{ ...buttonStyle, color: accent, border: `1px solid ${accent}55` }}
                 whileHover={{ y: -2 }}
               >
                 <Github size={16} /> Code <ExternalLink size={14} />
@@ -690,7 +810,7 @@ function FeaturedCard({
       </div>
 
       <div className="mt-8 grid gap-6 pt-6 md:grid-cols-3" style={{ borderTop: '1px solid var(--border-2)' }}>
-        {project.sections.map(({ label, text }, i) => (
+        {content.sections.map(({ label, text }, i) => (
           <div key={label}>
             <span
               style={{

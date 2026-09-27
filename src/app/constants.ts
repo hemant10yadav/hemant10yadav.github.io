@@ -117,6 +117,15 @@ export const PROJECT_KICKTRACK = {
   demosBaseUrl: `${SITE_URL}/KickTrack/demos`,
 } as const;
 
+export const PROJECT_SYNCSIM = {
+  title:       'syncsim',
+  githubUrl:   `${GITHUB_URL}/syncsim`,
+  demoUrl:     `${SITE_URL}/syncsim/`,
+  approachUrl: `${GITHUB_URL}/syncsim/blob/main/docs/APPROACH.md`,
+  // Same demos/list.json format as KickTrack
+  demosBaseUrl: `${SITE_URL}/syncsim/demos`,
+} as const;
+
 export const PROJECT_ECOMMERCE = {
   title:     'E-Commerce Platform',
   githubUrl: `${GITHUB_URL}/E-Commerce-website`,
