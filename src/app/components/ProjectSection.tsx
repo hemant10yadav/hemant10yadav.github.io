@@ -680,13 +680,13 @@ function FeaturedCard({
         padding: 'clamp(1.25rem, 4vw, 2rem)',
       }}
     >
-      <BoundingBox accent={accent} label={project.trackLabel} radius={16} />
+      <BoundingBox accent={accent} label={isRecruiter ? undefined : project.trackLabel} radius={16} />
       <div
         className={`grid gap-8 ${
           videoFailed ? '' : reverse ? 'lg:grid-cols-[1fr_1.45fr]' : 'lg:grid-cols-[1.65fr_1fr]'
         }`}
       >
-        {!videoFailed && <div className={`min-w-0 ${reverse ? 'lg:order-last' : ''}`}>{media(hideVideo)}</div>}
+        {!videoFailed && <div className={`min-w-0 lg:self-center ${reverse ? 'lg:order-last' : ''}`}>{media(hideVideo)}</div>}
 
         <div className="flex flex-col">
           <span
@@ -834,7 +834,7 @@ function FeaturedCard({
 }
 
 // Computer-vision style bounding box, echoing KickTrack's player-tracking overlay
-function BoundingBox({ accent, label, radius = 6 }: { accent: string; label: string; radius?: number }) {
+function BoundingBox({ accent, label, radius = 6 }: { accent: string; label?: string; radius?: number }) {
   const edge = `2px solid ${accent}`;
   const corners: CSSProperties[] = [
     { top: -1, left: -1, borderTop: edge, borderLeft: edge, borderTopLeftRadius: radius },
@@ -852,22 +852,24 @@ function BoundingBox({ accent, label, radius = 6 }: { accent: string; label: str
       {corners.map((style, i) => (
         <span key={i} className="absolute" style={{ width: 16, height: 16, ...style }} />
       ))}
-      <span
-        className="absolute whitespace-nowrap tabular-nums"
-        style={{
-          bottom: '100%',
-          left: radius > 8 ? radius : -1,
-          background: accent,
-          color: 'var(--bg)',
-          fontFamily: 'var(--font-jetbrains-mono), monospace',
-          fontSize: '0.65rem',
-          fontWeight: 600,
-          padding: '0.1rem 0.45rem',
-          borderRadius: '4px 4px 0 0',
-        }}
-      >
-        {label}
-      </span>
+      {label && (
+        <span
+          className="absolute whitespace-nowrap tabular-nums"
+          style={{
+            bottom: '100%',
+            left: radius > 8 ? radius : -1,
+            background: accent,
+            color: 'var(--bg)',
+            fontFamily: 'var(--font-jetbrains-mono), monospace',
+            fontSize: '0.65rem',
+            fontWeight: 600,
+            padding: '0.1rem 0.45rem',
+            borderRadius: '4px 4px 0 0',
+          }}
+        >
+          {label}
+        </span>
+      )}
     </div>
   );
 }
@@ -949,7 +951,11 @@ function TrackedList({
         {target && (
           <BoundingBox
             accent={accent}
-            label={`#${String(active! + 1).padStart(2, '0')} ${target.slug} ${(target.confidence + jitter.conf).toFixed(2)}`}
+            label={
+              isRecruiter
+                ? undefined
+                : `#${String(active! + 1).padStart(2, '0')} ${target.slug} ${(target.confidence + jitter.conf).toFixed(2)}`
+            }
           />
         )}
       </motion.div>

@@ -27,7 +27,7 @@ export const NavBar = () => {
 
   useEffect(() => {
     if (isLab) return;
-    const sections = ['about', 'projects', 'skills'];
+    const sections = ['about', 'experience', 'projects', 'skills', 'contact'];
     const observers: IntersectionObserver[] = [];
     sections.forEach((id) => {
       const el = document.getElementById(id);
@@ -43,9 +43,10 @@ export const NavBar = () => {
   }, [isLab]);
 
   const hashLinks = [
-    { id: 'about',    label: 'About' },
-    { id: 'projects', label: 'Projects' },
-    { id: 'skills',   label: 'Skills' },
+    { id: 'about',      label: 'About' },
+    { id: 'experience', label: 'Experience' },
+    { id: 'projects',   label: 'Projects' },
+    { id: 'skills',     label: 'Skills' },
   ];
 
   const navLinkColor = 'var(--fg-3)';
@@ -97,6 +98,7 @@ export const NavBar = () => {
                   href={`#${link.id}`}
                   onClick={() => setActiveSection(link.id)}
                   whileHover={{ scale: 1.04 }}
+                  className="hidden md:block"
                   style={{
                     position: 'relative', padding: '0.4rem 0.55rem', borderRadius: '6px',
                     fontSize: 'clamp(0.7rem, 2vw, 0.85rem)',
@@ -203,7 +205,8 @@ export const NavBar = () => {
                 (e.currentTarget as HTMLButtonElement).style.borderColor = `${accent}30`;
               }}
             >
-              {isRecruiter ? 'Recruiter View' : 'Dev View'} ⇄
+              {isRecruiter ? 'Recruiter' : 'Dev'}
+              <span className="hidden sm:inline"> View</span> ⇄
             </motion.button>
           </div>
         </div>

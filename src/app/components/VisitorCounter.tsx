@@ -80,12 +80,12 @@ export default function VisitorCounter() {
         initial={{ opacity: 0, y: 12 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.4, delay: 1 }}
+        className="hidden sm:flex"
         style={{
           position: 'fixed',
           bottom: '1rem',
           left: '2rem',
           zIndex: 30,
-          display: 'flex',
           alignItems: 'center',
           gap: '0.5rem',
           padding: '0.4rem 0.75rem',

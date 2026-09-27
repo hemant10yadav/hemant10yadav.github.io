@@ -72,7 +72,7 @@ export default function EasterEgg() {
   return (
     <>
       {/* Trigger line */}
-      <div className="flex justify-center pb-16 pt-8">
+      <div className="flex justify-center pb-8 pt-4">
         <motion.button
           onClick={handleOpen}
           whileHover={{ color: 'var(--fg)' }}

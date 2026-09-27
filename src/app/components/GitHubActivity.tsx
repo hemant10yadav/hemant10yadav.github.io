@@ -101,6 +101,7 @@ export default function GitHubActivity() {
           href={GITHUB_URL}
           target="_blank"
           rel="noopener noreferrer"
+          aria-label={label}
           initial={{ opacity: 0, y: 12 }}
           animate={{ opacity: 1, y: 0 }}
           exit={{ opacity: 0, y: 12 }}
@@ -156,6 +157,7 @@ export default function GitHubActivity() {
           </span>
 
           <span
+            className="hidden sm:inline"
             style={{
               fontFamily: 'var(--font-jetbrains-mono), monospace',
               fontSize: '0.7rem',
