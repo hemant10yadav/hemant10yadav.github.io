@@ -117,7 +117,7 @@ const getExperiences = (mergedPrs: string): Experience[] => [
         >
           {SARAL.name}
         </a>
-        , which was later acquired by {XCALIBER.name}.
+        , which was later acquired by {XCALIBER.name}
       </>
     ),
     commitMsg: "feat: joined Xcaliber Infotech",
@@ -149,7 +149,7 @@ export default function ExperienceSection({ viewerType }: ExperienceSectionProps
   };
 
   return (
-    <section className="relative py-20 overflow-hidden" style={{ background: 'var(--bg)' }}>
+    <section id="experience" className="relative py-20 overflow-hidden" style={{ background: 'var(--bg)' }}>
       {/* Subtle accent glow */}
       <div
         className="absolute inset-0 pointer-events-none"
@@ -160,7 +160,7 @@ export default function ExperienceSection({ viewerType }: ExperienceSectionProps
         }}
       />
 
-      <div className="container mx-auto px-6 max-w-5xl relative">
+      <div className="container mx-auto px-6 relative">
         {/* ── Heading ──────────────────────────────────────────────────────────── */}
         <motion.div
           key={viewerType}
@@ -274,7 +274,7 @@ function ImpactPoint({ point, accent }: { point: string; accent: string }) {
         lineHeight: 1.6,
       }}
     >
-      <span style={{ color: accent, marginTop: '0.35rem', flexShrink: 0 }}>▸</span>
+      <span style={{ color: accent, flexShrink: 0 }}>▸</span>
       {point}
     </li>
   );
@@ -374,7 +374,7 @@ function RecruiterTimeline({
                 height: '2.5rem',
                 borderRadius: '50%',
                 background: exp.current ? `${accent}20` : 'var(--bg-input)',
-                border: `2px solid ${exp.current ? accent : 'rgba(255,255,255,0.1)'}`,
+                border: `2px solid ${exp.current ? accent : 'var(--border)'}`,
                 boxShadow: exp.current ? `0 0 16px ${accent}40` : 'none',
               }}
             >
@@ -547,7 +547,7 @@ function RecruiterTimeline({
                   }}
                 >
                   <Info size={14} style={{ color: accent, flexShrink: 0, marginTop: '0.15rem' }} />
-                  {exp.note}
+                  <span>{exp.note}</span>
                 </p>
               )}
 

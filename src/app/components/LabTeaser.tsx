@@ -22,7 +22,7 @@ export default function LabTeaser() {
       style={{
         maxWidth: '72rem',
         margin: '0 auto',
-        padding: 'clamp(2rem, 6vw, 4rem) 1.5rem clamp(3rem, 8vw, 6rem)',
+        padding: 'clamp(2rem, 6vw, 4rem) 1.5rem clamp(2rem, 5vw, 3rem)',
       }}
     >
       {/* Divider line */}

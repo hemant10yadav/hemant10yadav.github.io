@@ -135,7 +135,7 @@ export default function SkillSection({ viewerType }: SkillSectionProps) {
 
   return (
     <section
-      className="relative py-32 overflow-hidden"
+      className="relative pt-32 pb-12 overflow-hidden"
       style={{ background: 'var(--bg)' }}
     >
       <canvas ref={canvasRef} className="absolute inset-0 w-full h-full pointer-events-none" />

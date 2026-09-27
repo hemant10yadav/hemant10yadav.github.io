@@ -10,6 +10,7 @@ import { ProjectSection } from './components/ProjectSection';
 import ExperienceSection from './components/ExperienceSection';
 import EasterEgg from './components/EasterEgg';
 import LabTeaser from './components/LabTeaser';
+import ContactSection from './components/ContactSection';
 
 function PortfolioApp() {
   const { viewerType } = useViewer();
@@ -34,8 +35,9 @@ function PortfolioApp() {
             <SkillSection viewerType={viewerType} />
           </section>
           <LabTeaser />
+          <EasterEgg />
+          <ContactSection viewerType={viewerType} />
         </main>
-        <EasterEgg />
       </motion.div>
     </>
   );
