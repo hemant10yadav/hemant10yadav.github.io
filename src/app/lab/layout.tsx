@@ -3,7 +3,7 @@ import { FULL_NAME, SITE_URL } from '../constants';
 
 const PAGE_TITLE = `Lab - ${FULL_NAME}`;
 const PAGE_DESCRIPTION =
-  'Experiments and side projects: a live tech briefing (Pulse) and an interactive terminal with a virtual filesystem, built by Hemant Singh Yadav.';
+  'An interactive terminal with a virtual filesystem, hidden files and a few surprises, built by Hemant Singh Yadav.';
 
 export const metadata: Metadata = {
   title: PAGE_TITLE,

@@ -24,7 +24,7 @@ No test suite is configured. Always run `npm run build` to verify changes compil
 | Route | File | Description |
 |---|---|---|
 | `/` | `src/app/page.tsx` | Main portfolio — Hero, Experience, Skills, Projects, LabTeaser |
-| `/lab` | `src/app/lab/page.tsx` | Experiments page — Pulse + CLITerminal |
+| `/lab` | `src/app/lab/page.tsx` | Experiments page — CLITerminal |
 
 ### Layout
 
@@ -84,7 +84,7 @@ All colors are CSS custom properties. Never hardcode hex values in components.
 | `--border-2` | `rgba(255,255,255,0.06)` | `rgba(0,0,0,0.07)` | Mid border |
 | `--border-3` | `rgba(255,255,255,0.03)` | `rgba(0,0,0,0.03)` | Subtle border |
 
-**Canvas elements** (SkillSection, Pulse gauge) cannot use CSS variables — pass `colorMode` from context and compute values in JS.
+**Canvas elements** (SkillSection) cannot use CSS variables — pass `colorMode` from context and compute values in JS.
 
 ---
 
@@ -126,7 +126,6 @@ Content and accent color adapt based on `viewerType`. The toggle is in the Navba
 - `LabTeaser` — prompt-style teaser linking to `/lab`
 
 ### Lab page (`/lab`)
-- `Pulse` — live tech briefing: HN top stories, GitHub trending, npm spikes, animated arc gauge. 1hr localStorage cache.
 - `CLITerminal` — interactive terminal with virtual filesystem. See below.
 
 ### Shared

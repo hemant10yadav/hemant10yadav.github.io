@@ -22,7 +22,6 @@ The entire site adapts based on the viewer — recruiter or developer. Toggle vi
 ### /lab — Experiments Page
 A dedicated page for interactive tools, linked from the main portfolio.
 
-- **Pulse** — live tech briefing: Hacker News top stories, GitHub trending repos, npm package spikes, and an animated "tech temperature" gauge. Cached in localStorage for 1 hour.
 - **Terminal** — fully interactive CLI with a virtual filesystem. Navigate with `cd`, `ls`, `cat`. Discover hidden files. Every command tracked via Google Analytics.
 
 ### Terminal Features
@@ -84,7 +83,7 @@ src/app/
 ├── constants.ts                # Single source of truth for all personal data
 │
 ├── lab/
-│   └── page.tsx                # /lab page — Pulse + Terminal
+│   └── page.tsx                # /lab page — interactive terminal
 │
 ├── context/
 │   └── ViewerContext.tsx       # Viewer mode state + accent colours
@@ -96,7 +95,6 @@ src/app/
     ├── SkillSection.tsx        # Constellation canvas + skill grid
     ├── ProjectSection.tsx      # Project cards with recruiter/developer variants
     ├── ProfileImage.tsx        # Circular avatar with animated accent ring
-    ├── Pulse.tsx               # Live tech briefing — HN, GitHub trending, npm, gauge
     ├── CLITerminal.tsx         # Interactive terminal with virtual filesystem
     ├── LabTeaser.tsx           # Teaser card linking to /lab from main page
     ├── GitHubActivity.tsx      # Fixed activity badge — fetches latest GitHub event
