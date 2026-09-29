@@ -57,7 +57,6 @@ export const HeroSection = ({ viewerType }: HeroSectionProps) => {
   const socialLinks: SocialLink[] = [
     { icon: Github,   link: GITHUB_URL,   title: 'GitHub' },
     { icon: Linkedin, link: LINKEDIN_URL,  title: 'Linkedin' },
-    { icon: Mail,     link: MAILTO,        title: 'Mail' },
     { icon: Layers,   link: SO_URL,        title: 'Stackoverflow' },
   ];
 
@@ -86,7 +85,7 @@ export const HeroSection = ({ viewerType }: HeroSectionProps) => {
           `part of a product family used across ${COUNTRIES_SERVED} countries. At Xcaliber, ` +
           `I built one Spring Boot backend that powered web, Android, and iOS simultaneously. ` +
           `I build things that work, and more importantly, keep working after I stop looking at them.`,
-        ctaLabel: "Let's talk about what I can build for your team →",
+        ctaLabel: 'Get in touch →',
         ctaHref: MAILTO,
       }
     : {
@@ -118,7 +117,7 @@ export const HeroSection = ({ viewerType }: HeroSectionProps) => {
 
       <section
         id="about"
-        className="min-h-[100dvh] flex items-center relative overflow-hidden"
+        className="min-h-[calc(100dvh-5rem)] flex items-center relative overflow-hidden"
       >
         <div className="container mx-auto px-6 py-16 relative">
           <div className="flex flex-col md:flex-row items-center gap-16">
