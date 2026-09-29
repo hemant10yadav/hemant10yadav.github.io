@@ -1,5 +1,5 @@
 import { ImageResponse } from 'next/og';
-import { FULL_NAME, TITLE, GITHUB_USERNAME, PROFILE_PIC_URL } from './constants';
+import { FULL_NAME, TITLE, GITHUB_USERNAME, PROFILE_PIC_URL } from '../constants';
 
 // Duplicated from context/ViewerContext.tsx (RECRUITER_ACCENT) — that module is
 // 'use client' and can't be imported into this Node-runtime image generator.
@@ -7,9 +7,9 @@ const ACCENT = '#f2c078';
 
 const STACK = ['Python', 'Django', 'PostgreSQL', 'Docker', 'AWS', 'React'];
 
-export const alt = `${FULL_NAME} — ${TITLE}`;
-export const size = { width: 1200, height: 630 };
-export const contentType = 'image/png';
+// A route handler rather than the opengraph-image convention: that one exports
+// an extensionless file, which GitHub Pages serves as application/octet-stream.
+const size = { width: 1200, height: 630 };
 export const dynamic = 'force-static';
 
 async function loadGoogleFont(family: string, weight: number, text: string) {
@@ -32,7 +32,7 @@ async function loadAvatar() {
   return `data:${contentType};base64,${base64}`;
 }
 
-export default async function OpengraphImage() {
+export async function GET() {
   const monoText = `$~/whoamicatstack.txtgitremote-vgithub.com/${GITHUB_USERNAME}${TITLE}${STACK.join('')}developer view`;
 
   const [outfitBold, monoRegular, monoMedium, avatarSrc] = await Promise.all([

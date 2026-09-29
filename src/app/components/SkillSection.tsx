@@ -31,7 +31,7 @@ const RECRUITER_GROUPS = [
     ],
   },
   {
-    label: 'Infrastructure',
+    label: 'Data & Infrastructure',
     skills: [
       { name: 'AWS', icon: '/assets/aws.png' },
       { name: 'Docker', icon: '/assets/docker.png' },

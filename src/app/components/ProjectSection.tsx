@@ -91,7 +91,7 @@ const SYNCSIM: FeaturedProject = {
   stack: ['TypeScript', 'React', 'Vitest', 'fast-check', 'Playwright', 'BroadcastChannel'],
   links: [
     { href: PROJECT_SYNCSIM.demoUrl, label: 'Try it live', event: 'demo_viewed' },
-    { href: PROJECT_SYNCSIM.approachUrl, label: 'Read the approach', event: 'writeup_view' },
+    { href: PROJECT_SYNCSIM.approachUrl, label: 'Read how it works', event: 'writeup_view' },
   ],
   codeUrl: PROJECT_SYNCSIM.githubUrl,
   recruiter: {

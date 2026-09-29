@@ -39,6 +39,7 @@ const PAGE_DESCRIPTION =
   `Software Engineer with ${EXPERIENCE_LABEL} of experience in Python, Django, and full-stack development. ` +
   `Building backend systems at Dimagi used by frontline health workers across ${COUNTRIES_SERVED} countries.`;
 const SHORT_DESCRIPTION = `Software Engineer with ${EXPERIENCE_LABEL} of experience building scalable Python and Django systems.`;
+const OG_IMAGE = { url: '/og.png', width: 1200, height: 630, type: 'image/png', alt: `${FULL_NAME} — ${TITLE}` };
 
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
@@ -64,11 +65,13 @@ export const metadata: Metadata = {
     type: 'website',
     locale: 'en_US',
     siteName: FULL_NAME,
+    images: [OG_IMAGE],
   },
   twitter: {
     card: 'summary_large_image',
     title: PAGE_TITLE,
     description: SHORT_DESCRIPTION,
+    images: [OG_IMAGE],
   },
   verification: {
     google: '2NWImAWGUUGBF1n43abjdyS6cskF6yjKXIBjYnkU17k',
